@@ -1,28 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Microsoft.Win32;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
+        private readonly ExcelParser _excelParser;
+
         public MainWindow()
         {
             InitializeComponent();
+            _excelParser = new ExcelParser();
+        }
+
+        private string CreateOpenFileDialog()
+        {
+            var filename = string.Empty;
+            var dlg = new OpenFileDialog { Filter = "Excel files|;*.xlsx;*.xls" };
+            dlg.FileOk += delegate
+            {
+                filename = dlg.FileName;
+            };
+            dlg.ShowDialog(this);
+            return filename;
+        }
+
+        private void BtnOpen_Click(object sender, RoutedEventArgs e)
+        {
+            var filename = CreateOpenFileDialog();
+            if (!string.IsNullOrEmpty(filename))
+            {
+                _excelParser.OpenExcel(filename);
+            }
+        }
+
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
