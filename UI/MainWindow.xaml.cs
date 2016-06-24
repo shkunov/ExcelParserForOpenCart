@@ -15,6 +15,12 @@ namespace ExcelParserForOpenCart
             InitializeComponent();
             BtnSave.IsEnabled = true;
             _excelParser = new ExcelParser();
+            _excelParser.OnParserAction += OnParserAction;
+        }
+
+        private void OnParserAction(string message)
+        {
+            MessageList.Items.Add(message);
         }
 
         private string CreateOpenFileDialog()
@@ -41,7 +47,7 @@ namespace ExcelParserForOpenCart
             var filename = string.Empty;
             var dlg = new SaveFileDialog
             {
-                Filter = "Excel files|;*.xlsx;*.xls"
+                Filter = "Excel files|*.xls"
             };
             dlg.FileOk += delegate
             {
