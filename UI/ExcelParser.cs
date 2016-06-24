@@ -10,5 +10,10 @@ namespace ExcelParserForOpenCart
             var application = new Application();
             var workbook = application.Workbooks.Open(fileName);
         }
+
+        public void SaveResult(string fileName)
+        {
+            
+        }
     }
 }

@@ -32,15 +32,25 @@ namespace ExcelParserForOpenCart
         private void BtnOpen_Click(object sender, RoutedEventArgs e)
         {
             var filename = CreateOpenFileDialog();
-            if (!string.IsNullOrEmpty(filename))
-            {
-                _excelParser.OpenExcel(filename);
-            }
+            if (string.IsNullOrEmpty(filename)) return;
+            _excelParser.OpenExcel(filename);
+            BtnSave.IsEnabled = true;
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-
+            var filename = string.Empty;
+            var dlg = new SaveFileDialog
+            {
+                Filter = "Excel files|;*.xlsx;*.xls"
+            };
+            dlg.FileOk += delegate
+            {
+                filename = dlg.FileName;
+            };
+            dlg.ShowDialog(this);
+            if (string.IsNullOrEmpty(filename)) return;
+            _excelParser.SaveResult(filename);
         }
     }
 }
