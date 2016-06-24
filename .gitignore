@@ -201,3 +201,4 @@ FakesAssemblies/
 *.opt
 
 SharedFileVersionInfo.cs
+*.manifest
