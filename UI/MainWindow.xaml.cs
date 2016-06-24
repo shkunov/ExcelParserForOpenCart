@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using Microsoft.Win32;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart
 {
