@@ -13,6 +13,7 @@ namespace ExcelParserForOpenCart
         public MainWindow()
         {
             InitializeComponent();
+            BtnSave.IsEnabled = true;
             _excelParser = new ExcelParser();
         }
 
@@ -33,7 +34,6 @@ namespace ExcelParserForOpenCart
             var filename = CreateOpenFileDialog();
             if (string.IsNullOrEmpty(filename)) return;
             _excelParser.OpenExcel(filename);
-            BtnSave.IsEnabled = true;
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
