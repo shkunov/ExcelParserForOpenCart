@@ -37,8 +37,17 @@ namespace ExcelParserForOpenCart
             var application = new Application();
             var workbook = application.Workbooks.Open(template);
             var worksheet = workbook.Worksheets[1] as Worksheet;
+            if (worksheet == null) return;
             // действия по заполнению шаблона
-            if (worksheet != null) worksheet.SaveAs(fileName);
+            var i = 0;
+            foreach (var obj in list)
+            {
+                // заносить полученную линию в шаблон
+                worksheet.Cells[i, 0] = obj.VendorCode;
+                worksheet.Cells[i, 1] = obj.Name;
+                i++;
+            }
+            worksheet.SaveAs(fileName);
         }
     }
 }
