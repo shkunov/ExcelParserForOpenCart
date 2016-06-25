@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ExcelParserForOpenCart
 {
-    static class Global
+    public static class Global
     {
         public static string GetTemplate()
         {

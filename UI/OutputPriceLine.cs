@@ -1,6 +1,6 @@
 ﻿namespace ExcelParserForOpenCart
 {
-    class OutputPriceLine
+    public class OutputPriceLine
     {
         /// <summary>
         /// Артикул
