@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExcelParserForOpenCart
 {
-    static class Global
+    public static class Global
     {
         public static string GetTemplate()
         {

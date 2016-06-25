@@ -1,11 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
+using Microsoft.Win32;
 
 namespace ExcelParserForOpenCart
 {
     class ExcelParser
     {
+        public event Action<string> OnParserAction;
+
+        public ExcelParser()
+        {
+            if (!IsExcelInstall())
+            {
+                SendMessage("Excel не установлен!");
+            }
+        }
 
         public void OpenExcel(string fileName)
         {
@@ -26,12 +37,12 @@ namespace ExcelParserForOpenCart
             var template = Global.GetTemplate();
             if (template == null)
             {
-                //обработать ошибку
+                SendMessage("Ошибка! Не могу получить путь к шаблону!");
                 return;
             }
             if (!File.Exists(template))
             {
-                //обработать ошибку отсутствия шаблона
+                SendMessage("Ошибка! Отсутствует шабон!");
                 return;
             }
             var application = new Application();
@@ -39,15 +50,30 @@ namespace ExcelParserForOpenCart
             var worksheet = workbook.Worksheets[1] as Worksheet;
             if (worksheet == null) return;
             // действия по заполнению шаблона
-            var i = 0;
+            var i = 2;
             foreach (var obj in list)
             {
                 // заносить полученную линию в шаблон
-                worksheet.Cells[i, 0] = obj.VendorCode;
-                worksheet.Cells[i, 1] = obj.Name;
+                worksheet.Cells[i, 1] = obj.VendorCode;
+                worksheet.Cells[i, 2] = obj.Name;
                 i++;
             }
             worksheet.SaveAs(fileName);
+            SendMessage("Сохраняю как: " + fileName);
+            application.Quit();
+            SendMessage("Прайс создан!");
+        }
+
+        private void SendMessage(string message)
+        {
+            if (OnParserAction != null) OnParserAction(message);
+        }
+
+        private static bool IsExcelInstall()
+        {
+            var hkcr = Registry.ClassesRoot;
+            var excelKey = hkcr.OpenSubKey("Excel.Application");
+            return excelKey != null;
         }
     }
 }
