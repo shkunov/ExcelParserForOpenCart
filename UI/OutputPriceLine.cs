@@ -13,7 +13,7 @@
         public string Category1 { get; set; }
         public string Category2 { get; set; }
         public string ProductDescription { get; set; }
-        public string Cost { get; set; }
+        public string Cost { get; set; } // а не сделать ли числовые поля числовыми, int?
 
         public string Foto { get; set; } // возможно следует использовать другой тип
         public string Option { get; set; } // Опция Кронштейн веткоотсекателя

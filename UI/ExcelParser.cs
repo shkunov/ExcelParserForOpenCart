@@ -31,7 +31,15 @@ namespace ExcelParserForOpenCart
             var line = new OutputPriceLine
             {
                 Name = "Имя",
-                VendorCode = "1234567"
+                VendorCode = "1234567",
+                Category1 = "Багажники на Suzuki",
+                Category2 = "Багажники",
+                ProductDescription = "Огромный багажник, вместительностью до 300 кг",
+                Cost = "3000",
+                Foto = "http://img.yandex.ru/2034.jpg",
+                Option = "Да",
+                Qt = "1000",
+                PlusThePrice = "100"
             };
             list.Add(line);
             var template = Global.GetTemplate();
@@ -42,7 +50,7 @@ namespace ExcelParserForOpenCart
             }
             if (!File.Exists(template))
             {
-                SendMessage("Ошибка! Отсутствует шабон!");
+                SendMessage("Ошибка! Отсутствует шаблон!");
                 return;
             }
             var application = new Application();
@@ -50,12 +58,20 @@ namespace ExcelParserForOpenCart
             var worksheet = workbook.Worksheets[1] as Worksheet;
             if (worksheet == null) return;
             // действия по заполнению шаблона
-            var i = 2;
+            var i = 3;
             foreach (var obj in list)
             {
                 // заносить полученную линию в шаблон
                 worksheet.Cells[i, 1] = obj.VendorCode;
                 worksheet.Cells[i, 2] = obj.Name;
+                worksheet.Cells[i, 3] = obj.Category1;
+                worksheet.Cells[i, 4] = obj.Category2;
+                worksheet.Cells[i, 5] = obj.ProductDescription;
+                worksheet.Cells[i, 6] = obj.Cost;
+                worksheet.Cells[i, 7] = obj.Foto;
+                worksheet.Cells[i, 8] = obj.Option;
+                worksheet.Cells[i, 9] = obj.Qt;
+                worksheet.Cells[i, 10] = obj.PlusThePrice;
                 i++;
             }
             worksheet.SaveAs(fileName);
