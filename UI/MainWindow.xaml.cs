@@ -16,6 +16,12 @@ namespace ExcelParserForOpenCart
             BtnSave.IsEnabled = true;
             _excelParser = new ExcelParser();
             _excelParser.OnParserAction += OnParserAction;
+            _excelParser.OnProgressBarAction += OnProgressBarAction;
+        }
+
+        private void OnProgressBarAction(int obj)
+        {
+            ProgressBar.Value = obj;
         }
 
         private void OnParserAction(string message)
