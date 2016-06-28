@@ -36,21 +36,65 @@ namespace ExcelParserForOpenCart
 
             _workerOpen = new BackgroundWorker { WorkerReportsProgress = true };
             _workerOpen.DoWork += _workerOpen_DoWork;
+            _workerOpen.RunWorkerCompleted += _workerOpen_RunWorkerCompleted;
+        }
+
+        private static void ReleaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch
+            {
+                obj = null;
+            }
+            finally
+            {
+                GC.Collect();
+            }
+        } 
+
+        void _workerOpen_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            SendMessage("Завершён анализ документа: " + _openFileName);
         }
 
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
+            _list = new List<OutputPriceLine>();
             var application = new Application();
             var workbook = application.Workbooks.Open(_openFileName);
             var worksheet = workbook.Worksheets[1] as Worksheet;
             if (worksheet == null) return;
+            var range = worksheet.UsedRange;
             var row = worksheet.Rows.Count;
-            var column = worksheet.Columns.Count;
-            for (var i = 0; i > row; i++)
+            //var column = worksheet.Columns.Count; 
+            // обработка для прайса 2 союза
+            for (var i = 10; i < row; i++)
             {
-
+                var line = new OutputPriceLine();
+                var theRange = range.Cells[i, 3] as Range;
+                if (theRange != null)
+                    line.VendorCode = (string)theRange.Value2;
+                theRange = range.Cells[i, 4] as Range;
+                if (theRange != null)
+                    line.Name = (string)theRange.Value2;
+                // todo: здесь есть ошибки, нужно думать как парсить документ
+                //theRange = range.Cells[i, 5] as Range;
+                //if (theRange != null)
+                //    line.Qt = (string)theRange.Value2;
+                //theRange = range.Cells[i, 6] as Range;
+                //if (theRange != null)
+                //    line.Cost = (string)theRange.Value2;
+                _list.Add(line);
+                if (string.IsNullOrEmpty(line.VendorCode)) break;
             }
             application.Quit();
+            ReleaseObject(worksheet);
+            ReleaseObject(workbook);
+            ReleaseObject(application);
         }
 
         private void _workerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -60,8 +104,7 @@ namespace ExcelParserForOpenCart
 
         private void _workerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            SendMessage("Сохраняю как: " + _saveFileName);
-            SendMessage("Прайс создан!");
+            SendMessage("Прайс создан! Сохраняю как: " + _saveFileName);
         }
 
         private void _workerSave_DoWork(object sender, DoWorkEventArgs e)
@@ -89,6 +132,9 @@ namespace ExcelParserForOpenCart
             }
             worksheet.SaveAs(_saveFileName);
             application.Quit();
+            ReleaseObject(worksheet);
+            ReleaseObject(workbook);
+            ReleaseObject(application);
             _workerSave.ReportProgress(100);
         }
 
@@ -109,38 +155,38 @@ namespace ExcelParserForOpenCart
         {
             if (_isExcelInstal == false)
                 return;
-            // Test begin
-            var list = new List<OutputPriceLine>();
-            var line = new OutputPriceLine
-            {
-                Name = "Имя",
-                VendorCode = "1234567",
-                Category1 = "Багажники на Suzuki",
-                Category2 = "Багажники",
-                ProductDescription = "Огромный багажник, вместительностью до 300 кг",
-                Cost = "3000",
-                Foto = "http://img.yandex.ru/2034.jpg",
-                Option = "Да",
-                Qt = "1000",
-                PlusThePrice = "100"
-            };
-            list.Add(line);
-            var line2 = new OutputPriceLine
-            {
-                Name = "Имя",
-                VendorCode = "7654321",
-                Category1 = "Багажники на Suzuki",
-                Category2 = "Багажники",
-                ProductDescription = "Огромный багажник, вместительностью до 300 кг",
-                Cost = "3000",
-                Foto = "http://img.yandex.ru/2034.jpg",
-                Option = "Нет",
-                Qt = "2000",
-                PlusThePrice = "200"
-            };
-            list.Add(line2);
-            _list = list;
-            // test end
+            #region Test
+            //var list = new List<OutputPriceLine>();
+            //var line = new OutputPriceLine
+            //{
+            //    Name = "Имя",
+            //    VendorCode = "1234567",
+            //    Category1 = "Багажники на Suzuki",
+            //    Category2 = "Багажники",
+            //    ProductDescription = "Огромный багажник, вместительностью до 300 кг",
+            //    Cost = "3000",
+            //    Foto = "http://img.yandex.ru/2034.jpg",
+            //    Option = "Да",
+            //    Qt = "1000",
+            //    PlusThePrice = "100"
+            //};
+            //list.Add(line);
+            //var line2 = new OutputPriceLine
+            //{
+            //    Name = "Имя",
+            //    VendorCode = "7654321",
+            //    Category1 = "Багажники на Suzuki",
+            //    Category2 = "Багажники",
+            //    ProductDescription = "Огромный багажник, вместительностью до 300 кг",
+            //    Cost = "3000",
+            //    Foto = "http://img.yandex.ru/2034.jpg",
+            //    Option = "Нет",
+            //    Qt = "2000",
+            //    PlusThePrice = "200"
+            //};
+            //list.Add(line2);
+            //_list = list;
+            #endregion
             _saveFileName = fileName;
             _template = Global.GetTemplate();
             if (_template == null)
