@@ -201,6 +201,7 @@ namespace ExcelParserForOpenCart
                 SendMessage("Ошибка! Отсутствует шаблон!");
                 return;
             }
+            if (_list != null && _list.Count >= 1)
                 _workerSave.RunWorkerAsync();
         }
 
