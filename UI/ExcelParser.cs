@@ -114,7 +114,7 @@ namespace ExcelParserForOpenCart
             var worksheet = workbook.Worksheets[1] as Worksheet;
             if (worksheet == null) return;
             // действия по заполнению шаблона
-            var i = 3;
+            var i = 2;
             foreach (var obj in _list)
             {
                 // заносить полученную линию в шаблон
