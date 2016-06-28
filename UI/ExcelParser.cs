@@ -11,6 +11,7 @@ namespace ExcelParserForOpenCart
     {
         public event Action<string> OnParserAction;
         public event Action<int> OnProgressBarAction;
+        public event EventHandler OnOpenDocument; 
 
         private readonly bool _isExcelInstal;        
         private readonly BackgroundWorker _workerSave;
@@ -59,6 +60,7 @@ namespace ExcelParserForOpenCart
         void _workerOpen_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             SendMessage("Завершён анализ документа: " + _openFileName);
+            if (OnOpenDocument != null) OnOpenDocument(null, null);
         }
 
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
@@ -199,7 +201,7 @@ namespace ExcelParserForOpenCart
                 SendMessage("Ошибка! Отсутствует шаблон!");
                 return;
             }
-            _workerSave.RunWorkerAsync();
+                _workerSave.RunWorkerAsync();
         }
 
         private void SendMessage(string message)

@@ -13,10 +13,15 @@ namespace ExcelParserForOpenCart
         public MainWindow()
         {
             InitializeComponent();
-            BtnSave.IsEnabled = true;
             _excelParser = new ExcelParser();
             _excelParser.OnParserAction += OnParserAction;
             _excelParser.OnProgressBarAction += OnProgressBarAction;
+            _excelParser.OnOpenDocument += OnOpenDocument;
+        }
+
+        private void OnOpenDocument(object sender, System.EventArgs e)
+        {
+            BtnSave.IsEnabled = true;            
         }
 
         private void OnProgressBarAction(int obj)
