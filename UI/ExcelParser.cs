@@ -17,7 +17,8 @@ namespace ExcelParserForOpenCart
         private readonly BackgroundWorker _workerOpen;
         private List<OutputPriceLine> _list;
         private string _template;
-        private string _fileNameForSave;
+        private string _openFileName;
+        private string _saveFileName;
 
         public ExcelParser()
         {
@@ -34,7 +35,22 @@ namespace ExcelParserForOpenCart
             _workerSave.ProgressChanged += _workerSave_ProgressChanged;
 
             _workerOpen = new BackgroundWorker { WorkerReportsProgress = true };
+            _workerOpen.DoWork += _workerOpen_DoWork;
+        }
 
+        private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var application = new Application();
+            var workbook = application.Workbooks.Open(_openFileName);
+            var worksheet = workbook.Worksheets[1] as Worksheet;
+            if (worksheet == null) return;
+            var row = worksheet.Rows.Count;
+            var column = worksheet.Columns.Count;
+            for (var i = 0; i > row; i++)
+            {
+
+            }
+            application.Quit();
         }
 
         private void _workerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -44,7 +60,7 @@ namespace ExcelParserForOpenCart
 
         private void _workerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            SendMessage("Сохраняю как: " + _fileNameForSave);
+            SendMessage("Сохраняю как: " + _saveFileName);
             SendMessage("Прайс создан!");
         }
 
@@ -71,32 +87,29 @@ namespace ExcelParserForOpenCart
                 worksheet.Cells[i, 10] = obj.PlusThePrice;
                 i++;
             }
-            worksheet.SaveAs(_fileNameForSave);
+            worksheet.SaveAs(_saveFileName);
             application.Quit();
             _workerSave.ReportProgress(100);
         }
 
         public void OpenExcel(string fileName)
         {
+            _openFileName = fileName;
             if (_isExcelInstal == false)
                 return;
-            // Open Excel and get first worksheet.
-            var application = new Application();
-            var workbook = application.Workbooks.Open(fileName);
-            var worksheet = workbook.Worksheets[1] as Worksheet;
-            if (worksheet == null) return;
-            var row = worksheet.Rows.Count;
-            var column = worksheet.Columns.Count;
-            for (var i = 0; i > row; i++)
+            if (!File.Exists(fileName))
             {
-                
+                SendMessage("Ошибка! Файл отсутствует!");
+                return;
             }
+            _workerOpen.RunWorkerAsync(); 
         }
 
         public void SaveResult(string fileName)
         {
             if (_isExcelInstal == false)
                 return;
+            // Test begin
             var list = new List<OutputPriceLine>();
             var line = new OutputPriceLine
             {
@@ -127,7 +140,8 @@ namespace ExcelParserForOpenCart
             };
             list.Add(line2);
             _list = list;
-            _fileNameForSave = fileName;
+            // test end
+            _saveFileName = fileName;
             _template = Global.GetTemplate();
             if (_template == null)
             {
