@@ -130,6 +130,20 @@ namespace ExcelParserForOpenCart
             }
         }
 
+        private static string ConverterToString(dynamic obj)
+        {
+            string s;
+            try
+            {
+                s = Convert.ToString(obj);
+            }
+            catch 
+            {
+                s = string.Empty;
+            }
+            return s;
+        }
+
         private void _workerOpen_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             SendProgressBarInfo(e.ProgressPercentage);
@@ -154,21 +168,20 @@ namespace ExcelParserForOpenCart
             // обработка для прайса 2 союза
             for (var i = 10; i < row; i++)
             {
+                // todo: алгоритм требует большой доработки
                 var line = new OutputPriceLine();
                 var theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
-                    line.VendorCode = (string)theRange.Value2;
+                    line.VendorCode = ConverterToString(theRange.Value2);
                 theRange = range.Cells[i, 4] as Range;
                 if (theRange != null)
-                    line.Name = (string)theRange.Value2;
-                // todo: здесь есть ошибки, нужно думать как парсить документ
+                    line.Name = ConverterToString(theRange.Value2);
                 theRange = range.Cells[i, 5] as Range;
                 if (theRange != null)
-                    line.Qt = Convert.ToString(theRange.Value2);
-
+                    line.Qt = ConverterToString(theRange.Value2);
                 theRange = range.Cells[i, 6] as Range;
                 if (theRange != null)
-                    line.Cost = Convert.ToString(theRange.Value2);
+                    line.Cost = ConverterToString(theRange.Value2);
                 _list.Add(line);
                 if (string.IsNullOrEmpty(line.VendorCode)) break;
             }
