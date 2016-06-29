@@ -40,106 +40,6 @@ namespace ExcelParserForOpenCart
             _workerOpen.RunWorkerCompleted += _workerOpen_RunWorkerCompleted;
         }
 
-        private static void ReleaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch
-            {
-                obj = null;
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        } 
-
-        void _workerOpen_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            SendMessage("Завершён анализ документа: " + _openFileName);
-            if (OnOpenDocument != null) OnOpenDocument(null, null);
-        }
-
-        private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
-        {
-            _list = new List<OutputPriceLine>();
-            var application = new Application();
-            var workbook = application.Workbooks.Open(_openFileName);
-            var worksheet = workbook.Worksheets[1] as Worksheet;
-            if (worksheet == null) return;
-            var range = worksheet.UsedRange;
-            var row = worksheet.Rows.Count;
-            //var column = worksheet.Columns.Count; 
-            // обработка для прайса 2 союза
-            for (var i = 10; i < row; i++)
-            {
-                var line = new OutputPriceLine();
-                var theRange = range.Cells[i, 3] as Range;
-                if (theRange != null)
-                    line.VendorCode = (string)theRange.Value2;
-                theRange = range.Cells[i, 4] as Range;
-                if (theRange != null)
-                    line.Name = (string)theRange.Value2;
-                // todo: здесь есть ошибки, нужно думать как парсить документ
-                //theRange = range.Cells[i, 5] as Range;
-                //if (theRange != null)
-                //    line.Qt = (string)theRange.Value2;
-                //theRange = range.Cells[i, 6] as Range;
-                //if (theRange != null)
-                //    line.Cost = (string)theRange.Value2;
-                _list.Add(line);
-                if (string.IsNullOrEmpty(line.VendorCode)) break;
-            }
-            application.Quit();
-            ReleaseObject(worksheet);
-            ReleaseObject(workbook);
-            ReleaseObject(application);
-        }
-
-        private void _workerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            SendProgressBarInfo(e.ProgressPercentage);
-        }
-
-        private void _workerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            SendMessage("Прайс создан! Сохраняю как: " + _saveFileName);
-        }
-
-        private void _workerSave_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var application = new Application();
-            var workbook = application.Workbooks.Open(_template);
-            var worksheet = workbook.Worksheets[1] as Worksheet;
-            if (worksheet == null) return;
-            // действия по заполнению шаблона
-            var i = 2;
-            foreach (var obj in _list)
-            {
-                // заносить полученную линию в шаблон
-                worksheet.Cells[i, 1] = obj.VendorCode;
-                worksheet.Cells[i, 2] = obj.Name;
-                worksheet.Cells[i, 3] = obj.Category1;
-                worksheet.Cells[i, 4] = obj.Category2;
-                worksheet.Cells[i, 5] = obj.ProductDescription;
-                worksheet.Cells[i, 6] = obj.Cost;
-                worksheet.Cells[i, 7] = obj.Foto;
-                worksheet.Cells[i, 8] = obj.Option;
-                worksheet.Cells[i, 9] = obj.Qt;
-                worksheet.Cells[i, 10] = obj.PlusThePrice;
-                i++;
-            }
-            worksheet.SaveAs(_saveFileName);
-            application.Quit();
-            ReleaseObject(worksheet);
-            ReleaseObject(workbook);
-            ReleaseObject(application);
-            _workerSave.ReportProgress(100);
-        }
-
         public void OpenExcel(string fileName)
         {
             _openFileName = fileName;
@@ -150,7 +50,7 @@ namespace ExcelParserForOpenCart
                 SendMessage("Ошибка! Файл отсутствует!");
                 return;
             }
-            _workerOpen.RunWorkerAsync(); 
+            _workerOpen.RunWorkerAsync();
         }
 
         public void SaveResult(string fileName)
@@ -205,6 +105,116 @@ namespace ExcelParserForOpenCart
                 _workerSave.RunWorkerAsync();
         }
 
+        private static bool IsExcelInstall()
+        {
+            var hkcr = Registry.ClassesRoot;
+            var excelKey = hkcr.OpenSubKey("Excel.Application");
+            return excelKey != null;
+        }
+
+        private static void ReleaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch
+            {
+                obj = null;
+            }
+            finally
+            {
+                GC.Collect();
+            }
+        }
+
+        private void _workerOpen_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            SendMessage("Завершён анализ документа: " + _openFileName);
+            if (OnOpenDocument != null) OnOpenDocument(null, null);
+        }
+
+        private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
+        {
+            _list = new List<OutputPriceLine>();
+            var application = new Application();
+            var workbook = application.Workbooks.Open(_openFileName);
+            var worksheet = workbook.Worksheets[1] as Worksheet;
+            if (worksheet == null) return;
+            var range = worksheet.UsedRange;
+            var row = worksheet.Rows.Count;
+            //var column = worksheet.Columns.Count; 
+            // обработка для прайса 2 союза
+            for (var i = 10; i < row; i++)
+            {
+                var line = new OutputPriceLine();
+                var theRange = range.Cells[i, 3] as Range;
+                if (theRange != null)
+                    line.VendorCode = (string)theRange.Value2;
+                theRange = range.Cells[i, 4] as Range;
+                if (theRange != null)
+                    line.Name = (string)theRange.Value2;
+                // todo: здесь есть ошибки, нужно думать как парсить документ
+                theRange = range.Cells[i, 5] as Range;
+                if (theRange != null)
+                    line.Qt = Convert.ToString(theRange.Value2);
+
+                theRange = range.Cells[i, 6] as Range;
+                if (theRange != null)
+                    line.Cost = Convert.ToString(theRange.Value2);
+                _list.Add(line);
+                if (string.IsNullOrEmpty(line.VendorCode)) break;
+            }
+            application.Quit();
+            ReleaseObject(worksheet);
+            ReleaseObject(workbook);
+            ReleaseObject(application);
+        }
+
+        private void _workerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            SendProgressBarInfo(e.ProgressPercentage);
+        }
+
+        private void _workerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            SendMessage("Прайс создан! Сохраняю как: " + _saveFileName);
+        }
+
+        private void _workerSave_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var application = new Application();
+            var workbook = application.Workbooks.Open(_template);
+            var worksheet = workbook.Worksheets[1] as Worksheet;
+            if (worksheet == null) return;
+            // действия по заполнению шаблона
+            var i = 2;
+            foreach (var obj in _list)
+            {
+                // заносить полученную линию в шаблон
+                worksheet.Cells[i, 1] = obj.VendorCode;
+                worksheet.Cells[i, 2] = obj.Name;
+                worksheet.Cells[i, 3] = obj.Category1;
+                worksheet.Cells[i, 4] = obj.Category2;
+                worksheet.Cells[i, 5] = obj.ProductDescription;
+                worksheet.Cells[i, 6] = obj.Cost;
+                worksheet.Cells[i, 7] = obj.Foto;
+                worksheet.Cells[i, 8] = obj.Option;
+                worksheet.Cells[i, 9] = obj.Qt;
+                worksheet.Cells[i, 10] = obj.PlusThePrice;
+                i++;
+            }
+            worksheet.SaveAs(_saveFileName);
+            application.Quit();
+            ReleaseObject(worksheet);
+            ReleaseObject(workbook);
+            ReleaseObject(application);
+            _workerSave.ReportProgress(100);
+        }
+
+        
+
         private void SendMessage(string message)
         {
             if (OnParserAction != null) OnParserAction(message);
@@ -215,11 +225,5 @@ namespace ExcelParserForOpenCart
             if (OnProgressBarAction != null) OnProgressBarAction(i);
         }
 
-        private static bool IsExcelInstall()
-        {
-            var hkcr = Registry.ClassesRoot;
-            var excelKey = hkcr.OpenSubKey("Excel.Application");
-            return excelKey != null;
-        }
     }
 }
