@@ -38,6 +38,7 @@ namespace ExcelParserForOpenCart
             _workerOpen = new BackgroundWorker { WorkerReportsProgress = true };
             _workerOpen.DoWork += _workerOpen_DoWork;
             _workerOpen.RunWorkerCompleted += _workerOpen_RunWorkerCompleted;
+            _workerOpen.ProgressChanged += _workerOpen_ProgressChanged;
         }
 
         public void OpenExcel(string fileName)
@@ -129,6 +130,11 @@ namespace ExcelParserForOpenCart
             }
         }
 
+        private void _workerOpen_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            SendProgressBarInfo(e.ProgressPercentage);
+        }
+
         private void _workerOpen_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             SendMessage("Завершён анализ документа: " + _openFileName);
@@ -170,6 +176,7 @@ namespace ExcelParserForOpenCart
             ReleaseObject(worksheet);
             ReleaseObject(workbook);
             ReleaseObject(application);
+            _workerOpen.ReportProgress(50);
         }
 
         private void _workerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
