@@ -12,8 +12,8 @@ namespace ExcelParserForOpenCart
 
         public MainWindow()
         {
-            InitializeComponent();
             _excelParser = new ExcelParser();
+            InitializeComponent();
             _excelParser.OnParserAction += OnParserAction;
             _excelParser.OnProgressBarAction += OnProgressBarAction;
             _excelParser.OnOpenDocument += OnOpenDocument;
@@ -73,11 +73,15 @@ namespace ExcelParserForOpenCart
         {
             switch (ComBoxSelectPrice.SelectedIndex)
             {
-                case 1:
+                case (int)EnumPrices.ДваСоюза:
                     // Запускаем метод для одного прайслиста
+                    MessageBox.Show("0");
+                    _excelParser.PriceType = EnumPrices.ДваСоюза;
                     break;
-                case 2:
+                case (int)EnumPrices.OJ:
                     // Как правильно запускать метод обработки прайслиста, я еще не знаю
+                    MessageBox.Show("1");
+                    _excelParser.PriceType = EnumPrices.OJ;
                     break;
                 //...
             }

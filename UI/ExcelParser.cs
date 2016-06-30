@@ -21,6 +21,8 @@ namespace ExcelParserForOpenCart
         private string _openFileName;
         private string _saveFileName;
 
+        public EnumPrices PriceType { get; set; }
+
         public ExcelParser()
         {
             _isExcelInstal = true;
