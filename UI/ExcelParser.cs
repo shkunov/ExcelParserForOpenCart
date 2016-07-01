@@ -11,9 +11,9 @@ namespace ExcelParserForOpenCart
     {
         public event Action<string> OnParserAction;
         public event Action<int> OnProgressBarAction;
-        public event EventHandler OnOpenDocument; 
+        public event EventHandler OnOpenDocument;
 
-        private readonly bool _isExcelInstal;        
+        private readonly bool _isExcelInstal;
         private readonly BackgroundWorker _workerSave;
         private readonly BackgroundWorker _workerOpen;
         private readonly List<OutputPriceLine> _list;
@@ -33,7 +33,7 @@ namespace ExcelParserForOpenCart
                 _isExcelInstal = false;
                 return;
             }
-            _workerSave = new BackgroundWorker {WorkerReportsProgress = true};
+            _workerSave = new BackgroundWorker { WorkerReportsProgress = true };
             _workerSave.DoWork += _workerSave_DoWork;
             _workerSave.RunWorkerCompleted += _workerSave_RunWorkerCompleted;
             _workerSave.ProgressChanged += _workerSave_ProgressChanged;
@@ -141,7 +141,7 @@ namespace ExcelParserForOpenCart
             {
                 s = Convert.ToString(obj);
             }
-            catch 
+            catch
             {
                 s = string.Empty;
             }
@@ -159,17 +159,13 @@ namespace ExcelParserForOpenCart
             if (OnOpenDocument != null) OnOpenDocument(null, null);
         }
 
-        private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
+        /// <summary>
+        /// Обработка для прайса 2 союза
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
+        private void For2Union(int row, Range range)
         {
-            _list.Clear();
-            var application = new Application();
-            var workbook = application.Workbooks.Open(_openFileName);
-            var worksheet = workbook.Worksheets[1] as Worksheet;
-            if (worksheet == null) return;
-            var range = worksheet.UsedRange;
-            var row = worksheet.Rows.Count;
-            //var column = worksheet.Columns.Count; 
-            // обработка для прайса 2 союза
             var category1 = string.Empty;
             var category2 = string.Empty;
             for (var i = 9; i < row; i++)
@@ -180,7 +176,7 @@ namespace ExcelParserForOpenCart
                 var theRange = range.Cells[i, 1] as Range;
                 if (theRange != null)
                 {
-                    str = ConverterToString(theRange.Value2);                    
+                    str = ConverterToString(theRange.Value2);
                     var color = theRange.Interior.Color;
                     var sc = color.ToString();
                     if (sc == "0") // чёрный
@@ -201,7 +197,6 @@ namespace ExcelParserForOpenCart
                 if (theRange != null)
                 {
                     line.VendorCode = ConverterToString(theRange.Value2);
-                    var color = theRange.Interior.Color;
                 }
                 theRange = range.Cells[i, 4] as Range;
                 if (theRange != null)
@@ -215,6 +210,28 @@ namespace ExcelParserForOpenCart
                 if (!string.IsNullOrEmpty(line.VendorCode))
                     _list.Add(line);
                 if (string.IsNullOrEmpty(str)) break;
+            }
+        }
+
+        private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
+        {
+            _list.Clear();
+            var application = new Application();
+            var workbook = application.Workbooks.Open(_openFileName);
+            var worksheet = workbook.Worksheets[1] as Worksheet;
+            if (worksheet == null) return;
+            var range = worksheet.UsedRange;
+            var row = worksheet.Rows.Count;
+            switch (PriceType)
+            {
+                case EnumPrices.ДваСоюза:
+                    For2Union(row, range);
+                    break;
+                case EnumPrices.OJ:
+                    break;
+                default:
+                    For2Union(row, range);
+                    break;
             }
             application.Quit();
             ReleaseObject(worksheet);
@@ -264,7 +281,7 @@ namespace ExcelParserForOpenCart
             _workerSave.ReportProgress(100);
         }
 
-        
+
 
         private void SendMessage(string message)
         {

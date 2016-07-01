@@ -75,12 +75,10 @@ namespace ExcelParserForOpenCart
             {
                 case (int)EnumPrices.ДваСоюза:
                     // Запускаем метод для одного прайслиста
-                    MessageBox.Show("0");
                     _excelParser.PriceType = EnumPrices.ДваСоюза;
                     break;
                 case (int)EnumPrices.OJ:
                     // Как правильно запускать метод обработки прайслиста, я еще не знаю
-                    MessageBox.Show("1");
                     _excelParser.PriceType = EnumPrices.OJ;
                     break;
                 //...
