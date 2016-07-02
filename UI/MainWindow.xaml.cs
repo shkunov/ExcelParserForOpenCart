@@ -74,14 +74,40 @@ namespace ExcelParserForOpenCart
             switch (ComBoxSelectPrice.SelectedIndex)
             {
                 case (int)EnumPrices.ДваСоюза:
-                    // Запускаем метод для одного прайслиста
+
+                    MessageBox.Show("0");
                     _excelParser.PriceType = EnumPrices.ДваСоюза;
                     break;
                 case (int)EnumPrices.OJ:
-                    // Как правильно запускать метод обработки прайслиста, я еще не знаю
+
+                    MessageBox.Show("1");
                     _excelParser.PriceType = EnumPrices.OJ;
                     break;
-                //...
+                case (int)EnumPrices.tdgroup:
+                    MessageBox.Show("2");
+                    _excelParser.PriceType = EnumPrices.tdgroup;
+                    break;
+                case (int)EnumPrices.lapter:
+                    MessageBox.Show("3");
+                    _excelParser.PriceType = EnumPrices.lapter;
+                    break;
+                case (int)EnumPrices.composite:
+                    MessageBox.Show("4");
+                    _excelParser.PriceType = EnumPrices.composite;
+                    break;
+                case (int)EnumPrices.rival:
+                    MessageBox.Show("5");
+                    _excelParser.PriceType = EnumPrices.rival;
+                    break;
+                case (int)EnumPrices.ptgroup:
+                    MessageBox.Show("6");
+                    _excelParser.PriceType = EnumPrices.ptgroup;
+                    break;
+                case (int)EnumPrices.pyanov:
+                    MessageBox.Show("7");
+                    _excelParser.PriceType = EnumPrices.pyanov;
+                    break;
+
             }
         }
     }

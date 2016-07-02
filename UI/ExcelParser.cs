@@ -213,6 +213,27 @@ namespace ExcelParserForOpenCart
             }
         }
 
+        private void OjPrice(int row, Range range)
+        { }
+
+        private void TdgroupPrice(int row, Range range)
+        { }
+
+        private void LapterPrice(int row, Range range)
+        { }
+
+        private void CompositePrice(int row, Range range)
+        { }
+
+        private void RivalPrice(int row, Range range)
+        { }
+
+        private void PtgroupPrice(int row, Range range)
+        { }
+
+        private void PyanovPrice(int row, Range range)
+        { }
+
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
             _list.Clear();
@@ -228,6 +249,25 @@ namespace ExcelParserForOpenCart
                     For2Union(row, range);
                     break;
                 case EnumPrices.OJ:
+                    OjPrice(row, range);
+                    break;
+                case EnumPrices.tdgroup:
+                    TdgroupPrice(row, range);
+                    break;
+                case EnumPrices.lapter:
+                    LapterPrice(row, range);
+                    break;
+                case EnumPrices.composite:
+                    CompositePrice(row, range);
+                    break;
+                case EnumPrices.rival:
+                    RivalPrice(row, range);
+                    break;
+                case EnumPrices.ptgroup:
+                    PtgroupPrice(row, range);
+                    break;
+                case EnumPrices.pyanov:
+                    PyanovPrice(row, range);
                     break;
                 default:
                     For2Union(row, range);
