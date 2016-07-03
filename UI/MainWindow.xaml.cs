@@ -74,40 +74,29 @@ namespace ExcelParserForOpenCart
             switch (ComBoxSelectPrice.SelectedIndex)
             {
                 case (int)EnumPrices.ДваСоюза:
-
-                    MessageBox.Show("0");
                     _excelParser.PriceType = EnumPrices.ДваСоюза;
                     break;
                 case (int)EnumPrices.OJ:
-
-                    MessageBox.Show("1");
                     _excelParser.PriceType = EnumPrices.OJ;
                     break;
-                case (int)EnumPrices.tdgroup:
-                    MessageBox.Show("2");
-                    _excelParser.PriceType = EnumPrices.tdgroup;
+                case (int)EnumPrices.ПТГрупп:
+                    _excelParser.PriceType = EnumPrices.ПТГрупп;
                     break;
-                case (int)EnumPrices.lapter:
-                    MessageBox.Show("3");
-                    _excelParser.PriceType = EnumPrices.lapter;
+                case (int)EnumPrices.Лаптер:
+                    _excelParser.PriceType = EnumPrices.Лаптер;
                     break;
-                case (int)EnumPrices.composite:
-                    MessageBox.Show("4");
-                    _excelParser.PriceType = EnumPrices.composite;
+                case (int)EnumPrices.Композит:
+                    _excelParser.PriceType = EnumPrices.Композит;
                     break;
-                case (int)EnumPrices.rival:
-                    MessageBox.Show("5");
-                    _excelParser.PriceType = EnumPrices.rival;
+                case (int)EnumPrices.Риваль:
+                    _excelParser.PriceType = EnumPrices.Риваль;
                     break;
-                case (int)EnumPrices.ptgroup:
-                    MessageBox.Show("6");
-                    _excelParser.PriceType = EnumPrices.ptgroup;
+                case (int)EnumPrices.Autogur73:
+                    _excelParser.PriceType = EnumPrices.Autogur73;
                     break;
-                case (int)EnumPrices.pyanov:
-                    MessageBox.Show("7");
-                    _excelParser.PriceType = EnumPrices.pyanov;
+                default:
+                    _excelParser.PriceType = EnumPrices.ДваСоюза;
                     break;
-
             }
         }
     }
