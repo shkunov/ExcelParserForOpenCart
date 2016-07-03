@@ -212,7 +212,11 @@ namespace ExcelParserForOpenCart
                 if (string.IsNullOrEmpty(str)) break;
             }
         }
-
+        /// <summary>
+        /// Обработка прайсов, таких как: Каталог OJ 2016_06_01 вер. 6
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
         private void OjPrice(int row, Range range)
         {
             var category1 = string.Empty;
@@ -312,22 +316,19 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.OJ:
                     OjPrice(row, range);
                     break;
-                case EnumPrices.tdgroup:
+                case EnumPrices.ПТГрупп:
                     TdgroupPrice(row, range);
                     break;
-                case EnumPrices.lapter:
+                case EnumPrices.Лаптер:
                     LapterPrice(row, range);
                     break;
-                case EnumPrices.composite:
+                case EnumPrices.Композит:
                     CompositePrice(row, range);
                     break;
-                case EnumPrices.rival:
+                case EnumPrices.Риваль:
                     RivalPrice(row, range);
                     break;
-                case EnumPrices.ptgroup:
-                    PtgroupPrice(row, range);
-                    break;
-                case EnumPrices.pyanov:
+                case EnumPrices.Autogur73:
                     PyanovPrice(row, range);
                     break;
                 default:

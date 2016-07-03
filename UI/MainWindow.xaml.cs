@@ -79,23 +79,20 @@ namespace ExcelParserForOpenCart
                 case (int)EnumPrices.OJ:
                     _excelParser.PriceType = EnumPrices.OJ;
                     break;
-                case (int)EnumPrices.tdgroup:
-                    _excelParser.PriceType = EnumPrices.tdgroup;
+                case (int)EnumPrices.ПТГрупп:
+                    _excelParser.PriceType = EnumPrices.ПТГрупп;
                     break;
-                case (int)EnumPrices.lapter:
-                    _excelParser.PriceType = EnumPrices.lapter;
+                case (int)EnumPrices.Лаптер:
+                    _excelParser.PriceType = EnumPrices.Лаптер;
                     break;
-                case (int)EnumPrices.composite:
-                    _excelParser.PriceType = EnumPrices.composite;
+                case (int)EnumPrices.Композит:
+                    _excelParser.PriceType = EnumPrices.Композит;
                     break;
-                case (int)EnumPrices.rival:
-                    _excelParser.PriceType = EnumPrices.rival;
+                case (int)EnumPrices.Риваль:
+                    _excelParser.PriceType = EnumPrices.Риваль;
                     break;
-                case (int)EnumPrices.ptgroup:
-                    _excelParser.PriceType = EnumPrices.ptgroup;
-                    break;
-                case (int)EnumPrices.pyanov:
-                    _excelParser.PriceType = EnumPrices.pyanov;
+                case (int)EnumPrices.Autogur73:
+                    _excelParser.PriceType = EnumPrices.Autogur73;
                     break;
                 default:
                     _excelParser.PriceType = EnumPrices.ДваСоюза;
