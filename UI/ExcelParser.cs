@@ -215,16 +215,26 @@ namespace ExcelParserForOpenCart
 
         private void OjPrice(int row, Range range)
         {
-            for (var i = 4; i < row; i++)
+            var category2 = string.Empty;
+            for (var i = 3; i < row; i++)
             {
+                var str = string.Empty;
                 var line = new OutputPriceLine();
+                var theRange = range.Cells[i, 1] as Range;
+                if (theRange != null)
                 
-                var theRange = range.Cells[i, 2] as Range;
+                    str = ConverterToString(theRange.Value2);
+
+                theRange = range.Cells[i, 2] as Range;
                 if (theRange != null)
                 line.VendorCode = ConverterToString(theRange.Value2);
                 theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
                 line.Name = ConverterToString(theRange.Value2);
+
+                if (!string.IsNullOrEmpty(line.VendorCode))
+                _list.Add(line);
+                if (string.IsNullOrEmpty(str)) break;
             }
         }
 
