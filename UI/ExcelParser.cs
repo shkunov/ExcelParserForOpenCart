@@ -214,7 +214,19 @@ namespace ExcelParserForOpenCart
         }
 
         private void OjPrice(int row, Range range)
-        { }
+        {
+            for (var i = 4; i < row; i++)
+            {
+                var line = new OutputPriceLine();
+                
+                var theRange = range.Cells[i, 2] as Range;
+                if (theRange != null)
+                line.VendorCode = ConverterToString(theRange.Value2);
+                theRange = range.Cells[i, 3] as Range;
+                if (theRange != null)
+                line.Name = ConverterToString(theRange.Value2);
+            }
+        }
 
         private void TdgroupPrice(int row, Range range)
         { }
@@ -232,7 +244,22 @@ namespace ExcelParserForOpenCart
         { }
 
         private void PyanovPrice(int row, Range range)
-        { }
+        {
+            for (var i = 13; i < row; i++)
+            {
+                var line = new OutputPriceLine();
+
+                var theRange = range.Cells[i, 2] as Range;
+                if (theRange != null)
+                    line.VendorCode = ConverterToString(theRange.Value2);
+                theRange = range.Cells[i, 3] as Range;
+                if (theRange != null)
+                    line.Name = ConverterToString(theRange.Value2);
+                theRange = range.Cells[i, 5] as Range;
+                if (theRange != null)
+                    line.Cost = ConverterToString(theRange.Value2);
+            }
+        }
 
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
