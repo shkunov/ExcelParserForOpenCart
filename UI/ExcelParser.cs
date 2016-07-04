@@ -281,11 +281,10 @@ namespace ExcelParserForOpenCart
             for (var i = 13; i < row; i++)
             {
                 var line = new OutputPriceLine();
-                var str = string.Empty;
                 var theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
                 {
-                    str = ConverterToString(theRange.Value2);
+                    string str = ConverterToString(theRange.Value2);
                     var color = theRange.Interior.Color;
                     var sc = color.ToString();
                     // todo: по хорошему бы еще избавить названия категорий от порядковых номеров
@@ -304,27 +303,21 @@ namespace ExcelParserForOpenCart
                 }
                 line.Category1 = category1;
                 line.Category2 = category2;
-
-
-
                 theRange = range.Cells[i, 1] as Range;
                 if (theRange != null)
                 {
                     line.VendorCode = ConverterToString(theRange.Value2); // значения 1 столбца больше подходят для артикула и чаще встречаются, чем значения 2-го
                 }
-
                 theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
                 {
                     line.Name = ConverterToString(theRange.Value2);
                 }
-
                 theRange = range.Cells[i, 5] as Range;
                 if (theRange != null)
                 {
                     line.Cost = ConverterToString(theRange.Value2);
                 }
-
                 if (!string.IsNullOrEmpty(line.Name))
                     _list.Add(line);
 
@@ -341,13 +334,6 @@ namespace ExcelParserForOpenCart
         {
             
         }
-
-        private void PtgroupPrice(int row, Range range)
-        {
-            
-        }
-
-
 
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -378,7 +364,6 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.Риваль:
                     RivalPrice(row, range);
                     break;
-                
                 default:
                     For2Union(row, range);
                     break;
@@ -431,8 +416,6 @@ namespace ExcelParserForOpenCart
             _workerSave.ReportProgress(100);
         }
 
-
-
         private void SendMessage(string message)
         {
             if (OnParserAction != null) OnParserAction(message);
@@ -442,6 +425,5 @@ namespace ExcelParserForOpenCart
         {
             if (OnProgressBarAction != null) OnProgressBarAction(i);
         }
-
     }
 }

@@ -91,7 +91,6 @@ namespace ExcelParserForOpenCart
                 case (int)EnumPrices.Риваль:
                     _excelParser.PriceType = EnumPrices.Риваль;
                     break;
-
                 default:
                     _excelParser.PriceType = EnumPrices.ДваСоюза;
                     break;
