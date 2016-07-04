@@ -226,6 +226,8 @@ namespace ExcelParserForOpenCart
             {
                 if (i == 3) continue;
                 var str = string.Empty;
+                var описание = string.Empty;
+                var особенностиУстановки = string.Empty;
                 var line = new OutputPriceLine();
                 var theRange = range.Cells[i, 1] as Range;
                 if (theRange != null)
@@ -238,20 +240,31 @@ namespace ExcelParserForOpenCart
                 line.Category1 = category1;
                 theRange = range.Cells[i, 2] as Range;
                 if (theRange != null)
-                line.VendorCode = ConverterToString(theRange.Value2);
+                     line.VendorCode = ConverterToString(theRange.Value2);
                 theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
-                line.Name = ConverterToString(theRange.Value2);
+                    описание = ConverterToString(theRange.Value2);
+
+                if (string.IsNullOrEmpty(line.VendorCode) && !string.IsNullOrEmpty(описание))
+                {
+                    // todo: случай когда артикуль не заполнен тоже нужно обработать
+                    continue;
+                }
+
                 theRange = range.Cells[i, 6] as Range;
                 if (theRange != null)
                     line.Cost = ConverterToString(theRange.Value2);
+
                 theRange = range.Cells[i, 11] as Range;
                 if (theRange != null)
-                    line.ProductDescription = ConverterToString(theRange.Value2);
+                    особенностиУстановки = ConverterToString(theRange.Value2);
+                // todo: вот такое формирование наименование пока под вопросом, нужно выяснить точно как его формировать в автоматическом режиме
+                line.Name = string.Format("{0} {1}", category1, line.VendorCode);
+                line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
 
-                if (string.IsNullOrEmpty(line.Name) && string.IsNullOrEmpty(str)) break;
+                if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
 
-                if (!string.IsNullOrEmpty(line.Name))
+                if (!string.IsNullOrEmpty(описание))
                     _list.Add(line);
             }
         }
