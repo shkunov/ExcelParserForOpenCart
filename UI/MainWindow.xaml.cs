@@ -82,8 +82,8 @@ namespace ExcelParserForOpenCart
                 case (int)EnumPrices.ПТГрупп:
                     _excelParser.PriceType = EnumPrices.ПТГрупп;
                     break;
-                case (int)EnumPrices.Лаптер:
-                    _excelParser.PriceType = EnumPrices.Лаптер;
+                case (int)EnumPrices.Autogur73:
+                    _excelParser.PriceType = EnumPrices.Autogur73;
                     break;
                 case (int)EnumPrices.Композит:
                     _excelParser.PriceType = EnumPrices.Композит;
@@ -91,9 +91,7 @@ namespace ExcelParserForOpenCart
                 case (int)EnumPrices.Риваль:
                     _excelParser.PriceType = EnumPrices.Риваль;
                     break;
-                case (int)EnumPrices.Autogur73:
-                    _excelParser.PriceType = EnumPrices.Autogur73;
-                    break;
+
                 default:
                     _excelParser.PriceType = EnumPrices.ДваСоюза;
                     break;
