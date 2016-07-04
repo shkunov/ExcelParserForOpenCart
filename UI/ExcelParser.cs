@@ -212,19 +212,30 @@ namespace ExcelParserForOpenCart
                 if (string.IsNullOrEmpty(str)) break;
             }
         }
-
+        /// <summary>
+        /// Обработка прайсов, таких как: Каталог OJ 2016_06_01 вер. 6
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
         private void OjPrice(int row, Range range)
         {
-            var category2 = string.Empty;
-            for (var i = 3; i < row; i++)
+            var category1 = string.Empty;
+            // todo: исправил ошибку. Требуется более детальное изучение прайса
+            // todo: требуется выяснить у заказчика как точно заполнять шаблон с этим методом не всё так просто
+            for (var i = 2; i < row; i++)
             {
+                if (i == 3) continue;
                 var str = string.Empty;
                 var line = new OutputPriceLine();
                 var theRange = range.Cells[i, 1] as Range;
                 if (theRange != null)
-                
                     str = ConverterToString(theRange.Value2);
-
+                if (!string.IsNullOrEmpty(str))
+                {
+                    category1 = str;
+                    continue;
+                }
+                line.Category1 = category1;
                 theRange = range.Cells[i, 2] as Range;
                 if (theRange != null)
                 line.VendorCode = ConverterToString(theRange.Value2);
@@ -232,32 +243,44 @@ namespace ExcelParserForOpenCart
                 if (theRange != null)
                 line.Name = ConverterToString(theRange.Value2);
 
+                if (string.IsNullOrEmpty(line.VendorCode) && string.IsNullOrEmpty(str)) break;
+
                 if (!string.IsNullOrEmpty(line.VendorCode))
-                _list.Add(line);
-                if (string.IsNullOrEmpty(str)) break;
+                    _list.Add(line);
             }
         }
 
         private void TdgroupPrice(int row, Range range)
-        { }
+        {
+            
+        }
 
         private void LapterPrice(int row, Range range)
-        { }
+        {
+            
+        }
 
         private void CompositePrice(int row, Range range)
-        { }
+        {
+            
+        }
 
         private void RivalPrice(int row, Range range)
-        { }
+        {
+            
+        }
 
         private void PtgroupPrice(int row, Range range)
-        { }
+        {
+            
+        }
 
         private void PyanovPrice(int row, Range range)
         {
             for (var i = 13; i < row; i++)
             {
                 var line = new OutputPriceLine();
+                var str = string.Empty;
 
                 var theRange = range.Cells[i, 2] as Range;
                 if (theRange != null)
@@ -268,6 +291,11 @@ namespace ExcelParserForOpenCart
                 theRange = range.Cells[i, 5] as Range;
                 if (theRange != null)
                     line.Cost = ConverterToString(theRange.Value2);
+
+                if (!string.IsNullOrEmpty(line.VendorCode))
+                    _list.Add(line);
+
+                if (string.IsNullOrEmpty(str)) break;
             }
         }
 
@@ -288,22 +316,19 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.OJ:
                     OjPrice(row, range);
                     break;
-                case EnumPrices.tdgroup:
+                case EnumPrices.ПТГрупп:
                     TdgroupPrice(row, range);
                     break;
-                case EnumPrices.lapter:
+                case EnumPrices.Лаптер:
                     LapterPrice(row, range);
                     break;
-                case EnumPrices.composite:
+                case EnumPrices.Композит:
                     CompositePrice(row, range);
                     break;
-                case EnumPrices.rival:
+                case EnumPrices.Риваль:
                     RivalPrice(row, range);
                     break;
-                case EnumPrices.ptgroup:
-                    PtgroupPrice(row, range);
-                    break;
-                case EnumPrices.pyanov:
+                case EnumPrices.Autogur73:
                     PyanovPrice(row, range);
                     break;
                 default:
