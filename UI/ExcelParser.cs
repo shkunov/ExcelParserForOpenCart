@@ -274,9 +274,62 @@ namespace ExcelParserForOpenCart
             
         }
 
-        private void LapterPrice(int row, Range range)
+        private void AutogurPrice(int row, Range range)
         {
-            
+            var category1 = string.Empty;
+            var category2 = string.Empty;
+            for (var i = 13; i < row; i++)
+            {
+                var line = new OutputPriceLine();
+                var str = string.Empty;
+                var theRange = range.Cells[i, 3] as Range;
+                if (theRange != null)
+                {
+                    str = ConverterToString(theRange.Value2);
+                    var color = theRange.Interior.Color;
+                    var sc = color.ToString();
+                    // todo: по хорошему бы еще избавить названия категорий от порядковых номеров
+                    if (sc == "8765644") // 1 категория
+                    {
+                        category1 = str;
+                        category2 = string.Empty;
+                        continue;
+                    }
+                    if (sc == "9951719") // 2 категория
+                    {
+                        category2 = str;
+                        continue;
+                    }
+                    if (sc == "12710911") continue; // пока предлагаю эту графу пропускать, это как бы 3 категория
+                }
+                line.Category1 = category1;
+                line.Category2 = category2;
+
+
+
+                theRange = range.Cells[i, 1] as Range;
+                if (theRange != null)
+                {
+                    line.VendorCode = ConverterToString(theRange.Value2); // значения 1 столбца больше подходят для артикула и чаще встречаются, чем значения 2-го
+                }
+
+                theRange = range.Cells[i, 3] as Range;
+                if (theRange != null)
+                {
+                    line.Name = ConverterToString(theRange.Value2);
+                }
+
+                theRange = range.Cells[i, 5] as Range;
+                if (theRange != null)
+                {
+                    line.Cost = ConverterToString(theRange.Value2);
+                }
+
+                if (!string.IsNullOrEmpty(line.Name))
+                    _list.Add(line);
+
+                if (string.IsNullOrEmpty(line.Name)) break;
+            } 
         }
 
         private void CompositePrice(int row, Range range)
@@ -294,29 +347,7 @@ namespace ExcelParserForOpenCart
             
         }
 
-        private void PyanovPrice(int row, Range range)
-        {
-            for (var i = 13; i < row; i++)
-            {
-                var line = new OutputPriceLine();
-                var str = string.Empty;
 
-                var theRange = range.Cells[i, 2] as Range;
-                if (theRange != null)
-                    line.VendorCode = ConverterToString(theRange.Value2);
-                theRange = range.Cells[i, 3] as Range;
-                if (theRange != null)
-                    line.Name = ConverterToString(theRange.Value2);
-                theRange = range.Cells[i, 5] as Range;
-                if (theRange != null)
-                    line.Cost = ConverterToString(theRange.Value2);
-
-                if (!string.IsNullOrEmpty(line.VendorCode))
-                    _list.Add(line);
-
-                if (string.IsNullOrEmpty(str)) break;
-            }
-        }
 
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -338,8 +369,8 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.ПТГрупп:
                     TdgroupPrice(row, range);
                     break;
-                case EnumPrices.Лаптер:
-                    LapterPrice(row, range);
+                case EnumPrices.Autogur73:
+                    AutogurPrice(row, range);
                     break;
                 case EnumPrices.Композит:
                     CompositePrice(row, range);
@@ -347,9 +378,7 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.Риваль:
                     RivalPrice(row, range);
                     break;
-                case EnumPrices.Autogur73:
-                    PyanovPrice(row, range);
-                    break;
+                
                 default:
                     For2Union(row, range);
                     break;
