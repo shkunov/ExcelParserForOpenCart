@@ -242,10 +242,16 @@ namespace ExcelParserForOpenCart
                 theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
                 line.Name = ConverterToString(theRange.Value2);
+                theRange = range.Cells[i, 6] as Range;
+                if (theRange != null)
+                    line.Cost = ConverterToString(theRange.Value2);
+                theRange = range.Cells[i, 11] as Range;
+                if (theRange != null)
+                    line.ProductDescription = ConverterToString(theRange.Value2);
 
-                if (string.IsNullOrEmpty(line.VendorCode) && string.IsNullOrEmpty(str)) break;
+                if (string.IsNullOrEmpty(line.Name) && string.IsNullOrEmpty(str)) break;
 
-                if (!string.IsNullOrEmpty(line.VendorCode))
+                if (!string.IsNullOrEmpty(line.Name))
                     _list.Add(line);
             }
         }
