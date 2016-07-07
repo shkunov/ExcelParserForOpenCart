@@ -12,6 +12,7 @@ namespace ExcelParserForOpenCart
         public event Action<string> OnParserAction;
         public event Action<int> OnProgressBarAction;
         public event EventHandler OnOpenDocument;
+        public event EventHandler OnSaveDocument;
 
         private readonly bool _isExcelInstal;
         private readonly BackgroundWorker _workerSave;
@@ -383,6 +384,7 @@ namespace ExcelParserForOpenCart
         private void _workerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             SendMessage("Прайс создан! Сохраняю как: " + _saveFileName);
+            if (OnSaveDocument != null) OnSaveDocument(null, null);
         }
 
         private void _workerSave_DoWork(object sender, DoWorkEventArgs e)
