@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Microsoft.Win32;
 
 namespace ExcelParserForOpenCart
@@ -17,9 +18,16 @@ namespace ExcelParserForOpenCart
             _excelParser.OnParserAction += OnParserAction;
             _excelParser.OnProgressBarAction += OnProgressBarAction;
             _excelParser.OnOpenDocument += OnOpenDocument;
+            _excelParser.OnSaveDocument += OnSaveDocument;
         }
 
-        private void OnOpenDocument(object sender, System.EventArgs e)
+        private void OnSaveDocument(object sender, EventArgs eventArgs)
+        {
+            BtnOpen.IsEnabled = true;
+            BtnSave.IsEnabled = false; 
+        }
+
+        private void OnOpenDocument(object sender, EventArgs e)
         {
             BtnSave.IsEnabled = true;            
         }
@@ -92,7 +100,7 @@ namespace ExcelParserForOpenCart
                     _excelParser.PriceType = EnumPrices.Риваль;
                     break;
                 default:
-                    _excelParser.PriceType = EnumPrices.ДваСоюза;
+                    MessageBox.Show("Неверный индекс", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
             }
         }
