@@ -320,10 +320,10 @@ namespace ExcelParserForOpenCart
                 {
                     line.Name = ConverterToString(theRange.Value2);
                 }
-                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
-                    continue; // игнорировать строки без кода и артикля
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
                     break; // выходить из цикла
+                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
+                    continue; // игнорировать строки без кода и артикля
                 theRange = range.Cells[i, 5] as Range;
                 if (theRange != null)
                 {
