@@ -100,7 +100,7 @@ namespace ExcelParserForOpenCart
                     _excelParser.PriceType = EnumPrices.Риваль;
                     break;
                 default:
-                    _excelParser.PriceType = EnumPrices.ДваСоюза;
+                    MessageBox.Show("Неверный индекс", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
             }
         }
