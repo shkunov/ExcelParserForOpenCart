@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
+
 
 namespace ExcelParserForOpenCart
 {
@@ -288,10 +290,12 @@ namespace ExcelParserForOpenCart
                     string str = ConverterToString(theRange.Value2);
                     var color = theRange.Interior.Color;
                     var sc = color.ToString();
-                    // todo: по хорошему бы еще избавить названия категорий от порядковых номеров
+                    
                     if (sc == "8765644") // 1 категория
                     {
-                        category1 = str;
+                       
+                       string pattern = "(\\d+\\.\\s?)";
+                       category1 = Regex.Replace(str, pattern, String.Empty);
                         category2 = string.Empty;
                         continue;
                     }
