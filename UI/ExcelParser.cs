@@ -122,12 +122,7 @@ namespace ExcelParserForOpenCart
         {
             try
             {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch
-            {
-                obj = null;
+                if (obj != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
             }
             finally
             {
@@ -344,6 +339,17 @@ namespace ExcelParserForOpenCart
 
         }
 
+        private EnumPrices DetermineTypeOfPriceList(Range range)
+        {
+            var str = string.Empty;
+            var theRange = range.Cells[2, 3] as Range;
+            if (theRange != null)
+                str = ConverterToString(theRange.Value2);
+            if (str.Contains("Два Союза"))
+                return EnumPrices.ДваСоюза;
+            return EnumPrices.Неизвестный;
+        }
+
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
             _list.Clear();
@@ -355,6 +361,8 @@ namespace ExcelParserForOpenCart
             var range = worksheet.UsedRange;
             var row = worksheet.Rows.Count;
             _workerOpen.ReportProgress(10);
+            // todo: метод для определения прайс листа должен вызываться здесь
+            PriceType = DetermineTypeOfPriceList(range);
             switch (PriceType)
             {
                 case EnumPrices.ДваСоюза:
@@ -375,8 +383,12 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.Риваль:
                     RivalPrice(row, range);
                     break;
+                case EnumPrices.Неизвестный:
+                    SendMessage("Прайс не опознан");
+                    break;
                 default:
-                    throw new Exception("Price type not definition");
+                    SendMessage("Прайс не опознан");
+                    break;
             }
             application.Quit();
             ReleaseObject(worksheet);
