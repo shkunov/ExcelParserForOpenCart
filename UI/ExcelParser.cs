@@ -342,7 +342,7 @@ namespace ExcelParserForOpenCart
         {
             var theRange = range.Cells[2, 3] as Range;
             var str = ConverterToString(theRange);
-            if (str != null && str.Contains("Два Союза"))
+            if (str.Contains("Два Союза"))
                 return EnumPrices.ДваСоюза;
 
             var theRange1 = range.Cells[1, 1] as Range;
