@@ -221,8 +221,6 @@ namespace ExcelParserForOpenCart
         private void OjPrice(int row, Range range)
         {
             var category1 = string.Empty;
-            // todo: исправил ошибку. Требуется более детальное изучение прайса
-            // todo: требуется выяснить у заказчика как точно заполнять шаблон с этим методом не всё так просто
             for (var i = 2; i < row; i++)
             {
                 if (i == 3) continue;
@@ -241,7 +239,7 @@ namespace ExcelParserForOpenCart
                 line.Category1 = category1;
                 theRange = range.Cells[i, 2] as Range;
                 if (theRange != null)
-                     line.VendorCode = ConverterToString(theRange.Value2);
+                    line.VendorCode = ConverterToString(theRange.Value2);
                 theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
                     описание = ConverterToString(theRange.Value2);
@@ -272,7 +270,7 @@ namespace ExcelParserForOpenCart
 
         private void TdgroupPrice(int row, Range range)
         {
-            
+
         }
 
         private void AutogurPrice(int row, Range range)
@@ -281,6 +279,7 @@ namespace ExcelParserForOpenCart
             var category2 = string.Empty;
             var code = string.Empty;
             var vendorCode = string.Empty;
+            const string pattern = "(\\d+\\.\\s?)";
             for (var i = 13; i < row; i++)
             {
                 var line = new OutputPriceLine();
@@ -290,12 +289,9 @@ namespace ExcelParserForOpenCart
                     string str = ConverterToString(theRange.Value2);
                     var color = theRange.Interior.Color;
                     var sc = color.ToString();
-                    
                     if (sc == "8765644") // 1 категория
                     {
-                       
-                       string pattern = "(\\d+\\.\\s?)";
-                       category1 = Regex.Replace(str, pattern, String.Empty);
+                        category1 = Regex.Replace(str, pattern, string.Empty);
                         category2 = string.Empty;
                         continue;
                     }
@@ -335,17 +331,17 @@ namespace ExcelParserForOpenCart
                 }
                 if (!string.IsNullOrEmpty(line.Name))
                     _list.Add(line);
-            } 
+            }
         }
 
         private void CompositePrice(int row, Range range)
         {
-            
+
         }
 
         private void RivalPrice(int row, Range range)
         {
-            
+
         }
 
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)

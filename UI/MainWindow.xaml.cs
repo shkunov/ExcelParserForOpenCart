@@ -29,6 +29,7 @@ namespace ExcelParserForOpenCart
 
         private void OnOpenDocument(object sender, EventArgs e)
         {
+            BtnOpen.IsEnabled = true;
             BtnSave.IsEnabled = true;            
         }
 
@@ -59,6 +60,8 @@ namespace ExcelParserForOpenCart
             var filename = CreateOpenFileDialog();
             if (string.IsNullOrEmpty(filename)) return;
             _excelParser.OpenExcel(filename);
+            BtnOpen.IsEnabled = false;
+            BtnSave.IsEnabled = false;
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
