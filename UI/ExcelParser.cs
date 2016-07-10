@@ -342,11 +342,37 @@ namespace ExcelParserForOpenCart
         private EnumPrices DetermineTypeOfPriceList(Range range)
         {
             var str = string.Empty;
-            var theRange = range.Cells[2, 3] as Range;
+            var theRange = range.Cells[7, 6] as Range;
             if (theRange != null)
                 str = ConverterToString(theRange.Value2);
-            if (str.Contains("Два Союза"))
+            if (!string.IsNullOrEmpty(str))
+            if (str.Contains("Цена USD"))
                 return EnumPrices.ДваСоюза;
+
+            var str1 = string.Empty;
+            var str2 = string.Empty;
+            var theRange1 = range.Cells[1, 1] as Range;
+            var theRange2 = range.Cells[1, 4] as Range;
+            if (theRange1 != null)
+                str1 = ConverterToString(theRange1.Value2);
+                str2 = ConverterToString(theRange2.Value2);
+                if (!string.IsNullOrEmpty(str1))
+                    if (!string.IsNullOrEmpty(str2))
+                if (str1.Contains("Рисунок") & str2.Contains("Марка и модель автомобиля"))
+                return EnumPrices.OJ;
+
+                str1 = string.Empty;
+                str2 = string.Empty;
+                theRange1 = range.Cells[9, 3] as Range;
+                theRange2 = range.Cells[11, 3] as Range;
+                if (theRange1 != null)
+                    str1 = ConverterToString(theRange1.Value2);
+                str2 = ConverterToString(theRange2.Value2);
+                if (!string.IsNullOrEmpty(str1))
+                    if (!string.IsNullOrEmpty(str2))
+                if (str1.Contains("Прайс-лист") & str2.Contains("Наименование товаров"))
+                    return EnumPrices.Autogur73;
+
             return EnumPrices.Неизвестный;
         }
 
