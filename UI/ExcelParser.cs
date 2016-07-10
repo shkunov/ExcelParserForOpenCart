@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
+
 
 namespace ExcelParserForOpenCart
 {
@@ -12,10 +14,11 @@ namespace ExcelParserForOpenCart
         public event Action<string> OnParserAction;
         public event Action<int> OnProgressBarAction;
         public event EventHandler OnOpenDocument;
+        public event EventHandler OnSaveDocument;
 
         private readonly bool _isExcelInstal;
-        private readonly BackgroundWorker _workerSave;
-        private readonly BackgroundWorker _workerOpen;
+        private BackgroundWorker _workerSave;
+        private BackgroundWorker _workerOpen;
         private readonly List<OutputPriceLine> _list;
         private string _template;
         private string _openFileName;
@@ -31,17 +34,7 @@ namespace ExcelParserForOpenCart
             {
                 SendMessage("Excel не установлен!");
                 _isExcelInstal = false;
-                return;
             }
-            _workerSave = new BackgroundWorker { WorkerReportsProgress = true };
-            _workerSave.DoWork += _workerSave_DoWork;
-            _workerSave.RunWorkerCompleted += _workerSave_RunWorkerCompleted;
-            _workerSave.ProgressChanged += _workerSave_ProgressChanged;
-
-            _workerOpen = new BackgroundWorker { WorkerReportsProgress = true };
-            _workerOpen.DoWork += _workerOpen_DoWork;
-            _workerOpen.RunWorkerCompleted += _workerOpen_RunWorkerCompleted;
-            _workerOpen.ProgressChanged += _workerOpen_ProgressChanged;
         }
 
         public void OpenExcel(string fileName)
@@ -55,6 +48,10 @@ namespace ExcelParserForOpenCart
                 return;
             }
             _list.Clear();
+            _workerOpen = new BackgroundWorker { WorkerReportsProgress = true };
+            _workerOpen.DoWork += _workerOpen_DoWork;
+            _workerOpen.RunWorkerCompleted += _workerOpen_RunWorkerCompleted;
+            _workerOpen.ProgressChanged += _workerOpen_ProgressChanged;
             _workerOpen.RunWorkerAsync();
         }
 
@@ -106,8 +103,12 @@ namespace ExcelParserForOpenCart
                 SendMessage("Ошибка! Отсутствует шаблон!");
                 return;
             }
-            if (_list != null && _list.Count >= 1)
-                _workerSave.RunWorkerAsync();
+            if (_list == null || _list.Count < 1) return;
+            _workerSave = new BackgroundWorker { WorkerReportsProgress = true };
+            _workerSave.DoWork += _workerSave_DoWork;
+            _workerSave.RunWorkerCompleted += _workerSave_RunWorkerCompleted;
+            _workerSave.ProgressChanged += _workerSave_ProgressChanged;
+            _workerSave.RunWorkerAsync();
         }
 
         private static bool IsExcelInstall()
@@ -220,8 +221,6 @@ namespace ExcelParserForOpenCart
         private void OjPrice(int row, Range range)
         {
             var category1 = string.Empty;
-            // todo: исправил ошибку. Требуется более детальное изучение прайса
-            // todo: требуется выяснить у заказчика как точно заполнять шаблон с этим методом не всё так просто
             for (var i = 2; i < row; i++)
             {
                 if (i == 3) continue;
@@ -240,7 +239,7 @@ namespace ExcelParserForOpenCart
                 line.Category1 = category1;
                 theRange = range.Cells[i, 2] as Range;
                 if (theRange != null)
-                     line.VendorCode = ConverterToString(theRange.Value2);
+                    line.VendorCode = ConverterToString(theRange.Value2);
                 theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
                     описание = ConverterToString(theRange.Value2);
@@ -271,13 +270,16 @@ namespace ExcelParserForOpenCart
 
         private void TdgroupPrice(int row, Range range)
         {
-            
+
         }
 
         private void AutogurPrice(int row, Range range)
         {
             var category1 = string.Empty;
             var category2 = string.Empty;
+            var code = string.Empty;
+            var vendorCode = string.Empty;
+            const string pattern = "(\\d+\\.\\s?)";
             for (var i = 13; i < row; i++)
             {
                 var line = new OutputPriceLine();
@@ -287,10 +289,9 @@ namespace ExcelParserForOpenCart
                     string str = ConverterToString(theRange.Value2);
                     var color = theRange.Interior.Color;
                     var sc = color.ToString();
-                    // todo: по хорошему бы еще избавить названия категорий от порядковых номеров
                     if (sc == "8765644") // 1 категория
                     {
-                        category1 = str;
+                        category1 = Regex.Replace(str, pattern, string.Empty);
                         category2 = string.Empty;
                         continue;
                     }
@@ -306,13 +307,23 @@ namespace ExcelParserForOpenCart
                 theRange = range.Cells[i, 1] as Range;
                 if (theRange != null)
                 {
-                    line.VendorCode = ConverterToString(theRange.Value2); // значения 1 столбца больше подходят для артикула и чаще встречаются, чем значения 2-го
+                    code = ConverterToString(theRange.Value2);
                 }
+                theRange = range.Cells[i, 2] as Range;
+                if (theRange != null)
+                {
+                    vendorCode = ConverterToString(theRange.Value2);
+                }
+                line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
                 theRange = range.Cells[i, 3] as Range;
                 if (theRange != null)
                 {
                     line.Name = ConverterToString(theRange.Value2);
                 }
+                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
+                    break; // выходить из цикла
+                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
+                    continue; // игнорировать строки без кода и артикля
                 theRange = range.Cells[i, 5] as Range;
                 if (theRange != null)
                 {
@@ -320,30 +331,30 @@ namespace ExcelParserForOpenCart
                 }
                 if (!string.IsNullOrEmpty(line.Name))
                     _list.Add(line);
-
-                if (string.IsNullOrEmpty(line.Name)) break;
-            } 
+            }
         }
 
         private void CompositePrice(int row, Range range)
         {
-            
+
         }
 
         private void RivalPrice(int row, Range range)
         {
-            
+
         }
 
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
             _list.Clear();
+            _workerOpen.ReportProgress(0);
             var application = new Application();
             var workbook = application.Workbooks.Open(_openFileName);
             var worksheet = workbook.Worksheets[1] as Worksheet;
             if (worksheet == null) return;
             var range = worksheet.UsedRange;
             var row = worksheet.Rows.Count;
+            _workerOpen.ReportProgress(10);
             switch (PriceType)
             {
                 case EnumPrices.ДваСоюза:
@@ -365,8 +376,7 @@ namespace ExcelParserForOpenCart
                     RivalPrice(row, range);
                     break;
                 default:
-                    For2Union(row, range);
-                    break;
+                    throw new Exception("Price type not definition");
             }
             application.Quit();
             ReleaseObject(worksheet);
@@ -383,6 +393,7 @@ namespace ExcelParserForOpenCart
         private void _workerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             SendMessage("Прайс создан! Сохраняю как: " + _saveFileName);
+            if (OnSaveDocument != null) OnSaveDocument(null, null);
         }
 
         private void _workerSave_DoWork(object sender, DoWorkEventArgs e)
