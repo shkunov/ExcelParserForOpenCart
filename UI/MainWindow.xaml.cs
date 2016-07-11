@@ -79,33 +79,5 @@ namespace ExcelParserForOpenCart
             if (string.IsNullOrEmpty(filename)) return;
             _excelParser.SaveResult(filename);
         }
-
-        private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            switch (ComBoxSelectPrice.SelectedIndex)
-            {
-                case (int)EnumPrices.ДваСоюза:
-                    _excelParser.PriceType = EnumPrices.ДваСоюза;
-                    break;
-                case (int)EnumPrices.OJ:
-                    _excelParser.PriceType = EnumPrices.OJ;
-                    break;
-                case (int)EnumPrices.ПТГрупп:
-                    _excelParser.PriceType = EnumPrices.ПТГрупп;
-                    break;
-                case (int)EnumPrices.Autogur73:
-                    _excelParser.PriceType = EnumPrices.Autogur73;
-                    break;
-                case (int)EnumPrices.Композит:
-                    _excelParser.PriceType = EnumPrices.Композит;
-                    break;
-                case (int)EnumPrices.Риваль:
-                    _excelParser.PriceType = EnumPrices.Риваль;
-                    break;
-                default:
-                    MessageBox.Show("Неверный индекс", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    break;
-            }
-        }
     }
 }

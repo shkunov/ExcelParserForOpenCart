@@ -163,6 +163,26 @@ namespace ExcelParserForOpenCart
             return s;
         }
 
+        private static EnumPrices DetermineTypeOfPriceList(Range range)
+        {
+            var str = ConverterToString(range.Cells[2, 3] as Range);
+            if (str.Contains("Два Союза"))
+                return EnumPrices.ДваСоюза;
+
+            var str1 = ConverterToString(range.Cells[1, 1] as Range);
+            var str2 = ConverterToString(range.Cells[1, 4] as Range);
+            if (str1.Contains("Рисунок") && str2.Contains("Марка и модель автомобиля"))
+                return EnumPrices.OJ;
+
+            str1 = ConverterToString(range.Cells[9, 3] as Range);
+            str2 = ConverterToString(range.Cells[11, 3] as Range);
+
+            if (str1.Contains("Прайс-лист") && str2.Contains("Наименование товаров"))
+                return EnumPrices.Autogur73;
+
+            return EnumPrices.Неизвестный;
+        }
+
         private void _workerOpen_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null && !string.IsNullOrEmpty(e.UserState.ToString()))
@@ -187,7 +207,6 @@ namespace ExcelParserForOpenCart
             var category2 = string.Empty;
             for (var i = 9; i < row; i++)
             {
-                // todo: алгоритм требует большой доработки
                 var line = new OutputPriceLine();
                 var str = string.Empty;
                 var theRange = range.Cells[i, 1] as Range;
@@ -210,17 +229,11 @@ namespace ExcelParserForOpenCart
                 }
                 line.Category1 = category1;
                 line.Category2 = category2;
-                theRange = range.Cells[i, 3] as Range;
-                line.VendorCode = ConverterToString(theRange);
-
-                theRange = range.Cells[i, 4] as Range;
-                line.Name = ConverterToString(theRange);
-
-                theRange = range.Cells[i, 5] as Range;
-                line.Qt = ConverterToString(theRange);
-
-                theRange = range.Cells[i, 6] as Range;
-                line.Cost = ConverterToString(theRange);
+                line.VendorCode = ConverterToString(range.Cells[i, 3] as Range);
+                line.Name = ConverterToString(range.Cells[i, 4] as Range);
+                line.Qt = ConverterToString(range.Cells[i, 5] as Range);
+                // todo: цена в USD может стоит её как-то обработать?
+                line.Cost = ConverterToString(range.Cells[i, 6] as Range);
 
                 if (!string.IsNullOrEmpty(line.VendorCode))
                     _list.Add(line);
@@ -239,18 +252,15 @@ namespace ExcelParserForOpenCart
             {
                 if (i == 3) continue;
                 var line = new OutputPriceLine();
-                var theRange = range.Cells[i, 1] as Range;
-                var str = ConverterToString(theRange);
+                var str = ConverterToString(range.Cells[i, 1] as Range);
                 if (!string.IsNullOrEmpty(str))
                 {
                     category1 = str;
                     continue;
                 }
                 line.Category1 = category1;
-                theRange = range.Cells[i, 2] as Range;
-                line.VendorCode = ConverterToString(theRange);
-                theRange = range.Cells[i, 3] as Range;
-                var описание = ConverterToString(theRange);
+                line.VendorCode = ConverterToString(range.Cells[i, 2] as Range);
+                var описание = ConverterToString(range.Cells[i, 3] as Range);
 
                 if (string.IsNullOrEmpty(line.VendorCode) && !string.IsNullOrEmpty(описание))
                 {
@@ -258,10 +268,8 @@ namespace ExcelParserForOpenCart
                     continue;
                 }
 
-                theRange = range.Cells[i, 6] as Range;
-                line.Cost = ConverterToString(theRange);
-                theRange = range.Cells[i, 11] as Range;
-                var особенностиУстановки = ConverterToString(theRange);
+                line.Cost = ConverterToString(range.Cells[i, 6] as Range);
+                var особенностиУстановки = ConverterToString(range.Cells[i, 11] as Range);
                 // todo: вот такое формирование наименование пока под вопросом, нужно выяснить точно как его формировать в автоматическом режиме
                 line.Name = string.Format("{0} {1}", category1, line.VendorCode);
                 line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
@@ -309,20 +317,15 @@ namespace ExcelParserForOpenCart
                 }
                 line.Category1 = category1;
                 line.Category2 = category2;
-                theRange = range.Cells[i, 1] as Range;
-                code = ConverterToString(theRange);
-                theRange = range.Cells[i, 2] as Range;
-                vendorCode = ConverterToString(theRange);
+                code = ConverterToString(range.Cells[i, 1] as Range);
+                vendorCode = ConverterToString(range.Cells[i, 2] as Range);
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
-                theRange = range.Cells[i, 3] as Range;
-                line.Name = ConverterToString(theRange);
+                line.Name = ConverterToString(range.Cells[i, 3] as Range);
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
                     break; // выходить из цикла
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
                     continue; // игнорировать строки без кода и артикля
-                theRange = range.Cells[i, 5] as Range;
-
-                line.Cost = ConverterToString(theRange);
+                line.Cost = ConverterToString(range.Cells[i, 5] as Range);
                 if (!string.IsNullOrEmpty(line.Name))
                     _list.Add(line);
             }
@@ -338,30 +341,6 @@ namespace ExcelParserForOpenCart
 
         }
 
-        private static EnumPrices DetermineTypeOfPriceList(Range range)
-        {
-            var theRange = range.Cells[2, 3] as Range;
-            var str = ConverterToString(theRange);
-            if (str.Contains("Два Союза"))
-                return EnumPrices.ДваСоюза;
-
-            var theRange1 = range.Cells[1, 1] as Range;
-            var theRange2 = range.Cells[1, 4] as Range;
-            var str1 = ConverterToString(theRange1);
-            var str2 = ConverterToString(theRange2);
-            if (str1.Contains("Рисунок") && str2.Contains("Марка и модель автомобиля"))
-                return EnumPrices.OJ;
-
-            theRange1 = range.Cells[9, 3] as Range;
-            theRange2 = range.Cells[11, 3] as Range;
-            str1 = ConverterToString(theRange1);
-            str2 = ConverterToString(theRange2);
-
-            if (str1.Contains("Прайс-лист") && str2.Contains("Наименование товаров"))
-                return EnumPrices.Autogur73;
-
-            return EnumPrices.Неизвестный;
-        }
 
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
