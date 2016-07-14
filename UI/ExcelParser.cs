@@ -253,6 +253,8 @@ namespace ExcelParserForOpenCart
                 if (i == 3) continue;
                 var line = new OutputPriceLine();
                 var str = ConverterToString(range.Cells[i, 1] as Range);
+                if (str.Contains("Рисунок")) continue;
+                
                 if (!string.IsNullOrEmpty(str))
                 {
                     category1 = str;
