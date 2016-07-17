@@ -17,6 +17,7 @@ namespace ExcelParserForOpenCart
             if (!File.Exists(databaseName))
             {
                 MessageBox.Show("Отсутствует файл базы данных");
+				_isConnected = false;
                 return;
             }
             _connection = new SQLiteConnection(string.Format("Data Source={0};", databaseName));
