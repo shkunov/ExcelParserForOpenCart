@@ -204,3 +204,7 @@ FakesAssemblies/
 SharedFileVersionInfo.cs
 *.manifest
 *.suo
+*.dll
+Output/Debug/System.Data.SQLite.xml
+Output/Debug/EntityFramework.SqlServer.xml
+Output/Debug/EntityFramework.xml

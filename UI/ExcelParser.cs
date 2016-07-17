@@ -248,6 +248,7 @@ namespace ExcelParserForOpenCart
         private void OjPrice(int row, Range range)
         {
             var category1 = string.Empty;
+            var baseConnecter = new BaseConnecter();
             for (var i = 2; i < row; i++)
             {
                 if (i == 3) continue;
@@ -273,7 +274,8 @@ namespace ExcelParserForOpenCart
                 line.Cost = ConverterToString(range.Cells[i, 6] as Range);
                 var особенностиУстановки = ConverterToString(range.Cells[i, 11] as Range);
                 // todo: вот такое формирование наименование пока под вопросом, нужно выяснить точно как его формировать в автоматическом режиме
-                line.Name = string.Format("{0} {1}", category1, line.VendorCode);
+                var newname = baseConnecter.OJ_Composition(category1);
+                line.Name = string.Format("{0} {1}", newname, line.VendorCode);
                 line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
 
                 if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
@@ -281,6 +283,7 @@ namespace ExcelParserForOpenCart
                 if (!string.IsNullOrEmpty(описание))
                     _list.Add(line);
             }
+            baseConnecter.Dispose();
         }
 
         private void TdgroupPrice(int row, Range range)
