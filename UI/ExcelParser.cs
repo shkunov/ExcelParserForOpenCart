@@ -35,6 +35,7 @@ namespace ExcelParserForOpenCart
                 SendMessage("Excel не установлен!");
                 _isExcelInstal = false;
             }
+            var base1 = new BaseConnecter();
         }
 
         public void OpenExcel(string fileName)
