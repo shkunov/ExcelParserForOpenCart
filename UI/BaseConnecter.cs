@@ -53,6 +53,7 @@ namespace ExcelParserForOpenCart
         public void Dispose()
         {
             _connection.Close();
+            _connection.Dispose();
         }
     }
 }

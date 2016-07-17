@@ -20,7 +20,6 @@ namespace ExcelParserForOpenCart
         private BackgroundWorker _workerSave;
         private BackgroundWorker _workerOpen;
         private readonly List<OutputPriceLine> _list;
-        private BaseConnecter _base;
         private string _template;
         private string _openFileName;
         private string _saveFileName;
@@ -36,7 +35,6 @@ namespace ExcelParserForOpenCart
                 SendMessage("Excel не установлен!");
                 _isExcelInstal = false;
             }
-            _base = new BaseConnecter();
         }
 
         public void OpenExcel(string fileName)
@@ -250,6 +248,7 @@ namespace ExcelParserForOpenCart
         private void OjPrice(int row, Range range)
         {
             var category1 = string.Empty;
+            var baseConnecter = new BaseConnecter();
             for (var i = 2; i < row; i++)
             {
                 if (i == 3) continue;
@@ -275,7 +274,7 @@ namespace ExcelParserForOpenCart
                 line.Cost = ConverterToString(range.Cells[i, 6] as Range);
                 var особенностиУстановки = ConverterToString(range.Cells[i, 11] as Range);
                 // todo: вот такое формирование наименование пока под вопросом, нужно выяснить точно как его формировать в автоматическом режиме
-                var newname = _base.OJ_Composition(category1);
+                var newname = baseConnecter.OJ_Composition(category1);
                 line.Name = string.Format("{0} {1}", newname, line.VendorCode);
                 line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
 
@@ -284,6 +283,7 @@ namespace ExcelParserForOpenCart
                 if (!string.IsNullOrEmpty(описание))
                     _list.Add(line);
             }
+            baseConnecter.Dispose();
         }
 
         private void TdgroupPrice(int row, Range range)
