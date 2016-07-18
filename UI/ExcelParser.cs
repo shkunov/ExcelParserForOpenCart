@@ -278,6 +278,82 @@ namespace ExcelParserForOpenCart
                 var newname = baseConnecter.OJ_Composition(category1);
                 line.Name = string.Format("{0} {1}", newname, line.VendorCode);
                 line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
+                var opc = ConverterToString(range.Cells[i, 7] as Range);
+
+                switch (opc)
+                {
+                    case "стандарт":
+                        line.Option = "стандарт";
+                        break;
+                    case "стандарт, лифт 65 (опция лифт 50)":
+                        line.Option = "лифт 65; лифт 50";
+                        break;
+                    case "опция (стандарт, лифт 50, лифт 65)":
+                        line.Option = "лифт 50; лифт 65";
+                        break;
+                    case "стандарт, лифт до 50мм":
+                        line.Option = "стандарт; лифт до 50мм";
+                        break;
+                    case "лифт 65":
+                        line.Option = "лифт 65";
+                        break;
+                    case "лифт 50":
+                        line.Option = "лифт 50";
+                        break;
+                    case "лифт 40":
+                        line.Option = "лифт 40";
+                        break;
+                    case "Лифт 50":
+                        line.Option = "лифт 50";
+                        break;
+                    case "стандарт, лифт 65":
+                        line.Option = "стандарт; лифт 65";
+                        break;
+                    case "стандарт, лифт 50, лифт 65":
+                        line.Option = "стандарт; лифт 50; лифт 65";
+                        break;
+                    case "стандарт, лифт 50":
+                        line.Option = "стандарт; лифт 50";
+                        break;
+                    case "стандарт,  лифт 50":
+                        line.Option = "стандарт; лифт 50";
+                        break;
+                    case "опция (стандарт или лифт 65)":
+                        line.Option = "стандарт; лифт 65";
+                        break;
+                    case "опция (стандарт, лифт 35, лифт 50)":
+                        line.Option = "стандарт; лифт 35; лифт 50";
+                        break;
+                    case "стандарт, лифт 30...50":
+                        line.Option = "стандарт; лифт 35...50";
+                        break;
+                    case "стандарт, лифт 50мм":
+                        line.Option = "стандарт; лифт 50";
+                        break;
+                    case "стандарт, лифт 40":
+                        line.Option = "стандарт; лифт 40";
+                        break;
+                    case "Стандарт, лифт 40":
+                        line.Option = "стандарт; лифт 40";
+                        break;
+                    case "опция (стандарт, лифт 40)":
+                        line.Option = "стандарт; лифт 40";
+                        break;
+                    case "опция (стандарт или лифт 40)":
+                        line.Option = "стандарт; лифт 40";
+                        break;
+                    case "опция (стандарт, лифт 30)":
+                        line.Option = "стандарт; лифт 30";
+                        break;
+                    case "Стандарт, лифт 30":
+                        line.Option = "стандарт; лифт 30";
+                        break;
+                    case "стандарт, лифт 40, лифт 50":
+                        line.Option = "стандарт; лифт 40; лифт 50";
+                        break;
+                    default:
+                        break;
+                }
 
                 if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
 
