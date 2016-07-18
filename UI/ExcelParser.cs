@@ -256,17 +256,18 @@ namespace ExcelParserForOpenCart
                 var str = ConverterToString(range.Cells[i, 1] as Range);
                 if (str.Contains("Рисунок")) continue;
                 
-                if (!string.IsNullOrEmpty(str))
+                if (!string.IsNullOrWhiteSpace(str))
                 {
                     category1 = str;
                     continue;
                 }
                 line.Category1 = category1;
+                if (line.Category1.Contains("Услуги")) continue; // Если надо, удалим раздел Услуги
                 line.VendorCode = ConverterToString(range.Cells[i, 2] as Range);
                 var описание = ConverterToString(range.Cells[i, 3] as Range);
 
                 if (string.IsNullOrEmpty(line.VendorCode) && !string.IsNullOrEmpty(описание))
-                {
+               {
                     // todo: случай когда артикуль не заполнен тоже нужно обработать
                     continue;
                 }
