@@ -166,6 +166,8 @@ namespace ExcelParserForOpenCart
         private static string OptionParser(string s)
         {
             string input;
+            if (s.Contains("-"))
+                return string.Empty;
             if (s.Contains("(опция"))
             {
                 input = s.Replace("опция", string.Empty)
@@ -266,13 +268,19 @@ namespace ExcelParserForOpenCart
         private void OjPrice(int row, Range range)
         {
             var category1 = string.Empty;
+            var needOption = true;
             var baseConnecter = new BaseConnecter();
             for (var i = 2; i < row; i++)
             {
                 if (i == 3) continue;
                 var line = new OutputPriceLine();
                 var str = ConverterToString(range.Cells[i, 1] as Range);
-                if (str.Contains("Рисунок")) continue;
+                if (str.Contains("Рисунок"))
+                {
+                    // после этого момента опции не читаем
+                    needOption = false;
+                    continue;
+                }
                 
                 if (!string.IsNullOrWhiteSpace(str))
                 {
@@ -296,8 +304,11 @@ namespace ExcelParserForOpenCart
                 var newname = baseConnecter.OJ_Composition(category1);
                 line.Name = string.Format("{0} {1}", newname, line.VendorCode);
                 line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
-                var opc = ConverterToString(range.Cells[i, 7] as Range);
-                line.Option = OptionParser(opc);
+                if (needOption)
+                {
+                    var opc = ConverterToString(range.Cells[i, 7] as Range);
+                    line.Option = OptionParser(opc);    
+                }
 
                 if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
 
