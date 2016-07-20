@@ -174,7 +174,6 @@ namespace ExcelParserForOpenCart
                     .Replace(")", string.Empty)
                     .Replace("(", ";")
                     .Replace(",", string.Empty);
-                Console.WriteLine(input);
                 return input;
             }
             input = s.Replace("опция", string.Empty).Trim();
