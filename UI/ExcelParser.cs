@@ -166,6 +166,8 @@ namespace ExcelParserForOpenCart
         private static string OptionParser(string s)
         {
             string input;
+            if (string.IsNullOrWhiteSpace(s))
+                return string.Empty;
             if (s.Contains("-"))
                 return string.Empty;
             if (s.Contains("(опция"))
@@ -177,6 +179,8 @@ namespace ExcelParserForOpenCart
                 return input;
             }
             input = s.Replace("опция", string.Empty).Trim();
+            if (input.Length < 1)
+                return string.Empty;
             if (input[0] == '(') input = input.Replace("(", string.Empty);
             input = input.Replace(",", ";").Replace("(", ";").Replace(")", string.Empty);
             return input;
