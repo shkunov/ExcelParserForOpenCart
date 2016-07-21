@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
-using Microsoft.Win32;
 using System.Text.RegularExpressions;
 
 
@@ -246,10 +245,8 @@ namespace ExcelParserForOpenCart
             var category2 = string.Empty;
             var code = string.Empty;
             var vendorCode = string.Empty;
-            var tempVendorCode = string.Empty;
-            var tempName = string.Empty;
+            var pair = false;
             var listName = new List<string>();
-            var j = 0;
             const string pattern = "(\\d+\\.\\s?)";
             for (var i = 13; i < row; i++)
             {
@@ -276,23 +273,39 @@ namespace ExcelParserForOpenCart
                 line.Category1 = category1;
                 line.Category2 = category2;
                 code = ConverterToString(range.Cells[i, 1] as Range);
-                tempName = ConverterToString(range.Cells[i, 3] as Range);
                 vendorCode = ConverterToString(range.Cells[i, 2] as Range);
                 // получить артикул следующей строки для сравнения
-                tempVendorCode = ConverterToString(range.Cells[i + 1, 2] as Range);
+                var tempVendorCode = ConverterToString(range.Cells[i + 1, 2] as Range);
+                var tempName = ConverterToString(range.Cells[i, 3] as Range);
+                var tempName2 = ConverterToString(range.Cells[i + 1, 3] as Range);
+                if (!pair)
+                {
+                    listName.Clear();
+                    listName.Add(tempName);
+                }
+                if (string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(tempVendorCode) && string.IsNullOrWhiteSpace(tempName))
+                    break;
                 if (tempVendorCode == vendorCode)
                 {
                     // дублирование
-                    listName.Add(tempName);
+                    listName.Add(tempName2);
+                    pair = true;
                     continue;
                 }
                 // получить из списка опции и имя
-                string name, options;
-                GetNameAndOption(listName, out name, out options);
-                line.Name = name;
-                line.Option = options;
+                if (listName.Count >= 2)
+                {
+                    string name, options;
+                    GetNameAndOption(listName, out name, out options);
+                    line.Name = name;
+                    line.Option = options;
+                }
+                else
+                {
+                    line.Name = tempName;
+                }
                 listName.Clear();
-
+                pair = false;
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
                 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
