@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelParserForOpenCart", "U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestParsingOptionOJ", "TestParsingOptionOJ\TestParsingOptionOJ.csproj", "{5F522354-E953-4DD2-B62A-5131AF29BB34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAutogurGetOption", "TestAutogurGetOption\TestAutogurGetOption.csproj", "{0669B46A-DB3B-4A8B-9C96-5E3DFD62094C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5F522354-E953-4DD2-B62A-5131AF29BB34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F522354-E953-4DD2-B62A-5131AF29BB34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F522354-E953-4DD2-B62A-5131AF29BB34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0669B46A-DB3B-4A8B-9C96-5E3DFD62094C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0669B46A-DB3B-4A8B-9C96-5E3DFD62094C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0669B46A-DB3B-4A8B-9C96-5E3DFD62094C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0669B46A-DB3B-4A8B-9C96-5E3DFD62094C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

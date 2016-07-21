@@ -330,13 +330,20 @@ namespace ExcelParserForOpenCart
         {
 
         }
-
+        /// <summary>
+        /// Прайс ИП Пьянов С.Г. Autogur73.ru
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
         private void AutogurPrice(int row, Range range)
         {
             var category1 = string.Empty;
             var category2 = string.Empty;
             var code = string.Empty;
             var vendorCode = string.Empty;
+            var tempVendorCode = string.Empty;
+            var tempName = string.Empty;
+            var listName = new List<string>();
             const string pattern = "(\\d+\\.\\s?)";
             for (var i = 13; i < row; i++)
             {
@@ -363,9 +370,21 @@ namespace ExcelParserForOpenCart
                 line.Category1 = category1;
                 line.Category2 = category2;
                 code = ConverterToString(range.Cells[i, 1] as Range);
+                tempName = ConverterToString(range.Cells[i, 3] as Range);
                 vendorCode = ConverterToString(range.Cells[i, 2] as Range);
+                listName.Add(tempName);
+                if (tempVendorCode == vendorCode)
+                {
+                    // дублирование
+                    continue;
+                }
+                tempVendorCode = vendorCode;
+                // получить из списка опции и имя
+                //line.Name 
+                listName.Clear();
+
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
-                line.Name = ConverterToString(range.Cells[i, 3] as Range);
+                
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
                     break; // выходить из цикла
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
