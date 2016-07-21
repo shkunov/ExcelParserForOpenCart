@@ -272,7 +272,7 @@ namespace ExcelParserForOpenCart
         {
             var category1 = string.Empty;
             var needOption = true;
-            var baseConnecter = new BaseConnecter();
+            var baseConnecter = new BaseConnecter(OnBaseMsgAction);
             for (var i = 2; i < row; i++)
             {
                 if (i == 3) continue;
@@ -319,6 +319,11 @@ namespace ExcelParserForOpenCart
                     _list.Add(line);
             }
             baseConnecter.Dispose();
+        }
+
+        private void OnBaseMsgAction(string s)
+        {
+            _workerOpen.ReportProgress(20, s);
         }
 
         private void TdgroupPrice(int row, Range range)

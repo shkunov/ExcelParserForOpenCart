@@ -9,14 +9,17 @@ namespace ExcelParserForOpenCart
     {
         private readonly SQLiteConnection _connection;
         private readonly bool _isConnected;
+        // делегат для обработки ошибок
+        private Action<string> _onMsgAction;
 
-        public BaseConnecter()
+        public BaseConnecter(Action<string> onMsgAction)
         {
             _isConnected = true;
+            _onMsgAction = onMsgAction;
             var databaseName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "base.sqlite");
             if (!File.Exists(databaseName))
             {
-                MessageBox.Show("Отсутствует файл базы данных");
+                _onMsgAction("Отсутствует файл базы данных");
 				_isConnected = false;
                 return;
             }
@@ -28,7 +31,7 @@ namespace ExcelParserForOpenCart
             catch
             {
                 _isConnected = false;
-                MessageBox.Show("Ошибка");
+                _onMsgAction("Ошибка подключения к базе данных");
             }
 
         }
@@ -53,6 +56,7 @@ namespace ExcelParserForOpenCart
 
         public void Dispose()
         {
+            if (_isConnected == false) return;
             _connection.Close();
             _connection.Dispose();
         }
