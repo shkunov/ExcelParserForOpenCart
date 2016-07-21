@@ -11,11 +11,13 @@ namespace TestAutogurGetOption
             {
                 //"ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь",
                 //"ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь, Лифт (50-100)",
-                "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF",
-                "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF, Лифт (50-100)",
-                "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF Люкс"
+                //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF",
+                //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF, Лифт (50-100)",
+                //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF Люкс"
+                // такой случай возможен придётся править его ручками
+                "Шланг ГУР сливной УАЗ-469,  Хантер",
+                "Шланг ГУР сливной УАЗ-469, Хантер (импорт)"
             };
-            var tmp = string.Empty;
             var i = 0;
             var minLen = 0;
             var indexMinLen = 0;
@@ -41,16 +43,13 @@ namespace TestAutogurGetOption
             foreach (var str in list)
             {
                 var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
-                if (!string.IsNullOrEmpty(option))
-                {
-                    Console.WriteLine("Option: {0}", option);
-                    if (i == 0)
-                        options = option;
-                    else
-                        options += " ; " + option;
-                    i++;
-                }
-                
+                if (string.IsNullOrEmpty(option)) continue;
+                Console.WriteLine("Option: {0}", option);
+                if (i == 0)
+                    options = option;
+                else
+                    options += " ; " + option;
+                i++;
             }
             Console.WriteLine("Options: {0}", options);
             Console.ReadLine();

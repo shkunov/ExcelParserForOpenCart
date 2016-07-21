@@ -95,6 +95,7 @@
     <Compile Include="BaseConnecter.cs" />
     <Compile Include="EnumPrices.cs" />
     <Compile Include="ExcelParser.cs" />
+    <Compile Include="ExcelParserStatic.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

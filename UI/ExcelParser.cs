@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace ExcelParserForOpenCart
 {
-    class ExcelParser
+    partial class ExcelParser
     {
         public event Action<string> OnParserAction;
         public event Action<int> OnProgressBarAction;
@@ -109,101 +109,6 @@ namespace ExcelParserForOpenCart
             _workerSave.RunWorkerCompleted += _workerSave_RunWorkerCompleted;
             _workerSave.ProgressChanged += _workerSave_ProgressChanged;
             _workerSave.RunWorkerAsync();
-        }
-
-        private static bool IsExcelInstall()
-        {
-            var hkcr = Registry.ClassesRoot;
-            var excelKey = hkcr.OpenSubKey("Excel.Application");
-            return excelKey != null;
-        }
-
-        private static void ReleaseObject(object obj)
-        {
-            try
-            {
-                if (obj != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        }
-
-        private static string ConverterToString(dynamic obj)
-        {
-            string s;
-            try
-            {
-                s = Convert.ToString(obj);
-            }
-            catch
-            {
-                s = string.Empty;
-            }
-            return s;
-        }
-
-        private static string ConverterToString(Range range)
-        {
-            if (range == null)
-                return string.Empty;
-            var obj = range.Value2;
-            if (obj == null)
-                return string.Empty;
-            string s;
-            try
-            {
-                s = Convert.ToString(obj);
-            }
-            catch
-            {
-                s = string.Empty;
-            }
-            return s;
-        }
-
-        private static string OptionParser(string s)
-        {
-            string input;
-            if (string.IsNullOrWhiteSpace(s))
-                return string.Empty;
-            if (s.Contains("-"))
-                return string.Empty;
-            if (s.Contains("(опция"))
-            {
-                input = s.Replace("опция", string.Empty)
-                    .Replace(")", string.Empty)
-                    .Replace("(", ";")
-                    .Replace(",", string.Empty);
-                return input;
-            }
-            input = s.Replace("опция", string.Empty).Trim();
-            if (input.Length < 1)
-                return string.Empty;
-            if (input[0] == '(') input = input.Replace("(", string.Empty);
-            input = input.Replace(",", ";").Replace("(", ";").Replace(")", string.Empty);
-            return input;
-        }
-
-        private static EnumPrices DetermineTypeOfPriceList(Range range)
-        {
-            var str = ConverterToString(range.Cells[2, 3] as Range);
-            if (str.Contains("Два Союза"))
-                return EnumPrices.ДваСоюза;
-
-            var str1 = ConverterToString(range.Cells[1, 1] as Range);
-            var str2 = ConverterToString(range.Cells[1, 4] as Range);
-            if (str1.Contains("Рисунок") && str2.Contains("Марка и модель автомобиля"))
-                return EnumPrices.OJ;
-
-            str1 = ConverterToString(range.Cells[9, 3] as Range);
-            str2 = ConverterToString(range.Cells[11, 3] as Range);
-
-            if (str1.Contains("Прайс-лист") && str2.Contains("Наименование товаров"))
-                return EnumPrices.Autogur73;
-
-            return EnumPrices.Неизвестный;
         }
 
         private void _workerOpen_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -344,6 +249,7 @@ namespace ExcelParserForOpenCart
             var tempVendorCode = string.Empty;
             var tempName = string.Empty;
             var listName = new List<string>();
+            var j = 0;
             const string pattern = "(\\d+\\.\\s?)";
             for (var i = 13; i < row; i++)
             {
@@ -372,15 +278,19 @@ namespace ExcelParserForOpenCart
                 code = ConverterToString(range.Cells[i, 1] as Range);
                 tempName = ConverterToString(range.Cells[i, 3] as Range);
                 vendorCode = ConverterToString(range.Cells[i, 2] as Range);
-                listName.Add(tempName);
+                // получить артикул следующей строки для сравнения
+                tempVendorCode = ConverterToString(range.Cells[i + 1, 2] as Range);
                 if (tempVendorCode == vendorCode)
                 {
                     // дублирование
+                    listName.Add(tempName);
                     continue;
                 }
-                tempVendorCode = vendorCode;
                 // получить из списка опции и имя
-                //line.Name 
+                string name, options;
+                GetNameAndOption(listName, out name, out options);
+                line.Name = name;
+                line.Option = options;
                 listName.Clear();
 
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
