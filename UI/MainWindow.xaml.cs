@@ -59,7 +59,10 @@ namespace ExcelParserForOpenCart
         {
             var filename = CreateOpenFileDialog();
             if (string.IsNullOrEmpty(filename)) return;
+            MessageList.Items.Clear();
+            MessageList.Items.Add("Открываю и обрабатываю документ.");
             _excelParser.OpenExcel(filename);
+            MessageList.Items.Add("Пожалуйста подождите...");
             BtnOpen.IsEnabled = false;
             BtnSave.IsEnabled = false;
         }
@@ -77,7 +80,10 @@ namespace ExcelParserForOpenCart
             };
             dlg.ShowDialog(this);
             if (string.IsNullOrEmpty(filename)) return;
+            BtnSave.IsEnabled = false;
+            MessageList.Items.Add("Идёт сохранение документа.");
             _excelParser.SaveResult(filename);
+            MessageList.Items.Add("Пожалуйста подождите...");
         }
     }
 }
