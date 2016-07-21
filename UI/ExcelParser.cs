@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace ExcelParserForOpenCart
 {
-    partial class ExcelParser
+    public partial class ExcelParser
     {
         public event Action<string> OnParserAction;
         public event Action<int> OnProgressBarAction;

@@ -62,7 +62,7 @@ namespace ExcelParserForOpenCart
             MessageList.Items.Clear();
             MessageList.Items.Add("Открываю и обрабатываю документ.");
             _excelParser.OpenExcel(filename);
-            MessageList.Items.Add("Пожалуйста подождите...");
+            MessageList.Items.Add("Пожалуйста, подождите...");
             BtnOpen.IsEnabled = false;
             BtnSave.IsEnabled = false;
         }
@@ -83,7 +83,7 @@ namespace ExcelParserForOpenCart
             BtnSave.IsEnabled = false;
             MessageList.Items.Add("Идёт сохранение документа.");
             _excelParser.SaveResult(filename);
-            MessageList.Items.Add("Пожалуйста подождите...");
+            MessageList.Items.Add("Пожалуйста, подождите...");
         }
     }
 }

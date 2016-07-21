@@ -5,7 +5,7 @@ using Microsoft.Win32;
 
 namespace ExcelParserForOpenCart
 {
-    partial class ExcelParser
+    public partial class ExcelParser
     {
         private static bool IsExcelInstall()
         {
