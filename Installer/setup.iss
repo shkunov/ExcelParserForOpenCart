@@ -21,6 +21,7 @@ OutputBaseFilename=ExcelParserForOpenCart
 SetupIconFile=program.ico
 Compression=lzma
 SolidCompression=yes
+VersionInfoVersion={#MyAppVersion}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
