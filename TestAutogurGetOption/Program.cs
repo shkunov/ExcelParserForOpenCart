@@ -75,6 +75,14 @@ namespace TestAutogurGetOption
             options = options.Trim();   
         }
 
+        private static void ListToConsole(IEnumerable<string> list)
+        {
+            foreach (var s in list)
+            {
+                Console.WriteLine(s);
+            }
+        }
+
         static void Main()
         {
             var list = new List<string>
@@ -84,18 +92,20 @@ namespace TestAutogurGetOption
             };
             var name = "";
             var options = "";
-
+            Console.WriteLine("Case 1");
+            ListToConsole(list);
             GetNameAndOption(list, out name, out options);
-            Console.WriteLine("Case 1. Options: {0}", options);
+            Console.WriteLine("Options: {0}", options);
 
             list = new List<string>
             {
                 "ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь",
                 "ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь, Лифт (50-100)"
             };
-
+            Console.WriteLine("Case 2");
+            ListToConsole(list);
             GetNameAndOption(list, out name, out options);
-            Console.WriteLine("Case 2. Options: {0}", options);
+            Console.WriteLine("Options: {0}", options);
 
             list = new List<string>
             {
@@ -103,18 +113,20 @@ namespace TestAutogurGetOption
                 "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF, Лифт (50-100)",
                 "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF Люкс"
             };
-
+            Console.WriteLine("Case 3");
+            ListToConsole(list);
             GetNameAndOption(list, out name, out options);
-            Console.WriteLine("Case 3. Options: {0}", options);
+            Console.WriteLine("Options: {0}", options);
 
             list = new List<string>
             {
                 "Шланг ГУР сливной УАЗ-469,  Хантер",
                 "Шланг ГУР сливной УАЗ-469, Хантер (импорт)"
             };
-
+            Console.WriteLine("Case 4");
+            ListToConsole(list);
             GetNameAndOption(list, out name, out options);
-            Console.WriteLine("Case 4. Options: {0}", options);
+            Console.WriteLine("Options: {0}", options);
             Console.ReadLine();
         }
     }
