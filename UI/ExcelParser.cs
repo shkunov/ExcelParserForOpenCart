@@ -214,7 +214,7 @@ namespace ExcelParserForOpenCart
                 if (needOption)
                 {
                     var opc = ConverterToString(range.Cells[i, 7] as Range);
-                    line.Option = OptionParser(opc);    
+                    line.Option = OjOptionParser(opc);    
                 }
 
                 if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
