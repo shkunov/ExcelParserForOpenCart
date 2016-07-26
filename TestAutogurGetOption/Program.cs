@@ -15,7 +15,6 @@ namespace TestAutogurGetOption
                 //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF",
                 //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF, Лифт (50-100)",
                 //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF Люкс"
-                // такой случай возможен придётся править его ручками
                 "Карданчик (шарнир) УАЗ-31512 рулевого управления (с ГУР Борисов)",
                 "Карданчик (шарнир) УАЗ-31512 рулевого управления (с ГУР Борисов мелкий шлиц)",
                 //"Шланг ГУР сливной УАЗ-469,  Хантер",
@@ -47,10 +46,44 @@ namespace TestAutogurGetOption
             }
 
             var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')'}, StringSplitOptions.RemoveEmptyEntries);
-            var options = maxStr.Replace(")", "");
-            options = words.Aggregate(options, (current, word) => current.Replace(word, ""));
-            options = options.Replace(",", "").Replace("(", "");
+            var options = "";
+            i = 0;
+            foreach (var str in list)
+            {
+                if (str == minStr) continue;
+                var option = str.Replace(")", "");
+                foreach (var word in words)
+                {
+                    if (word.Length == 1)
+                        continue;
+                    option = option.Replace(word, "");
+                }
+                option = option.Replace(",", "").Replace("(", "");
+                if (i == 0)
+                    options = option;
+                else
+                    options += " ; " + option;
+                i++;
+            }
             Console.WriteLine("Options: {0}", options.Trim());
+
+            Console.WriteLine("Test 2");
+
+            options = string.Empty;
+            i = 0;
+            foreach (var str in list)
+            {
+                var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
+                if (string.IsNullOrEmpty(option)) continue;
+                Console.WriteLine("Option: {0}", option);
+                if (i == 0)
+                    options = option;
+                else
+                    options += " ; " + option;
+                i++;
+            }
+            Console.WriteLine("Options: {0}", options);
+
             Console.ReadLine();
         }
     }
