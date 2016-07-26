@@ -58,8 +58,12 @@ namespace ExcelParserForOpenCart
             }
             return s;
         }
-
-        private static string OptionParser(string s)
+        /// <summary>
+        /// Поиск опции, прайс Каталог OJ 2016_06_01 вер. 6
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        private static string OjOptionParser(string s)
         {
             string input;
             if (string.IsNullOrWhiteSpace(s))
@@ -81,33 +85,48 @@ namespace ExcelParserForOpenCart
             input = input.Replace(",", ";").Replace("(", ";").Replace(")", string.Empty);
             return input;
         }
-
+        /// <summary>
+        /// Парсинг опции для прайса ИП Пьянов С.Г. Autogur73.ru
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="name"></param>
+        /// <param name="options"></param>
         private static void GetNameAndOption(IReadOnlyList<string> list, out string name, out string options)
         {
             var i = 0;
-            var minLen = 0;
-            var indexMinLen = 0;
-            foreach (var str in list)
+            var maxStr = "";
+            var minStr = "";
+            var @case = 1;
+            foreach (var s in list)
+            {
+                if (maxStr.Length < s.Length)
+                    maxStr = s;
+            }
+            foreach (var s in list)
             {
                 if (i == 0)
                 {
-                    minLen = str.Length;
+                    minStr = s;
                     i++;
                     continue;
                 }
-                if (minLen > str.Length)
-                {
-                    minLen = str.Length;
-                    indexMinLen = i;
-                }
-                i++;
+                if (s.Length < minStr.Length)
+                    minStr = s;
             }
-            var minStr = list[indexMinLen];
+            name = minStr;
+            // case 1
             options = string.Empty;
             i = 0;
             foreach (var str in list)
             {
                 var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
+
+                if (option.Length > 19)
+                {
+                    @case = 2;
+                    break;
+                }
+
                 if (string.IsNullOrEmpty(option)) continue;
                 if (i == 0)
                     options = option;
@@ -115,7 +134,30 @@ namespace ExcelParserForOpenCart
                     options += " ; " + option;
                 i++;
             }
-            name = minStr;
+            options = options.Trim();
+            if (@case == 1) return;
+            // case 2
+            options = string.Empty;
+            var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')' }, StringSplitOptions.RemoveEmptyEntries);
+            i = 0;
+            foreach (var str in list)
+            {
+                if (str == minStr) continue;
+                var option = str.Replace(")", "");
+                foreach (var word in words)
+                {
+                    if (word.Length == 1)
+                        continue;
+                    option = option.Replace(word, "");
+                }
+                option = option.Replace(",", "").Replace("(", "");
+                if (i == 0)
+                    options = option;
+                else
+                    options += " ; " + option;
+                i++;
+            }
+            options = options.Trim();
         }
         /// <summary>
         /// Определение типа прайс листа

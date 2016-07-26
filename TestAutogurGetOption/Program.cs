@@ -6,33 +6,17 @@ namespace TestAutogurGetOption
 {
     class Program
     {
-        static void Main()
+        private static void GetNameAndOption(IReadOnlyList<string> list, out string name, out string options)
         {
-            var list = new List<string>
-            {
-                //"ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь",
-                //"ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь, Лифт (50-100)",
-                //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF",
-                //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF, Лифт (50-100)",
-                //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF Люкс"
-                "Карданчик (шарнир) УАЗ-31512 рулевого управления (с ГУР Борисов)",
-                "Карданчик (шарнир) УАЗ-31512 рулевого управления (с ГУР Борисов мелкий шлиц)",
-                //"Шланг ГУР сливной УАЗ-469,  Хантер",
-                //"Шланг ГУР сливной УАЗ-469, Хантер (импорт)"
-            };
-
             var i = 0;
             var maxStr = "";
             var minStr = "";
-
-            Console.WriteLine("Test 1");
-
+            var @case = 1;
             foreach (var s in list)
             {
                 if (maxStr.Length < s.Length)
                     maxStr = s;
             }
-
             foreach (var s in list)
             {
                 if (i == 0)
@@ -44,9 +28,32 @@ namespace TestAutogurGetOption
                 if (s.Length < minStr.Length)
                     minStr = s;
             }
+            name = minStr;
+            // case 1
+            options = string.Empty;
+            i = 0;
+            foreach (var str in list)
+            {
+                var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
 
-            var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')'}, StringSplitOptions.RemoveEmptyEntries);
-            var options = "";
+                if (option.Length > 19)
+                {
+                    @case = 2;
+                    break;
+                }
+
+                if (string.IsNullOrEmpty(option)) continue;
+                if (i == 0)
+                    options = option;
+                else
+                    options += " ; " + option;
+                i++;
+            }
+            options = options.Trim();
+            if (@case == 1) return;
+            // case 2
+            options = string.Empty;
+            var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')' }, StringSplitOptions.RemoveEmptyEntries);
             i = 0;
             foreach (var str in list)
             {
@@ -65,25 +72,49 @@ namespace TestAutogurGetOption
                     options += " ; " + option;
                 i++;
             }
-            Console.WriteLine("Options: {0}", options.Trim());
+            options = options.Trim();   
+        }
 
-            Console.WriteLine("Test 2");
-
-            options = string.Empty;
-            i = 0;
-            foreach (var str in list)
+        static void Main()
+        {
+            var list = new List<string>
             {
-                var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
-                if (string.IsNullOrEmpty(option)) continue;
-                Console.WriteLine("Option: {0}", option);
-                if (i == 0)
-                    options = option;
-                else
-                    options += " ; " + option;
-                i++;
-            }
-            Console.WriteLine("Options: {0}", options);
+                "Карданчик (шарнир) УАЗ-31512 рулевого управления (с ГУР Борисов)",
+                "Карданчик (шарнир) УАЗ-31512 рулевого управления (с ГУР Борисов мелкий шлиц)"
+            };
+            var name = "";
+            var options = "";
 
+            GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Case 1. Options: {0}", options);
+
+            list = new List<string>
+            {
+                "ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь",
+                "ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь, Лифт (50-100)"
+            };
+
+            GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Case 2. Options: {0}", options);
+
+            list = new List<string>
+            {
+                "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF",
+                "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF, Лифт (50-100)",
+                "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF Люкс"
+            };
+
+            GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Case 3. Options: {0}", options);
+
+            list = new List<string>
+            {
+                "Шланг ГУР сливной УАЗ-469,  Хантер",
+                "Шланг ГУР сливной УАЗ-469, Хантер (импорт)"
+            };
+
+            GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Case 4. Options: {0}", options);
             Console.ReadLine();
         }
     }
