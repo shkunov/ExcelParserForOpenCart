@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TestAutogurGetOption
 {
@@ -15,43 +16,41 @@ namespace TestAutogurGetOption
                 //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF, Лифт (50-100)",
                 //"ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF Люкс"
                 // такой случай возможен придётся править его ручками
-                "Шланг ГУР сливной УАЗ-469,  Хантер",
-                "Шланг ГУР сливной УАЗ-469, Хантер (импорт)"
+                "Карданчик (шарнир) УАЗ-31512 рулевого управления (с ГУР Борисов)",
+                "Карданчик (шарнир) УАЗ-31512 рулевого управления (с ГУР Борисов мелкий шлиц)",
+                //"Шланг ГУР сливной УАЗ-469,  Хантер",
+                //"Шланг ГУР сливной УАЗ-469, Хантер (импорт)"
             };
+
             var i = 0;
-            var minLen = 0;
-            var indexMinLen = 0;
-            foreach (var str in list)
+            var maxStr = "";
+            var minStr = "";
+
+            Console.WriteLine("Test 1");
+
+            foreach (var s in list)
+            {
+                if (maxStr.Length < s.Length)
+                    maxStr = s;
+            }
+
+            foreach (var s in list)
             {
                 if (i == 0)
                 {
-                    minLen = str.Length;
+                    minStr = s;
                     i++;
                     continue;
                 }
-                if (minLen > str.Length)
-                {
-                    minLen = str.Length;
-                    indexMinLen = i;
-                }
-                i++;
+                if (s.Length < minStr.Length)
+                    minStr = s;
             }
-            var minStr = list[indexMinLen];
-            Console.WriteLine("Min len: {0}", minStr);
-            var options = string.Empty;
-            i = 0;
-            foreach (var str in list)
-            {
-                var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
-                if (string.IsNullOrEmpty(option)) continue;
-                Console.WriteLine("Option: {0}", option);
-                if (i == 0)
-                    options = option;
-                else
-                    options += " ; " + option;
-                i++;
-            }
-            Console.WriteLine("Options: {0}", options);
+
+            var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')'}, StringSplitOptions.RemoveEmptyEntries);
+            var options = maxStr.Replace(")", "");
+            options = words.Aggregate(options, (current, word) => current.Replace(word, ""));
+            options = options.Replace(",", "").Replace("(", "");
+            Console.WriteLine("Options: {0}", options.Trim());
             Console.ReadLine();
         }
     }
