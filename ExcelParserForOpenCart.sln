@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestParsingOptionOJ", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAutogurGetOption", "TestAutogurGetOption\TestAutogurGetOption.csproj", "{0669B46A-DB3B-4A8B-9C96-5E3DFD62094C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F468E254-1587-4AE0-8A3C-05887B3CE359}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\setup.iss = Installer\setup.iss
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
