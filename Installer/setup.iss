@@ -12,12 +12,11 @@
 AppId={{0416BA73-2A1F-4D0E-873A-DAC434334888}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-;AppVerName={#MyAppName} {#MyAppVersion}
 DefaultDirName={pf}\ExcelParserForOpenCart
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=..\Installer
-OutputBaseFilename=ExcelParserForOpenCart
+OutputBaseFilename=ExcelParserForOpenCart-{#MyAppVersion}
 SetupIconFile=program.ico
 Compression=lzma
 SolidCompression=yes
