@@ -294,7 +294,8 @@ namespace ExcelParserForOpenCart
                 }
                 if (string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(tempVendorCode) && string.IsNullOrWhiteSpace(tempName))
                     break;
-                if (tempVendorCode == vendorCode)
+                //todo: протестировать случай если артикуль не заполнен
+                if (tempVendorCode == vendorCode && !string.IsNullOrWhiteSpace(vendorCode))
                 {
                     // дублирование
                     list.Add(new PairProductAndCost
