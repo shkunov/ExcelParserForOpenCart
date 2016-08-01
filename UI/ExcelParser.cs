@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
 using System.Text.RegularExpressions;
@@ -246,7 +247,10 @@ namespace ExcelParserForOpenCart
             var code = string.Empty;
             var vendorCode = string.Empty;
             var pair = false;
+            // список имён с одинковым артикулем
             var listName = new List<string>();
+            // список цены 
+            var listCost = new List<decimal>();
             const string pattern = "(\\d+\\.\\s?)";
             for (var i = 13; i < row; i++)
             {
@@ -278,10 +282,15 @@ namespace ExcelParserForOpenCart
                 var tempVendorCode = ConverterToString(range.Cells[i + 1, 2] as Range);
                 var tempName = ConverterToString(range.Cells[i, 3] as Range);
                 var tempName2 = ConverterToString(range.Cells[i + 1, 3] as Range);
+                //var cost = ConverterToString(range.Cells[i, 5] as Range);
+                var cost1 = ConverterToDecimal(range.Cells[i, 5] as Range);
+                var cost2 = ConverterToDecimal(range.Cells[i + 1, 5] as Range);
                 if (!pair)
                 {
                     listName.Clear();
+                    listCost.Clear();
                     listName.Add(tempName);
+                    listCost.Add(cost1);
                 }
                 if (string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(tempVendorCode) && string.IsNullOrWhiteSpace(tempName))
                     break;
@@ -289,6 +298,7 @@ namespace ExcelParserForOpenCart
                 {
                     // дублирование
                     listName.Add(tempName2);
+                    listCost.Add(cost2);
                     pair = true;
                     continue;
                 }
@@ -296,15 +306,18 @@ namespace ExcelParserForOpenCart
                 if (listName.Count >= 2)
                 {
                     string name, options;
-                    GetNameAndOption(listName, out name, out options);
+                    GetNameAndOptionFromAutogur73(listName, out name, out options);
                     line.Name = name;
                     line.Option = options;
+                    line.Cost = "";
                 }
                 else
                 {
                     line.Name = tempName;
+                    line.Cost = cost1.ToString(CultureInfo.CurrentCulture);
                 }
                 listName.Clear();
+                listCost.Clear();
                 pair = false;
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
                 
@@ -312,7 +325,6 @@ namespace ExcelParserForOpenCart
                     break; // выходить из цикла
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
                     continue; // игнорировать строки без кода и артикля
-                line.Cost = ConverterToString(range.Cells[i, 5] as Range);
                 if (!string.IsNullOrEmpty(line.Name))
                     _list.Add(line);
             }

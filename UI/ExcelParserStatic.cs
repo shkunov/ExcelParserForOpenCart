@@ -40,6 +40,25 @@ namespace ExcelParserForOpenCart
             return s;
         }
 
+        private static decimal ConverterToDecimal(Range range)
+        {
+            if (range == null)
+                return 0;
+            var obj = range.Value2;
+            if (obj == null)
+                return 0;
+            decimal d;
+            try
+            {
+                d = Convert.ToDecimal(obj);
+            }
+            catch
+            {
+                d = 0;
+            }
+            return d;
+        }
+
         private static string ConverterToString(Range range)
         {
             if (range == null)
@@ -85,13 +104,14 @@ namespace ExcelParserForOpenCart
             input = input.Replace(",", ";").Replace("(", ";").Replace(")", string.Empty);
             return input;
         }
+
         /// <summary>
         /// Парсинг опции для прайса ИП Пьянов С.Г. Autogur73.ru
         /// </summary>
         /// <param name="list"></param>
         /// <param name="name"></param>
         /// <param name="options"></param>
-        private static void GetNameAndOption(IReadOnlyList<string> list, out string name, out string options)
+        private static void GetNameAndOptionFromAutogur73(IReadOnlyList<string> list, out string name, out string options)
         {
             var i = 0;
             var maxStr = "";
