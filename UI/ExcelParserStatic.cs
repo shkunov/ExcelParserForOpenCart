@@ -104,34 +104,35 @@ namespace ExcelParserForOpenCart
             input = input.Replace(",", ";").Replace("(", ";").Replace(")", string.Empty);
             return input;
         }
-
         /// <summary>
         /// Парсинг опции для прайса ИП Пьянов С.Г. Autogur73.ru
         /// </summary>
         /// <param name="list"></param>
         /// <param name="name"></param>
         /// <param name="options"></param>
-        private static void GetNameAndOptionFromAutogur73(IReadOnlyList<string> list, out string name, out string options)
+        private static void GetNameAndOptionFromAutogur73(IReadOnlyList<PairProductAndCost> list, 
+            out string name, out string options, out string costs)
         {
             var i = 0;
             var maxStr = "";
             var minStr = "";
             var @case = 1;
+            costs = "";
             foreach (var s in list)
             {
-                if (maxStr.Length < s.Length)
-                    maxStr = s;
+                if (maxStr.Length < s.Name.Length)
+                    maxStr = s.Name;
             }
             foreach (var s in list)
             {
                 if (i == 0)
                 {
-                    minStr = s;
+                    minStr = s.Name;
                     i++;
                     continue;
                 }
-                if (s.Length < minStr.Length)
-                    minStr = s;
+                if (s.Name.Length < minStr.Length)
+                    minStr = s.Name;
             }
             name = minStr;
             // case 1
@@ -139,7 +140,7 @@ namespace ExcelParserForOpenCart
             i = 0;
             foreach (var str in list)
             {
-                var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
+                var option = str.Name.Replace(minStr, string.Empty).Replace(",", "").Trim();
 
                 if (option.Length > 19)
                 {
@@ -162,8 +163,8 @@ namespace ExcelParserForOpenCart
             i = 0;
             foreach (var str in list)
             {
-                if (str == minStr) continue;
-                var option = str.Replace(")", "");
+                if (str.Name == minStr) continue;
+                var option = str.Name.Replace(")", "");
                 foreach (var word in words)
                 {
                     if (word.Length == 1)

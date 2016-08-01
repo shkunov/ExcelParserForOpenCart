@@ -248,9 +248,7 @@ namespace ExcelParserForOpenCart
             var vendorCode = string.Empty;
             var pair = false;
             // список имён с одинковым артикулем
-            var listName = new List<string>();
-            // список цены 
-            var listCost = new List<decimal>();
+            var list = new List<PairProductAndCost>();
             const string pattern = "(\\d+\\.\\s?)";
             for (var i = 13; i < row; i++)
             {
@@ -287,37 +285,41 @@ namespace ExcelParserForOpenCart
                 var cost2 = ConverterToDecimal(range.Cells[i + 1, 5] as Range);
                 if (!pair)
                 {
-                    listName.Clear();
-                    listCost.Clear();
-                    listName.Add(tempName);
-                    listCost.Add(cost1);
+                    list.Clear();
+                    list.Add(new PairProductAndCost
+                    {
+                        Name = tempName,
+                        Cost = cost1
+                    });
                 }
                 if (string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(tempVendorCode) && string.IsNullOrWhiteSpace(tempName))
                     break;
                 if (tempVendorCode == vendorCode)
                 {
                     // дублирование
-                    listName.Add(tempName2);
-                    listCost.Add(cost2);
+                    list.Add(new PairProductAndCost
+                    {
+                        Name = tempName2,
+                        Cost = cost2
+                    });
                     pair = true;
                     continue;
                 }
                 // получить из списка опции и имя
-                if (listName.Count >= 2)
+                if (list.Count >= 2)
                 {
-                    string name, options;
-                    GetNameAndOptionFromAutogur73(listName, out name, out options);
+                    string name, options, costs;
+                    GetNameAndOptionFromAutogur73(list, out name, out options, out costs);
                     line.Name = name;
                     line.Option = options;
-                    line.Cost = "";
+                    line.Cost = costs;
                 }
                 else
                 {
                     line.Name = tempName;
                     line.Cost = cost1.ToString(CultureInfo.CurrentCulture);
                 }
-                listName.Clear();
-                listCost.Clear();
+                list.Clear();
                 pair = false;
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
                 
