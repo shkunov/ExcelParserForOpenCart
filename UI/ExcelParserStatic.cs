@@ -162,8 +162,7 @@ namespace ExcelParserForOpenCart
                 {
                     options += " ; " + option;
                     var diff = str.Cost - cost;
-                    var postFix = diff > 0 ? "+" : "-";
-                    costs += " ; " + diff.ToString(CultureInfo.CurrentCulture) + postFix;
+                    costs += " ; " + diff.ToString(CultureInfo.CurrentCulture);
                 }
                 i++;
             }
@@ -194,8 +193,7 @@ namespace ExcelParserForOpenCart
                 {
                     options += " ; " + option;
                     var diff = str.Cost - cost;
-                    var postFix = diff > 0 ? "+" : "-";
-                    costs += " ; " + diff.ToString(CultureInfo.CurrentCulture) + postFix;
+                    costs += " ; " + diff.ToString(CultureInfo.CurrentCulture);
                 }
                 i++;
             }
