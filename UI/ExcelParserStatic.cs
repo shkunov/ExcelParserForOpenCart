@@ -144,22 +144,26 @@ namespace ExcelParserForOpenCart
             {
                 options = string.Empty;
                 i = 0;
+                var isFirstItem = true;
                 foreach (var item in list)
                 {
                     var option = item.Name.Replace(minStr, string.Empty).Replace(",", "").Trim();
-
+                    if (isFirstItem)
+                    {
+                        isFirstItem = false;
+                        cost = item.Cost;
+                    }
                     if (option.Length > 19)
                     {
                         @case = 2;
                         break;
                     }
-
-                    if (string.IsNullOrEmpty(option)) continue;
+                    if (string.IsNullOrWhiteSpace(option)) continue;
                     if (i == 0)
                     {
                         options = option.Trim();
-                        cost = item.Cost;
-                        costs = "";
+                        var diff = item.Cost - cost;
+                        costs = diff.ToString(CultureInfo.CurrentCulture);
                     }
                     else
                     {
@@ -178,7 +182,16 @@ namespace ExcelParserForOpenCart
                 i = 0;
                 foreach (var item in list)
                 {
-                    if (item.Name == minStr) continue;
+                    if (item.Name == minStr)
+                    {
+                        if (i == 0)
+                        {
+                            cost = item.Cost;
+                            costs = "0";
+                        }
+                        i++;
+                        continue;
+                    }
                     var option = item.Name.Replace(")", "");
                     foreach (var word in words)
                     {
@@ -191,7 +204,7 @@ namespace ExcelParserForOpenCart
                     {
                         options = option.Trim();
                         cost = item.Cost;
-                        costs = "";
+                        costs = "0";
                     }
                     else
                     {
@@ -217,6 +230,7 @@ namespace ExcelParserForOpenCart
                 {
                     options = option.Trim();
                     cost = item.Cost;
+                    costs = "0";
                     name = name.Replace(option, "").Replace(",", "").Trim();
                 }
                 else
