@@ -80,6 +80,7 @@ namespace ExcelParserForOpenCart
             };
             dlg.ShowDialog(this);
             if (string.IsNullOrEmpty(filename)) return;
+            BtnOpen.IsEnabled = false;
             BtnSave.IsEnabled = false;
             MessageList.Items.Add("Идёт сохранение документа.");
             _excelParser.SaveResult(filename);
