@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Win32;
 
@@ -110,6 +111,7 @@ namespace ExcelParserForOpenCart
         /// <param name="list"></param>
         /// <param name="name"></param>
         /// <param name="options"></param>
+        /// <param name="costs"></param>
         private static void GetNameAndOptionFromAutogur73(IReadOnlyList<PairProductAndCost> list, 
             out string name, out string options, out string costs)
         {
@@ -117,6 +119,7 @@ namespace ExcelParserForOpenCart
             var maxStr = "";
             var minStr = "";
             var @case = 1;
+            decimal cost = 0;
             costs = "";
             foreach (var s in list)
             {
@@ -150,9 +153,18 @@ namespace ExcelParserForOpenCart
 
                 if (string.IsNullOrEmpty(option)) continue;
                 if (i == 0)
+                {
                     options = option;
+                    cost = str.Cost;
+                    costs = "";
+                }
                 else
+                {
                     options += " ; " + option;
+                    var diff = str.Cost - cost;
+                    var postFix = diff > 0 ? "+" : "-";
+                    costs += " ; " + diff.ToString(CultureInfo.CurrentCulture) + postFix;
+                }
                 i++;
             }
             options = options.Trim();
@@ -173,9 +185,18 @@ namespace ExcelParserForOpenCart
                 }
                 option = option.Replace(",", "").Replace("(", "");
                 if (i == 0)
+                {
                     options = option;
+                    cost = str.Cost;
+                    costs = "";
+                }
                 else
+                {
                     options += " ; " + option;
+                    var diff = str.Cost - cost;
+                    var postFix = diff > 0 ? "+" : "-";
+                    costs += " ; " + diff.ToString(CultureInfo.CurrentCulture) + postFix;
+                }
                 i++;
             }
             options = options.Trim();

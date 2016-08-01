@@ -312,7 +312,7 @@ namespace ExcelParserForOpenCart
                     GetNameAndOptionFromAutogur73(list, out name, out options, out costs);
                     line.Name = name;
                     line.Option = options;
-                    line.Cost = costs;
+                    line.PlusThePrice = costs;
                 }
                 else
                 {
@@ -327,6 +327,7 @@ namespace ExcelParserForOpenCart
                     break; // выходить из цикла
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
                     continue; // игнорировать строки без кода и артикля
+                if (list.Count > 0) line.Cost = list[0].Cost.ToString(CultureInfo.CurrentCulture);
                 if (!string.IsNullOrEmpty(line.Name))
                     _list.Add(line);
             }
