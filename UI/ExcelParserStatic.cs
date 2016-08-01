@@ -180,16 +180,17 @@ namespace ExcelParserForOpenCart
                 options = string.Empty;
                 var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')' }, StringSplitOptions.RemoveEmptyEntries);
                 i = 0;
+                var isFirstItem = true;
                 foreach (var item in list)
                 {
                     if (item.Name == minStr)
                     {
-                        if (i == 0)
+                        if (isFirstItem)
                         {
+                            isFirstItem = false;
                             cost = item.Cost;
                             costs = "0";
                         }
-                        i++;
                         continue;
                     }
                     var option = item.Name.Replace(")", "");
@@ -203,8 +204,8 @@ namespace ExcelParserForOpenCart
                     if (i == 0)
                     {
                         options = option.Trim();
-                        cost = item.Cost;
-                        costs = "0";
+                        var diff = item.Cost - cost;
+                        costs = diff.ToString(CultureInfo.CurrentCulture);
                     }
                     else
                     {
