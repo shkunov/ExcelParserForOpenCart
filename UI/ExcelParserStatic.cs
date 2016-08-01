@@ -121,6 +121,7 @@ namespace ExcelParserForOpenCart
             var @case = 1;
             decimal cost = 0;
             costs = "";
+            options = "";
             foreach (var s in list)
             {
                 if (maxStr.Length < s.Name.Length)
@@ -137,67 +138,96 @@ namespace ExcelParserForOpenCart
                 if (s.Name.Length < minStr.Length)
                     minStr = s.Name;
             }
+            if (maxStr.Length - minStr.Length < 5) @case = 3;            
             name = minStr;
-            // case 1
-            options = string.Empty;
-            i = 0;
-            foreach (var str in list)
+            if (@case == 1)
             {
-                var option = str.Name.Replace(minStr, string.Empty).Replace(",", "").Trim();
-
-                if (option.Length > 19)
+                options = string.Empty;
+                i = 0;
+                foreach (var item in list)
                 {
-                    @case = 2;
-                    break;
-                }
+                    var option = item.Name.Replace(minStr, string.Empty).Replace(",", "").Trim();
 
-                if (string.IsNullOrEmpty(option)) continue;
+                    if (option.Length > 19)
+                    {
+                        @case = 2;
+                        break;
+                    }
+
+                    if (string.IsNullOrEmpty(option)) continue;
+                    if (i == 0)
+                    {
+                        options = option.Trim();
+                        cost = item.Cost;
+                        costs = "";
+                    }
+                    else
+                    {
+                        options += " ; " + option.Trim();
+                        var diff = item.Cost - cost;
+                        costs += " ; " + diff.ToString(CultureInfo.CurrentCulture);
+                    }
+                    i++;
+                }
+                options = options.Trim();
+            }
+            if (@case == 2)
+            {
+                options = string.Empty;
+                var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')' }, StringSplitOptions.RemoveEmptyEntries);
+                i = 0;
+                foreach (var item in list)
+                {
+                    if (item.Name == minStr) continue;
+                    var option = item.Name.Replace(")", "");
+                    foreach (var word in words)
+                    {
+                        if (word.Length == 1)
+                            continue;
+                        option = option.Replace(word, "");
+                    }
+                    option = option.Replace(",", "").Replace("(", "");
+                    if (i == 0)
+                    {
+                        options = option.Trim();
+                        cost = item.Cost;
+                        costs = "";
+                    }
+                    else
+                    {
+                        options += " ; " + option.Trim();
+                        var diff = item.Cost - cost;
+                        costs += " ; " + diff.ToString(CultureInfo.CurrentCulture);
+                    }
+                    i++;
+                }
+                options = options.Trim();
+            }
+            if (@case != 3) return;
+            i = 0;
+            foreach (var item in list)
+            {
+                var j = item.Name.LastIndexOf(',') + 1;
+                var option = "";
+                for (var k = j; k < item.Name.Length; k++)
+                {
+                    option += item.Name[k];
+                }
                 if (i == 0)
                 {
                     options = option.Trim();
-                    cost = str.Cost;
-                    costs = "";
+                    cost = item.Cost;
+                    name = name.Replace(option, "").Replace(",", "").Trim();
                 }
                 else
                 {
                     options += " ; " + option.Trim();
-                    var diff = str.Cost - cost;
+                    var diff = item.Cost - cost;
                     costs += " ; " + diff.ToString(CultureInfo.CurrentCulture);
+                    name = name.Replace(option, "").Replace(",", "").Trim();
                 }
                 i++;
             }
-            options = options.Trim();
-            if (@case == 1) return;
-            // case 2
-            options = string.Empty;
-            var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')' }, StringSplitOptions.RemoveEmptyEntries);
-            i = 0;
-            foreach (var str in list)
-            {
-                if (str.Name == minStr) continue;
-                var option = str.Name.Replace(")", "");
-                foreach (var word in words)
-                {
-                    if (word.Length == 1)
-                        continue;
-                    option = option.Replace(word, "");
-                }
-                option = option.Replace(",", "").Replace("(", "");
-                if (i == 0)
-                {
-                    options = option.Trim();
-                    cost = str.Cost;
-                    costs = "";
-                }
-                else
-                {
-                    options += " ; " + option.Trim();
-                    var diff = str.Cost - cost;
-                    costs += " ; " + diff.ToString(CultureInfo.CurrentCulture);
-                }
-                i++;
-            }
-            options = options.Trim();
         }
         /// <summary>
         /// Определение типа прайс листа
