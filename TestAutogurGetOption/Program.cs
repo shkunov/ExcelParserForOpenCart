@@ -12,6 +12,7 @@ namespace TestAutogurGetOption
             var maxStr = "";
             var minStr = "";
             var @case = 1;
+            options = "";
             foreach (var s in list)
             {
                 if (maxStr.Length < s.Length)
@@ -28,51 +29,97 @@ namespace TestAutogurGetOption
                 if (s.Length < minStr.Length)
                     minStr = s;
             }
+            if (maxStr.Length - minStr.Length < 5) @case = 3;
             name = minStr;
-            // case 1
-            options = string.Empty;
+            if (@case == 1)
+            {
+                options = string.Empty;
+                i = 0;
+                foreach (var str in list)
+                {
+                    var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
+
+                    if (option.Length > 19)
+                    {
+                        @case = 2;
+                        break;
+                    }
+
+                    if (string.IsNullOrEmpty(option)) continue;
+                    if (i == 0)
+                        options = option;
+                    else
+                        options += " ; " + option;
+                    i++;
+                }
+                options = options.Trim();
+            }
+            if (@case == 2)
+            {
+                options = string.Empty;
+                var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')' }, StringSplitOptions.RemoveEmptyEntries);
+                i = 0;
+                foreach (var str in list)
+                {
+                    if (str == minStr) continue;
+                    var option = str.Replace(")", "");
+                    foreach (var word in words)
+                    {
+                        if (word.Length == 1)
+                            continue;
+                        option = option.Replace(word, "");
+                    }
+                    option = option.Replace(",", "").Replace("(", "");
+                    if (i == 0)
+                        options = option;
+                    else
+                        options += " ; " + option;
+                    i++;
+                }
+                options = options.Trim();
+            }
+            if (@case != 3) return;
             i = 0;
             foreach (var str in list)
             {
-                var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
-
-                if (option.Length > 19)
+                var j = str.LastIndexOf(',') + 1;
+                var option = "";
+                for (var k = j; k < str.Length; k++)
                 {
-                    @case = 2;
-                    break;
+                    option += str[k];
                 }
-
-                if (string.IsNullOrEmpty(option)) continue;
                 if (i == 0)
-                    options = option;
+                {
+                    options = option.Trim();
+                    name = name.Replace(option, "").Replace(",", "").Trim();
+                }
                 else
-                    options += " ; " + option;
+                {
+                    options += " ; " + option.Trim();
+                    name = name.Replace(option, "").Replace(",", "").Trim();
+                }
                 i++;
             }
-            options = options.Trim();
-            if (@case == 1) return;
-            // case 2
-            options = string.Empty;
-            var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')' }, StringSplitOptions.RemoveEmptyEntries);
-            i = 0;
+        }
+
+        private static void Test(IEnumerable<string> list)
+        {
+            var i = 0;
+            var options = "";
             foreach (var str in list)
             {
-                if (str == minStr) continue;
-                var option = str.Replace(")", "");
-                foreach (var word in words)
+                var j = str.LastIndexOf(',') + 1;
+                var option = "";
+                for (var k = j; k < str.Length; k++)
                 {
-                    if (word.Length == 1)
-                        continue;
-                    option = option.Replace(word, "");
+                    option += str[k];
                 }
-                option = option.Replace(",", "").Replace("(", "");
                 if (i == 0)
-                    options = option;
+                    options = option.Trim();
                 else
-                    options += " ; " + option;
+                    options += " ; " + option.Trim();
                 i++;
             }
-            options = options.Trim();   
         }
 
         private static void ListToConsole(IEnumerable<string> list)
@@ -125,6 +172,17 @@ namespace TestAutogurGetOption
             };
             Console.WriteLine("Case 4");
             ListToConsole(list);
+            GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Options: {0}", options);
+
+            list = new List<string>
+            {
+                "Дифференциал самоблок. ВАЗ-1111 винтовой \"ValRacing\" , Стандарт",
+                "Дифференциал самоблок. ВАЗ-1111 винтовой \"ValRacing\" , Туризм",
+                "Дифференциал самоблок. ВАЗ-1111 винтовой \"ValRacing\" , Спорт"
+            };
+            ListToConsole(list);
+            //Test(list);
             GetNameAndOption(list, out name, out options);
             Console.WriteLine("Options: {0}", options);
             Console.ReadLine();

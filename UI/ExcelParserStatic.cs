@@ -154,13 +154,13 @@ namespace ExcelParserForOpenCart
                 if (string.IsNullOrEmpty(option)) continue;
                 if (i == 0)
                 {
-                    options = option;
+                    options = option.Trim();
                     cost = str.Cost;
                     costs = "";
                 }
                 else
                 {
-                    options += " ; " + option;
+                    options += " ; " + option.Trim();
                     var diff = str.Cost - cost;
                     costs += " ; " + diff.ToString(CultureInfo.CurrentCulture);
                 }
@@ -185,13 +185,13 @@ namespace ExcelParserForOpenCart
                 option = option.Replace(",", "").Replace("(", "");
                 if (i == 0)
                 {
-                    options = option;
+                    options = option.Trim();
                     cost = str.Cost;
                     costs = "";
                 }
                 else
                 {
-                    options += " ; " + option;
+                    options += " ; " + option.Trim();
                     var diff = str.Cost - cost;
                     costs += " ; " + diff.ToString(CultureInfo.CurrentCulture);
                 }
