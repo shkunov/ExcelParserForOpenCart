@@ -105,6 +105,8 @@
   <ItemGroup>
     <Compile Include="OutputPriceLine.cs" />
     <Compile Include="PairProductAndCost.cs" />
+    <Compile Include="Prices\For2Union.cs" />
+    <Compile Include="Prices\GeneralMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

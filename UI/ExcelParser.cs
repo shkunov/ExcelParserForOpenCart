@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
 using System.Text.RegularExpressions;
+using ExcelParserForOpenCart.Prices;
 
 
 namespace ExcelParserForOpenCart
@@ -19,7 +20,7 @@ namespace ExcelParserForOpenCart
         private readonly bool _isExcelInstal;
         private BackgroundWorker _workerSave;
         private BackgroundWorker _workerOpen;
-        private readonly List<OutputPriceLine> _list;
+        private List<OutputPriceLine> _list;
         private string _template;
         private string _openFileName;
         private string _saveFileName;
@@ -361,7 +362,9 @@ namespace ExcelParserForOpenCart
             switch (PriceType)
             {
                 case EnumPrices.ДваСоюза:
-                    For2Union(row, range);
+                    var a = new For2Union();
+                    a.Analyze(row, range);
+                    _list = a.List;
                     break;
                 case EnumPrices.OJ:
                     OjPrice(row, range);
