@@ -58,38 +58,6 @@ namespace ExcelParserForOpenCart
         {
             if (_isExcelInstal == false)
                 return;
-            #region Test
-            //var list = new List<OutputPriceLine>();
-            //var line = new OutputPriceLine
-            //{
-            //    Name = "Имя",
-            //    VendorCode = "1234567",
-            //    Category1 = "Багажники на Suzuki",
-            //    Category2 = "Багажники",
-            //    ProductDescription = "Огромный багажник, вместительностью до 300 кг",
-            //    Cost = "3000",
-            //    Foto = "http://img.yandex.ru/2034.jpg",
-            //    Option = "Да",
-            //    Qt = "1000",
-            //    PlusThePrice = "100"
-            //};
-            //list.Add(line);
-            //var line2 = new OutputPriceLine
-            //{
-            //    Name = "Имя",
-            //    VendorCode = "7654321",
-            //    Category1 = "Багажники на Suzuki",
-            //    Category2 = "Багажники",
-            //    ProductDescription = "Огромный багажник, вместительностью до 300 кг",
-            //    Cost = "3000",
-            //    Foto = "http://img.yandex.ru/2034.jpg",
-            //    Option = "Нет",
-            //    Qt = "2000",
-            //    PlusThePrice = "200"
-            //};
-            //list.Add(line2);
-            //_list = list;
-            #endregion
             _saveFileName = fileName;
             _template = Global.GetTemplate();
             if (_template == null)
