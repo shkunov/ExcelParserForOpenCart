@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
-using System.Text.RegularExpressions;
 using ExcelParserForOpenCart.Prices;
 
 
@@ -125,227 +123,6 @@ namespace ExcelParserForOpenCart
             if (OnOpenDocument != null) OnOpenDocument(null, null);
         }
 
-        /// <summary>
-        /// Обработка для прайса 2 союза
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="range"></param>
-        private void For2Union(int row, Range range)
-        {
-            var category1 = string.Empty;
-            var category2 = string.Empty;
-            for (var i = 9; i < row; i++)
-            {
-                var line = new OutputPriceLine();
-                var str = string.Empty;
-                var theRange = range.Cells[i, 1] as Range;
-                if (theRange != null)
-                {
-                    str = ConverterToString(theRange.Value2);
-                    var color = theRange.Interior.Color;
-                    var sc = color.ToString();
-                    if (sc == "0") // чёрный
-                    {
-                        category1 = str;
-                        category2 = string.Empty;
-                        continue;
-                    }
-                    if (sc == "8421504")
-                    {
-                        category2 = str;
-                        continue;
-                    }
-                }
-                line.Category1 = category1;
-                line.Category2 = category2;
-                line.VendorCode = ConverterToString(range.Cells[i, 3] as Range);
-                line.Name = ConverterToString(range.Cells[i, 4] as Range);
-                line.Qt = ConverterToString(range.Cells[i, 5] as Range);
-                // todo: цена в USD может стоит её как-то обработать?
-                line.Cost = ConverterToString(range.Cells[i, 6] as Range);
-
-                if (!string.IsNullOrEmpty(line.VendorCode))
-                    _list.Add(line);
-                if (string.IsNullOrEmpty(str)) break;
-            }
-        }
-        /// <summary>
-        /// Обработка прайсов, таких как: Каталог OJ 2016_06_01 вер. 6
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="range"></param>
-        private void OjPrice(int row, Range range)
-        {
-            var category1 = string.Empty;
-            var needOption = true;
-            var baseConnecter = new BaseConnecter(OnBaseMsgAction);
-            for (var i = 2; i < row; i++)
-            {
-                if (i == 3) continue;
-                var line = new OutputPriceLine();
-                var str = ConverterToString(range.Cells[i, 1] as Range);
-                if (str.Contains("Рисунок"))
-                {
-                    // после этого момента опции не читаем
-                    needOption = false;
-                    continue;
-                }
-                
-                if (!string.IsNullOrWhiteSpace(str))
-                {
-                    category1 = str;
-                    continue;
-                }
-                line.Category1 = category1;
-                if (line.Category1.Contains("Услуги")) continue; // Если надо, удалим раздел Услуги
-                line.VendorCode = ConverterToString(range.Cells[i, 2] as Range);
-                var описание = ConverterToString(range.Cells[i, 3] as Range);
-
-                if (string.IsNullOrEmpty(line.VendorCode) && !string.IsNullOrEmpty(описание))
-               {
-                    // todo: случай когда артикуль не заполнен тоже нужно обработать
-                    continue;
-                }
-
-                line.Cost = ConverterToString(range.Cells[i, 6] as Range);
-                var особенностиУстановки = ConverterToString(range.Cells[i, 11] as Range);
-                // todo: вот такое формирование наименование пока под вопросом, нужно выяснить точно как его формировать в автоматическом режиме
-                var newname = baseConnecter.OJ_Composition(category1);
-                line.Name = string.Format("{0} {1}", newname, line.VendorCode);
-                line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
-                if (needOption)
-                {
-                    var opc = ConverterToString(range.Cells[i, 7] as Range);
-                    line.Option = OjOptionParser(opc);    
-                }
-
-                if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
-
-                if (!string.IsNullOrEmpty(описание))
-                    _list.Add(line);
-            }
-            baseConnecter.Dispose();
-        }
-
-        private void OnBaseMsgAction(string s)
-        {
-            _workerOpen.ReportProgress(20, s);
-        }
-
-        private void TdgroupPrice(int row, Range range)
-        {
-
-        }
-        /// <summary>
-        /// Прайс ИП Пьянов С.Г. Autogur73.ru
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="range"></param>
-        private void AutogurPrice(int row, Range range)
-        {
-            var category1 = string.Empty;
-            var category2 = string.Empty;
-            var code = string.Empty;
-            var vendorCode = string.Empty;
-            var pair = false;
-            // список имён с одинковым артикулем
-            var list = new List<PairProductAndCost>();
-            const string pattern = "(\\d+\\.\\s?)";
-            for (var i = 13; i < row; i++)
-            {
-                var line = new OutputPriceLine();
-                var theRange = range.Cells[i, 3] as Range;
-                if (theRange != null)
-                {
-                    string str = ConverterToString(theRange.Value2);
-                    var color = theRange.Interior.Color;
-                    var sc = color.ToString();
-                    if (sc == "8765644") // 1 категория
-                    {
-                        category1 = Regex.Replace(str, pattern, string.Empty);
-                        category2 = string.Empty;
-                        continue;
-                    }
-                    if (sc == "9951719") // 2 категория
-                    {
-                        category2 = str;
-                        continue;
-                    }
-                    if (sc == "12710911") continue; // пока предлагаю эту графу пропускать, это как бы 3 категория
-                }
-                line.Category1 = category1;
-                line.Category2 = category2;
-                code = ConverterToString(range.Cells[i, 1] as Range);
-                vendorCode = ConverterToString(range.Cells[i, 2] as Range);
-                // получить артикул следующей строки для сравнения
-                var tempVendorCode = ConverterToString(range.Cells[i + 1, 2] as Range);
-                var tempName = ConverterToString(range.Cells[i, 3] as Range);
-                var tempName2 = ConverterToString(range.Cells[i + 1, 3] as Range);
-                //var cost = ConverterToString(range.Cells[i, 5] as Range);
-                var cost1 = ConverterToDecimal(range.Cells[i, 5] as Range);
-                var cost2 = ConverterToDecimal(range.Cells[i + 1, 5] as Range);
-                if (!pair)
-                {
-                    list.Clear();
-                    list.Add(new PairProductAndCost
-                    {
-                        Name = tempName,
-                        Cost = cost1
-                    });
-                }
-                if (string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(tempVendorCode) && string.IsNullOrWhiteSpace(tempName))
-                    break;
-                //todo: протестировать случай если артикуль не заполнен
-                if (tempVendorCode == vendorCode && !string.IsNullOrWhiteSpace(vendorCode))
-                {
-                    // дублирование
-                    list.Add(new PairProductAndCost
-                    {
-                        Name = tempName2,
-                        Cost = cost2
-                    });
-                    pair = true;
-                    continue;
-                }
-                // получить из списка опции и имя
-                if (list.Count >= 2)
-                {
-                    string name, options, costs;
-                    GetNameAndOptionFromAutogur73(list, out name, out options, out costs);
-                    line.Name = name;
-                    line.Option = options;
-                    line.Cost = list[0].Cost.ToString(CultureInfo.CurrentCulture);
-                    line.PlusThePrice = costs;
-                }
-                else
-                {
-                    line.Name = tempName;
-                    line.Cost = cost1.ToString(CultureInfo.CurrentCulture);
-                }
-                list.Clear();
-                pair = false;
-                line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
-                
-                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
-                    break; // выходить из цикла
-                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
-                    continue; // игнорировать строки без кода и артикля
-                if (!string.IsNullOrEmpty(line.Name))
-                    _list.Add(line);
-            }
-        }
-
-        private void CompositePrice(int row, Range range)
-        {
-
-        }
-
-        private void RivalPrice(int row, Range range)
-        {
-
-        }
-
-
         private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
         {
             _list.Clear();
@@ -362,24 +139,28 @@ namespace ExcelParserForOpenCart
             switch (PriceType)
             {
                 case EnumPrices.ДваСоюза:
-                    var a = new For2Union();
-                    a.Analyze(row, range);
-                    _list = a.List;
+                    var for2Union = new For2Union();
+                    for2Union.Analyze(row, range);
+                    _list = for2Union.List;
                     break;
                 case EnumPrices.OJ:
-                    OjPrice(row, range);
+                    var ojPrice = new OjPrice();
+                    ojPrice.OnMsg += s =>
+                    {
+                        _workerOpen.ReportProgress(20, s);
+                    };
+                    ojPrice.Analyze(row, range);
                     break;
                 case EnumPrices.ПТГрупп:
-                    TdgroupPrice(row, range);
                     break;
                 case EnumPrices.Autogur73:
-                    AutogurPrice(row, range);
+                    var autogurPrice = new AutogurPrice();
+                    autogurPrice.Analyze(row, range);
+                    _list = autogurPrice.List;
                     break;
                 case EnumPrices.Композит:
-                    CompositePrice(row, range);
                     break;
                 case EnumPrices.Риваль:
-                    RivalPrice(row, range);
                     break;
                 case EnumPrices.Неизвестный:
                     _workerOpen.ReportProgress(0, "Прайс не опознан");

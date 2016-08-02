@@ -6,7 +6,12 @@ namespace ExcelParserForOpenCart.Prices
 {
     public class GeneralMethods
     {
-        public List<OutputPriceLine> List { get; protected set; }
+        public List<OutputPriceLine> List { get; private set; }
+
+        public GeneralMethods()
+        {
+            List = new List<OutputPriceLine>();
+        }
 
         protected static string ConverterToString(dynamic obj)
         {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart.Prices
 {
@@ -14,7 +13,7 @@ namespace ExcelParserForOpenCart.Prices
         {
             var category1 = string.Empty;
             var category2 = string.Empty;
-            List = new List<OutputPriceLine>();
+            List.Clear();
             for (var i = 9; i < row; i++)
             {
                 var line = new OutputPriceLine();
