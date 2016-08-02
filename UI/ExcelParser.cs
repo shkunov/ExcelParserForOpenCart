@@ -48,9 +48,9 @@ namespace ExcelParserForOpenCart
             }
             _list.Clear();
             _workerOpen = new BackgroundWorker { WorkerReportsProgress = true };
-            _workerOpen.DoWork += _workerOpen_DoWork;
-            _workerOpen.RunWorkerCompleted += _workerOpen_RunWorkerCompleted;
-            _workerOpen.ProgressChanged += _workerOpen_ProgressChanged;
+            _workerOpen.DoWork += DoWorkOpen;
+            _workerOpen.RunWorkerCompleted += RunCompletedOpenWorker;
+            _workerOpen.ProgressChanged += ProgressChangedWorkerOpen;
             _workerOpen.RunWorkerAsync();
         }
 
@@ -104,26 +104,26 @@ namespace ExcelParserForOpenCart
             }
             if (_list == null || _list.Count < 1) return;
             _workerSave = new BackgroundWorker { WorkerReportsProgress = true };
-            _workerSave.DoWork += _workerSave_DoWork;
-            _workerSave.RunWorkerCompleted += _workerSave_RunWorkerCompleted;
-            _workerSave.ProgressChanged += _workerSave_ProgressChanged;
+            _workerSave.DoWork += DoWorkSave;
+            _workerSave.RunWorkerCompleted += RunWorkerCompletedWorkerSave;
+            _workerSave.ProgressChanged += ProgressChangedWorkerSave;
             _workerSave.RunWorkerAsync();
         }
 
-        private void _workerOpen_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ProgressChangedWorkerOpen(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null && !string.IsNullOrEmpty(e.UserState.ToString()))
                 SendMessage(e.UserState.ToString());
             SendProgressBarInfo(e.ProgressPercentage);
         }
 
-        private void _workerOpen_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void RunCompletedOpenWorker(object sender, RunWorkerCompletedEventArgs e)
         {
             SendMessage("Завершён анализ документа: " + _openFileName);
             if (OnOpenDocument != null) OnOpenDocument(null, null);
         }
 
-        private void _workerOpen_DoWork(object sender, DoWorkEventArgs e)
+        private void DoWorkOpen(object sender, DoWorkEventArgs e)
         {
             _list.Clear();
             _workerOpen.ReportProgress(0);
@@ -176,18 +176,18 @@ namespace ExcelParserForOpenCart
             _workerOpen.ReportProgress(50);
         }
 
-        private void _workerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ProgressChangedWorkerSave(object sender, ProgressChangedEventArgs e)
         {
             SendProgressBarInfo(e.ProgressPercentage);
         }
 
-        private void _workerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void RunWorkerCompletedWorkerSave(object sender, RunWorkerCompletedEventArgs e)
         {
             SendMessage("Прайс создан! Сохраняю как: " + _saveFileName);
             if (OnSaveDocument != null) OnSaveDocument(null, null);
         }
 
-        private void _workerSave_DoWork(object sender, DoWorkEventArgs e)
+        private void DoWorkSave(object sender, DoWorkEventArgs e)
         {
             var application = new Application();
             var workbook = application.Workbooks.Open(_template);
