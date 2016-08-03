@@ -94,6 +94,9 @@ namespace ExcelParserForOpenCart
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
                 e.Cancel = true;
+            //todo: возможна проблема, не выгрузится процесс Excel
+            if (result == MessageBoxResult.Yes)
+                _excelParser.CancelParsing();
         }
     }
 }
