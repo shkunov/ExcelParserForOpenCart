@@ -100,6 +100,7 @@ namespace ExcelParserForOpenCart
             if (result == MessageBoxResult.No)
                 e.Cancel = true;
             //todo: возможна проблема, не выгрузится процесс Excel
+            // пофиксено, но нужно тестировать
             if (result == MessageBoxResult.Yes)
                 _excelParser.CancelParsing();
             Thread.Sleep(2000);
