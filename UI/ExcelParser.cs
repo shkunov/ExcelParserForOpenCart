@@ -124,6 +124,7 @@ namespace ExcelParserForOpenCart
                 ReleaseObject(worksheet);
                 ReleaseObject(workbook);
                 ReleaseObject(application);
+                _workerOpen.ReportProgress(0);
                 e.Cancel = true;
                 return;
             }
@@ -170,7 +171,7 @@ namespace ExcelParserForOpenCart
             ReleaseObject(worksheet);
             ReleaseObject(workbook);
             ReleaseObject(application);
-            _workerOpen.ReportProgress(50);
+            _workerOpen.ReportProgress(!e.Cancel ? 50 : 0);
         }
 
         private void ProgressChangedWorkerSave(object sender, ProgressChangedEventArgs e)
@@ -205,6 +206,7 @@ namespace ExcelParserForOpenCart
                 ReleaseObject(worksheet);
                 ReleaseObject(workbook);
                 ReleaseObject(application);
+                _workerSave.ReportProgress(50);
                 e.Cancel = true;
                 return;
             }
@@ -235,7 +237,7 @@ namespace ExcelParserForOpenCart
             ReleaseObject(worksheet);
             ReleaseObject(workbook);
             ReleaseObject(application);
-            _workerSave.ReportProgress(100);
+            _workerSave.ReportProgress(!e.Cancel ? 100 : 50);
         }
 
         private void SendMessage(string message)
