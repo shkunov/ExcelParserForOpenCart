@@ -36,6 +36,19 @@ namespace ExcelParserForOpenCart
             }
         }
 
+        public bool IsStart()
+        {
+            if (_workerOpen != null) return _workerOpen.IsBusy;
+            if (_workerSave != null) return _workerSave.IsBusy;
+            return false;
+        }
+
+        public void CancelParsing()
+        {
+            if (_workerOpen != null) _workerOpen.CancelAsync();
+            if (_workerSave != null) _workerSave.CancelAsync();
+        }
+
         public void OpenExcel(string fileName)
         {
             _openFileName = fileName;
@@ -47,7 +60,7 @@ namespace ExcelParserForOpenCart
                 return;
             }
             _list.Clear();
-            _workerOpen = new BackgroundWorker { WorkerReportsProgress = true };
+            _workerOpen = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             _workerOpen.DoWork += DoWorkOpen;
             _workerOpen.RunWorkerCompleted += RunCompletedOpenWorker;
             _workerOpen.ProgressChanged += ProgressChangedWorkerOpen;
@@ -71,7 +84,7 @@ namespace ExcelParserForOpenCart
                 return;
             }
             if (_list == null || _list.Count < 1) return;
-            _workerSave = new BackgroundWorker { WorkerReportsProgress = true };
+            _workerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true};
             _workerSave.DoWork += DoWorkSave;
             _workerSave.RunWorkerCompleted += RunWorkerCompletedWorkerSave;
             _workerSave.ProgressChanged += ProgressChangedWorkerSave;

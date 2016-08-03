@@ -13,8 +13,8 @@ namespace ExcelParserForOpenCart
 
         public MainWindow()
         {
-            _excelParser = new ExcelParser();
             InitializeComponent();
+            _excelParser = new ExcelParser();
             _excelParser.OnParserAction += OnParserAction;
             _excelParser.OnProgressBarAction += OnProgressBarAction;
             _excelParser.OnOpenDocument += OnOpenDocument;
@@ -85,6 +85,15 @@ namespace ExcelParserForOpenCart
             MessageList.Items.Add("Идёт сохранение документа.");
             _excelParser.SaveResult(filename);
             MessageList.Items.Add("Пожалуйста, подождите...");
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!_excelParser.IsStart()) return;
+            var result = MessageBox.Show("Идёт работа. Вы увререны что хотите завершить работу?", "Вопрос?",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+                e.Cancel = true;
         }
     }
 }
