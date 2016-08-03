@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using Microsoft.Win32;
 
@@ -14,6 +16,8 @@ namespace ExcelParserForOpenCart
         public MainWindow()
         {
             InitializeComponent();
+            var strVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+            Title = string.Format("Конвертер прайслистов (версия {0})", strVersion);
             _excelParser = new ExcelParser();
             _excelParser.OnParserAction += OnParserAction;
             _excelParser.OnProgressBarAction += OnProgressBarAction;
