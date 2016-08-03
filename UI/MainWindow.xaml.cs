@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using Microsoft.Win32;
 
@@ -101,6 +102,12 @@ namespace ExcelParserForOpenCart
             //todo: возможна проблема, не выгрузится процесс Excel
             if (result == MessageBoxResult.Yes)
                 _excelParser.CancelParsing();
+            Thread.Sleep(2000);
+        }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            _excelParser.CancelParsing();
         }
     }
 }
