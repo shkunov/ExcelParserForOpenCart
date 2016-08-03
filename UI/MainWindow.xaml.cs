@@ -17,8 +17,9 @@ namespace ExcelParserForOpenCart
         public MainWindow()
         {
             InitializeComponent();
+            BtnCancel.IsEnabled = false;
             var strVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
-            Title = string.Format("Конвертер прайслистов (версия {0})", strVersion);
+            Title = string.Format("Конвертер прайслистов (версия: {0})", strVersion);
             _excelParser = new ExcelParser();
             _excelParser.OnParserAction += OnParserAction;
             _excelParser.OnProgressBarAction += OnProgressBarAction;
@@ -29,13 +30,15 @@ namespace ExcelParserForOpenCart
         private void OnSaveDocument(object sender, EventArgs eventArgs)
         {
             BtnOpen.IsEnabled = true;
-            BtnSave.IsEnabled = false; 
+            BtnSave.IsEnabled = false;
+            BtnCancel.IsEnabled = false;
         }
 
         private void OnOpenDocument(object sender, EventArgs e)
         {
             BtnOpen.IsEnabled = true;
-            BtnSave.IsEnabled = true;            
+            BtnSave.IsEnabled = true;
+            BtnCancel.IsEnabled = false;
         }
 
         private void OnProgressBarAction(int obj)
@@ -70,6 +73,7 @@ namespace ExcelParserForOpenCart
             MessageList.Items.Add("Пожалуйста, подождите...");
             BtnOpen.IsEnabled = false;
             BtnSave.IsEnabled = false;
+            BtnCancel.IsEnabled = true;
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -87,6 +91,7 @@ namespace ExcelParserForOpenCart
             if (string.IsNullOrEmpty(filename)) return;
             BtnOpen.IsEnabled = false;
             BtnSave.IsEnabled = false;
+            BtnCancel.IsEnabled = true;
             MessageList.Items.Add("Идёт сохранение документа.");
             _excelParser.SaveResult(filename);
             MessageList.Items.Add("Пожалуйста, подождите...");

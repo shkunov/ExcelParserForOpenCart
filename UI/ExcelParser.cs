@@ -193,10 +193,12 @@ namespace ExcelParserForOpenCart
 
         private void DoWorkSave(object sender, DoWorkEventArgs e)
         {
+            _workerSave.ReportProgress(65);
             var application = new Application();
             var workbook = application.Workbooks.Open(_template);
             var worksheet = workbook.Worksheets[1] as Worksheet;
             if (worksheet == null) return;
+            _workerSave.ReportProgress(70);
             if (_workerSave.CancellationPending)
             {
                 application.Quit();
@@ -228,7 +230,7 @@ namespace ExcelParserForOpenCart
                 worksheet.Cells[i, 10] = obj.PlusThePrice;
                 i++;
             }
-            worksheet.SaveAs(_saveFileName);
+            if (!_workerSave.CancellationPending) worksheet.SaveAs(_saveFileName);
             application.Quit();
             ReleaseObject(worksheet);
             ReleaseObject(workbook);
