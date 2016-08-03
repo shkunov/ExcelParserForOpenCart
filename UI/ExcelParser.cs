@@ -45,8 +45,8 @@ namespace ExcelParserForOpenCart
 
         public void CancelParsing()
         {
-            if (_workerOpen != null) _workerOpen.CancelAsync();
-            if (_workerSave != null) _workerSave.CancelAsync();
+            if (_workerOpen != null && _workerOpen.IsBusy) _workerOpen.CancelAsync();
+            if (_workerSave != null && _workerSave.IsBusy) _workerSave.CancelAsync();
         }
 
         public void OpenExcel(string fileName)
