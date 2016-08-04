@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart.Prices
 {
     public class GeneralMethods
     {
+        protected BackgroundWorker Worker;
+        protected DoWorkEventArgs E;
+
         public List<OutputPriceLine> List { get; private set; }
 
         public GeneralMethods()
         {
             List = new List<OutputPriceLine>();
         }
+
 
         protected static string ConverterToString(dynamic obj)
         {

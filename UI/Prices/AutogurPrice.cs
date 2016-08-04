@@ -9,18 +9,10 @@ namespace ExcelParserForOpenCart.Prices
 {
     public class AutogurPrice : GeneralMethods
     {
-        private readonly BackgroundWorker _worker;
-        private readonly DoWorkEventArgs _e;
-
-        public AutogurPrice()
-        {
-            
-        }
-
         public AutogurPrice(object sender, DoWorkEventArgs e)
         {
-            _worker = sender as BackgroundWorker;
-            _e = e;
+            Worker = sender as BackgroundWorker;
+            E = e;
         }
 
         /// <summary>
@@ -30,9 +22,9 @@ namespace ExcelParserForOpenCart.Prices
         /// <param name="range"></param>
         public void Analyze(int row, Range range)
         {
-            if (_worker.CancellationPending)
+            if (Worker.CancellationPending)
             {
-                _e.Cancel = true;
+                E.Cancel = true;
                 return;
             }
             var category1 = string.Empty;
@@ -46,9 +38,9 @@ namespace ExcelParserForOpenCart.Prices
             const string pattern = "(\\d+\\.\\s?)";
             for (var i = 13; i < row; i++)
             {
-                if (_worker.CancellationPending)
+                if (Worker.CancellationPending)
                 {
-                    _e.Cancel = true;
+                    E.Cancel = true;
                     break;
                 }
                 var line = new OutputPriceLine();

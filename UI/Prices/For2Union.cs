@@ -5,13 +5,10 @@ namespace ExcelParserForOpenCart.Prices
 {
     public class For2Union : GeneralMethods
     {
-        private readonly BackgroundWorker _worker;
-        private readonly DoWorkEventArgs _e;
-
         public For2Union(object sender, DoWorkEventArgs e)
         {
-            _worker = sender as BackgroundWorker;
-            _e = e;
+            Worker = sender as BackgroundWorker;
+            E = e;
         }
         /// <summary>
         /// Обработка для прайса 2 союза
@@ -20,9 +17,9 @@ namespace ExcelParserForOpenCart.Prices
         /// <param name="range"></param>
         public void Analyze(int row, Range range)
         {
-            if (_worker.CancellationPending)
+            if (Worker.CancellationPending)
             {
-                _e.Cancel = true;
+                E.Cancel = true;
                 return;
             }
             var category1 = string.Empty;
@@ -30,9 +27,9 @@ namespace ExcelParserForOpenCart.Prices
             List.Clear();
             for (var i = 9; i < row; i++)
             {
-                if (_worker.CancellationPending)
+                if (Worker.CancellationPending)
                 {                
-                    _e.Cancel = true;
+                    E.Cancel = true;
                     break;
                 }
                 var line = new OutputPriceLine();

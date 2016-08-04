@@ -8,18 +8,10 @@ namespace ExcelParserForOpenCart.Prices
     {
         public event Action<string> OnMsg;
 
-        private readonly BackgroundWorker _worker;
-        private readonly DoWorkEventArgs _e;
-
-        public OjPrice()
-        {
-            
-        }
-
         public OjPrice(object sender, DoWorkEventArgs e)
         {
-            _worker = sender as BackgroundWorker;
-            _e = e;
+            Worker = sender as BackgroundWorker;
+            E = e;
         }
         /// <summary>
         /// Обработка прайсов, таких как: Каталог OJ 2016_06_01 вер. 6
@@ -28,9 +20,9 @@ namespace ExcelParserForOpenCart.Prices
         /// <param name="range"></param>
         public  void Analyze(int row, Range range)
         {
-            if (_worker.CancellationPending)
+            if (Worker.CancellationPending)
             {
-                _e.Cancel = true;
+                E.Cancel = true;
                 return;
             }
             var category1 = string.Empty;
@@ -39,9 +31,9 @@ namespace ExcelParserForOpenCart.Prices
             var baseConnecter = new BaseConnecter(OnBaseMsgAction);
             for (var i = 2; i < row; i++)
             {
-                if (_worker.CancellationPending)
+                if (Worker.CancellationPending)
                 {
-                    _e.Cancel = true;
+                    E.Cancel = true;
                     break;
                 }
                 if (i == 3) continue;
