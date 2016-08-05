@@ -10,11 +10,11 @@ namespace ExcelParserForOpenCart.Prices
         protected BackgroundWorker Worker;
         protected DoWorkEventArgs E;
 
-        public List<OutputPriceLine> ResultingList { get; private set; }
+        public List<OutputPriceLine> ResultingPrice { get; private set; }
 
         public GeneralMethods()
         {
-            ResultingList = new List<OutputPriceLine>();
+            ResultingPrice = new List<OutputPriceLine>();
         }
 
 

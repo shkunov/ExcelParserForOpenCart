@@ -23,7 +23,7 @@ namespace ExcelParserForOpenCart.Prices
             if (Worker.CancellationPending)
             {
                 E.Cancel = true;
-                ResultingList.Clear();
+                ResultingPrice.Clear();
                 return;
             }
             var category1 = string.Empty;
@@ -34,7 +34,7 @@ namespace ExcelParserForOpenCart.Prices
                 if (Worker.CancellationPending)
                 {
                     E.Cancel = true;
-                    ResultingList.Clear();
+                    ResultingPrice.Clear();
                     break;
                 }
                 if (i == 3) continue;
@@ -78,7 +78,7 @@ namespace ExcelParserForOpenCart.Prices
                 if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
 
                 if (!string.IsNullOrEmpty(описание))
-                    ResultingList.Add(line);
+                    ResultingPrice.Add(line);
             }
             baseConnecter.Dispose();
         }

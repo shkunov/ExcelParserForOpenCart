@@ -18,7 +18,7 @@ namespace ExcelParserForOpenCart
         private readonly bool _isExcelInstal;
         private BackgroundWorker _workerSave;
         private BackgroundWorker _workerOpen;
-        private List<OutputPriceLine> _resultingList;
+        private List<OutputPriceLine> _resultingPrice;
         private string _template;
         private string _openFileName;
         private string _saveFileName;
@@ -28,7 +28,7 @@ namespace ExcelParserForOpenCart
         public ExcelParser()
         {
             _isExcelInstal = true;
-            _resultingList = new List<OutputPriceLine>();
+            _resultingPrice = new List<OutputPriceLine>();
             if (!IsExcelInstall())
             {
                 SendMessage("Excel не установлен!");
@@ -59,7 +59,7 @@ namespace ExcelParserForOpenCart
                 SendMessage("Ошибка! Файл отсутствует!");
                 return;
             }
-            _resultingList.Clear();
+            _resultingPrice.Clear();
             _workerOpen = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             _workerOpen.DoWork += DoWorkOpen;
             _workerOpen.RunWorkerCompleted += RunCompletedOpenWorker;
@@ -83,7 +83,7 @@ namespace ExcelParserForOpenCart
                 SendMessage("Ошибка! Отсутствует шаблон!");
                 return;
             }
-            if (_resultingList == null || _resultingList.Count < 1) return;
+            if (_resultingPrice == null || _resultingPrice.Count < 1) return;
             _workerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true};
             _workerSave.DoWork += DoWorkSave;
             _workerSave.RunWorkerCompleted += RunWorkerCompletedWorkerSave;
@@ -113,7 +113,7 @@ namespace ExcelParserForOpenCart
 
         private void DoWorkOpen(object sender, DoWorkEventArgs e)
         {
-            _resultingList.Clear();
+            _resultingPrice.Clear();
             _workerOpen.ReportProgress(0);
             var application = new Application();
             var workbook = application.Workbooks.Open(_openFileName);
@@ -139,7 +139,7 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.ДваСоюза:
                     var for2Union = new For2Union(sender, e);
                     for2Union.Analyze(row, range);
-                    _resultingList = for2Union.ResultingList;
+                    _resultingPrice = for2Union.ResultingPrice;
                     break;
                 case EnumPrices.OJ:
                     var ojPrice = new OjPrice(sender, e);
@@ -148,14 +148,14 @@ namespace ExcelParserForOpenCart
                         _workerOpen.ReportProgress(20, s);
                     };
                     ojPrice.Analyze(row, range);
-                    _resultingList = ojPrice.ResultingList;
+                    _resultingPrice = ojPrice.ResultingPrice;
                     break;
                 case EnumPrices.ПТГрупп:
                     break;
                 case EnumPrices.Autogur73:
                     var autogurPrice = new AutogurPrice(sender, e);
                     autogurPrice.Analyze(row, range);
-                    _resultingList = autogurPrice.ResultingList;
+                    _resultingPrice = autogurPrice.ResultingPrice;
                     break;
                 case EnumPrices.Композит:
                     break;
@@ -213,7 +213,7 @@ namespace ExcelParserForOpenCart
             }
             // действия по заполнению шаблона
             var i = 2;
-            foreach (var obj in _resultingList)
+            foreach (var obj in _resultingPrice)
             {
                 if (_workerSave.CancellationPending)
                 {
