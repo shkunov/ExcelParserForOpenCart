@@ -25,6 +25,7 @@ namespace ExcelParserForOpenCart.Prices
             if (Worker.CancellationPending)
             {
                 E.Cancel = true;
+                ResultingList.Clear();
                 return;
             }
             var category1 = string.Empty;
@@ -32,7 +33,7 @@ namespace ExcelParserForOpenCart.Prices
             var code = string.Empty;
             var vendorCode = string.Empty;
             var pair = false;
-            List.Clear();
+            ResultingList.Clear();
             // список имён с одинковым артикулем
             var list = new List<PairProductAndCost>();
             const string pattern = "(\\d+\\.\\s?)";
@@ -41,6 +42,7 @@ namespace ExcelParserForOpenCart.Prices
                 if (Worker.CancellationPending)
                 {
                     E.Cancel = true;
+                    ResultingList.Clear();
                     break;
                 }
                 var line = new OutputPriceLine();
@@ -121,7 +123,7 @@ namespace ExcelParserForOpenCart.Prices
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
                     continue; // игнорировать строки без кода и артикля
                 if (!string.IsNullOrEmpty(line.Name))
-                    List.Add(line);
+                    ResultingList.Add(line);
             }
         }
         /// <summary>

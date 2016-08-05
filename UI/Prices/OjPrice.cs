@@ -19,13 +19,13 @@ namespace ExcelParserForOpenCart.Prices
         /// </summary>
         /// <param name="row"></param>
         /// <param name="range"></param>
-        public List<OutputPriceLine> Analyze(int row, Range range)
+        public void Analyze(int row, Range range)
         {
-            var list = new List<OutputPriceLine>();
             if (Worker.CancellationPending)
             {
                 E.Cancel = true;
-                return null;
+                ResultingList.Clear();
+                return;
             }
             var category1 = string.Empty;
             var needOption = true;
@@ -35,6 +35,7 @@ namespace ExcelParserForOpenCart.Prices
                 if (Worker.CancellationPending)
                 {
                     E.Cancel = true;
+                    ResultingList.Clear();
                     break;
                 }
                 if (i == 3) continue;
@@ -78,10 +79,9 @@ namespace ExcelParserForOpenCart.Prices
                 if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
 
                 if (!string.IsNullOrEmpty(описание))
-                    list.Add(line);
+                    ResultingList.Add(line);
             }
             baseConnecter.Dispose();
-            return !E.Cancel ? list : null;
         }
         /// <summary>
         /// Поиск опции, прайс Каталог OJ 2016_06_01 вер. 6

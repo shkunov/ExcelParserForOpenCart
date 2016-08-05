@@ -24,12 +24,13 @@ namespace ExcelParserForOpenCart.Prices
             }
             var category1 = string.Empty;
             var category2 = string.Empty;
-            List.Clear();
+            ResultingList.Clear();
             for (var i = 9; i < row; i++)
             {
                 if (Worker.CancellationPending)
                 {                
                     E.Cancel = true;
+                    ResultingList.Clear();
                     break;
                 }
                 var line = new OutputPriceLine();
@@ -61,7 +62,7 @@ namespace ExcelParserForOpenCart.Prices
                 line.Cost = ConverterToString(range.Cells[i, 6] as Range);
 
                 if (!string.IsNullOrEmpty(line.VendorCode))
-                    List.Add(line);
+                    ResultingList.Add(line);
                 if (string.IsNullOrEmpty(str)) break;
             }
         }
