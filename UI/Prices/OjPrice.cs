@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.Office.Interop.Excel;
 
@@ -18,16 +19,16 @@ namespace ExcelParserForOpenCart.Prices
         /// </summary>
         /// <param name="row"></param>
         /// <param name="range"></param>
-        public  void Analyze(int row, Range range)
+        public List<OutputPriceLine> Analyze(int row, Range range)
         {
+            var list = new List<OutputPriceLine>();
             if (Worker.CancellationPending)
             {
                 E.Cancel = true;
-                return;
+                return null;
             }
             var category1 = string.Empty;
             var needOption = true;
-            List.Clear();
             var baseConnecter = new BaseConnecter(OnBaseMsgAction);
             for (var i = 2; i < row; i++)
             {
@@ -77,9 +78,10 @@ namespace ExcelParserForOpenCart.Prices
                 if (string.IsNullOrEmpty(описание) && string.IsNullOrEmpty(str)) break;
 
                 if (!string.IsNullOrEmpty(описание))
-                    List.Add(line);
+                    list.Add(line);
             }
             baseConnecter.Dispose();
+            return !E.Cancel ? list : null;
         }
         /// <summary>
         /// Поиск опции, прайс Каталог OJ 2016_06_01 вер. 6

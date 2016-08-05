@@ -147,7 +147,7 @@ namespace ExcelParserForOpenCart
                     {
                         _workerOpen.ReportProgress(20, s);
                     };
-                    ojPrice.Analyze(row, range);
+                    _list = ojPrice.Analyze(row, range);
                     break;
                 case EnumPrices.ПТГрупп:
                     break;
