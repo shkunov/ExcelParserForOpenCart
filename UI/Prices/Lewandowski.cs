@@ -38,6 +38,7 @@ namespace ExcelParserForOpenCart.Prices
                     startTable = false;
                     category1 = ConverterToString(range.Cells[i, 2] as Range);
                 }
+                //todo: обработать ситуацию когда нет категории
                 if (str.Contains("Наименование"))
                 {
                     startTable = true;
