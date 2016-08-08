@@ -19,6 +19,7 @@ namespace ExcelParserForOpenCart.Prices
                 return;
             }
             var startTable = false;
+            var category1 = string.Empty;
             ResultingPrice.Clear();
             for (var i = 7; i < row; i++)
             {
@@ -30,9 +31,11 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 var line = new OutputPriceLine();
                 var str = ConverterToString(range.Cells[i, 1] as Range);
-                if (string.IsNullOrWhiteSpace(str.Trim())) startTable = false;
-                var category1 = ConverterToString(range.Cells[i, 2] as Range);
-                if (!startTable) line.Category1 = category1;
+                if (string.IsNullOrWhiteSpace(str.Trim()))
+                {
+                    startTable = false;
+                    category1 = ConverterToString(range.Cells[i, 2] as Range);
+                }
                 if (str.Contains("Наименование"))
                 {
                     startTable = true;
@@ -43,6 +46,7 @@ namespace ExcelParserForOpenCart.Prices
                 if (startTable)
                 {
                     line.Name = ConverterToString(range.Cells[i, 2] as Range);
+                    line.Category1 = category1;
                     line.Cost = ConverterToString(range.Cells[i, 4] as Range);
                     if (!string.IsNullOrEmpty(line.Name))
                         ResultingPrice.Add(line);
