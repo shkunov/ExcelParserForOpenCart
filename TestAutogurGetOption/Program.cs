@@ -29,23 +29,23 @@ namespace TestAutogurGetOption
                 if (s.Length < minStr.Length)
                     minStr = s;
             }
-            if (maxStr.Length - minStr.Length < 5) @case = 3;
+            if (maxStr.Length - minStr.Length < 5) @case = 2;
             name = minStr;
             if (@case == 1)
             {
                 options = string.Empty;
+                var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
                 i = 0;
                 foreach (var str in list)
                 {
-                    var option = str.Replace(minStr, string.Empty).Replace(",", "").Trim();
-
+                    if (str == minStr) continue;
+                    var tmpWords = str.Split(new[] { ' ', ',', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                    var option = tmpWords.Except(words).Aggregate("", (current, w) => current + (w + " "));
                     if (option.Length > 19)
                     {
                         @case = 2;
                         break;
                     }
-
-                    if (string.IsNullOrEmpty(option)) continue;
                     if (i == 0)
                         options = option;
                     else
@@ -54,31 +54,7 @@ namespace TestAutogurGetOption
                 }
                 options = options.Trim();
             }
-            if (@case == 2)
-            {
-                options = string.Empty;
-                var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')' }, StringSplitOptions.RemoveEmptyEntries);
-                i = 0;
-                foreach (var str in list)
-                {
-                    if (str == minStr) continue;
-                    var option = str.Replace(")", "");
-                    foreach (var word in words)
-                    {
-                        if (word.Length == 1)
-                            continue;
-                        option = option.Replace(word, "");
-                    }
-                    option = option.Replace(",", "").Replace("(", "");
-                    if (i == 0)
-                        options = option;
-                    else
-                        options += " ; " + option;
-                    i++;
-                }
-                options = options.Trim();
-            }
-            if (@case != 3) return;
+            if (@case != 2) return;
             i = 0;
             foreach (var str in list)
             {
