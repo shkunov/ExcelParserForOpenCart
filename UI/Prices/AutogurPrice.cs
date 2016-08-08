@@ -194,7 +194,7 @@ namespace ExcelParserForOpenCart.Prices
                     {
                         options += " ; " + option.Trim();
                         var diff = item.Cost - cost;
-                        diffCosts += " ; " + diff.ToString(CultureInfo.CurrentCulture);
+                        diffCosts += "; " + diff.ToString(CultureInfo.CurrentCulture);
                     }
                 }
                 options = options.Trim();
@@ -222,11 +222,11 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 else
                 {
-                    options += " ; " + option.Trim();
+                    options += "; " + option.Trim();
                     var diff = item.Cost - cost;
-                    diffCosts += " ; " + diff.ToString(CultureInfo.CurrentCulture);
+                    diffCosts += "; " + diff.ToString(CultureInfo.CurrentCulture);
                 }
-                name = name.Replace(option, "").Replace(",", "");
+                if (!string.IsNullOrWhiteSpace(option)) name = name.Replace(option, "").Replace(",", "");
             }
         }
     }
