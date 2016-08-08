@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAutogurGetOption", "Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F468E254-1587-4AE0-8A3C-05887B3CE359}"
 	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
 		Installer\setup.iss = Installer\setup.iss
+		TODO.md = TODO.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E82FFACC-3779-4F21-8B31-E478C8C597E9}"
