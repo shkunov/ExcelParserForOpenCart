@@ -32,7 +32,7 @@
 
 ### Примеры прайсов для обработки:
 
-[PriceExample.zip](https://app.box.com/s/icxt0t1yo3boi9qk3zsbz5qybt2y39g3)
+[PriceExample.zip](https://app.box.com/s/phl77vc86kz1483r35qelsrvj7q1jl4m)
 
 ### Пример выходного прайса:
 
