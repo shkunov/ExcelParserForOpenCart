@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.RegularExpressions;
 using Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart.Prices
@@ -21,6 +22,7 @@ namespace ExcelParserForOpenCart.Prices
             var startTable = false;
             var category1 = string.Empty;
             ResultingPrice.Clear();
+            const string pattern = "[0-9]+";
             for (var i = 7; i < row; i++)
             {
                 if (Worker.CancellationPending)
@@ -41,10 +43,14 @@ namespace ExcelParserForOpenCart.Prices
                     startTable = true;
                     continue;
                 }
-                // todo: нужно вычислить артикуль
-                //line.VendorCode = ;
+                // todo: нужно вычислить артикуль и согласовать с заказчиком
                 if (startTable)
                 {
+                    var prefix = Regex.Match(category1, pattern).Value;
+                    if (!string.IsNullOrWhiteSpace(prefix))
+                        line.VendorCode = prefix + "-" + str;
+                    else
+                        line.VendorCode = category1 + "-" + str;
                     line.Name = ConverterToString(range.Cells[i, 2] as Range);
                     line.Category1 = category1;
                     line.Cost = ConverterToString(range.Cells[i, 4] as Range);
