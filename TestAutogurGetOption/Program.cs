@@ -78,26 +78,6 @@ namespace TestAutogurGetOption
             }
         }
 
-        private static void Test(IEnumerable<string> list)
-        {
-            var i = 0;
-            var options = "";
-            foreach (var str in list)
-            {
-                var j = str.LastIndexOf(',') + 1;
-                var option = "";
-                for (var k = j; k < str.Length; k++)
-                {
-                    option += str[k];
-                }
-                if (i == 0)
-                    options = option.Trim();
-                else
-                    options += " ; " + option.Trim();
-                i++;
-            }
-        }
-
         private static void ListToConsole(IEnumerable<string> list)
         {
             foreach (var s in list)
@@ -119,7 +99,6 @@ namespace TestAutogurGetOption
             ListToConsole(list);
             GetNameAndOption(list, out name, out options);
             Console.WriteLine("Options: {0}", options);
-
             list = new List<string>
             {
                 "ГУР 452 (YuBei) дв.ЗМЗ-402, 410 с механизмом Газель, Соболь",
@@ -129,7 +108,6 @@ namespace TestAutogurGetOption
             ListToConsole(list);
             GetNameAndOption(list, out name, out options);
             Console.WriteLine("Options: {0}", options);
-
             list = new List<string>
             {
                 "ГУР 452 (г. Борисов) дв. УМЗ-421 с насосом ZF",
@@ -140,7 +118,6 @@ namespace TestAutogurGetOption
             ListToConsole(list);
             GetNameAndOption(list, out name, out options);
             Console.WriteLine("Options: {0}", options);
-
             list = new List<string>
             {
                 "Шланг ГУР сливной УАЗ-469,  Хантер",
@@ -158,7 +135,6 @@ namespace TestAutogurGetOption
                 "Дифференциал самоблок. ВАЗ-1111 винтовой \"ValRacing\" , Спорт"
             };
             ListToConsole(list);
-            //Test(list);
             GetNameAndOption(list, out name, out options);
             Console.WriteLine("Options: {0}", options);
             Console.ReadLine();
