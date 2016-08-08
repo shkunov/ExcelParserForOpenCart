@@ -47,6 +47,11 @@ namespace ExcelParserForOpenCart
             if (str1.Contains("Прайс-лист") && str2.Contains("Наименование товаров"))
                 return EnumPrices.Autogur73;
 
+            str1 = ConverterToString(range.Cells[2, 2] as Range);
+
+            if (str1.Contains("Левандовская"))
+                return EnumPrices.Левандовская;
+
             return EnumPrices.Неизвестный;
         }
     }

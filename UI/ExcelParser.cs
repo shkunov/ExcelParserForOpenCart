@@ -161,6 +161,11 @@ namespace ExcelParserForOpenCart
                     break;
                 case EnumPrices.Риваль:
                     break;
+                case EnumPrices.Левандовская:
+                    var lewandowski = new Lewandowski(sender, e);
+                    lewandowski.Analyze(row, range);
+                    _resultingPrice = lewandowski.ResultingPrice;
+                    break;
                 case EnumPrices.Неизвестный:
                     _workerOpen.ReportProgress(0, "Прайс не опознан");
                     break;
