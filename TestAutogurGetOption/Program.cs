@@ -31,16 +31,16 @@ namespace TestAutogurGetOption
             }
             if (maxStr.Length - minStr.Length < 5) @case = 2;
             name = minStr;
+            var wordsMinStr = minStr.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
             if (@case == 1)
             {
                 options = string.Empty;
-                var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
                 i = 0;
                 foreach (var str in list)
                 {
                     if (str == minStr) continue;
-                    var tmpWords = str.Split(new[] { ' ', ',', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
-                    var option = tmpWords.Except(words).Aggregate("", (current, w) => current + (w + " "));
+                    var tmpWords = str.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                    var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " "));
                     if (option.Length > 19)
                     {
                         @case = 2;
@@ -55,26 +55,29 @@ namespace TestAutogurGetOption
                 options = options.Trim();
             }
             if (@case != 2) return;
-            i = 0;
+            var diff = new List<string>();
+            foreach(var str in list)
+            {
+                if (str == minStr) continue;
+                var tmpWords = str.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                diff = wordsMinStr.Intersect(tmpWords).ToList();
+                break;
+            }
+            var isFirst = true;
             foreach (var str in list)
             {
-                var j = str.LastIndexOf(',') + 1;
-                var option = "";
-                for (var k = j; k < str.Length; k++)
-                {
-                    option += str[k];
-                }
-                if (i == 0)
+                var tmpWords = str.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                var option = tmpWords.Except(diff).Aggregate("", (current, w) => current + (w + " ")).Trim();
+                if (isFirst)
                 {
                     options = option.Trim();
-                    name = name.Replace(option, "").Replace(",", "").Trim();
+                    isFirst = false;
                 }
                 else
                 {
                     options += " ; " + option.Trim();
-                    name = name.Replace(option, "").Replace(",", "").Trim();
                 }
-                i++;
+                name = name.Replace(option, "").Replace(",", "");
             }
         }
 
@@ -98,6 +101,7 @@ namespace TestAutogurGetOption
             Console.WriteLine("Case 1");
             ListToConsole(list);
             GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Name: {0}", name);
             Console.WriteLine("Options: {0}", options);
             list = new List<string>
             {
@@ -107,6 +111,7 @@ namespace TestAutogurGetOption
             Console.WriteLine("Case 2");
             ListToConsole(list);
             GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Name: {0}", name);
             Console.WriteLine("Options: {0}", options);
             list = new List<string>
             {
@@ -117,6 +122,7 @@ namespace TestAutogurGetOption
             Console.WriteLine("Case 3");
             ListToConsole(list);
             GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Name: {0}", name);
             Console.WriteLine("Options: {0}", options);
             list = new List<string>
             {
@@ -126,6 +132,7 @@ namespace TestAutogurGetOption
             Console.WriteLine("Case 4");
             ListToConsole(list);
             GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Name: {0}", name);
             Console.WriteLine("Options: {0}", options);
 
             list = new List<string>
@@ -136,6 +143,7 @@ namespace TestAutogurGetOption
             };
             ListToConsole(list);
             GetNameAndOption(list, out name, out options);
+            Console.WriteLine("Name: {0}", name);
             Console.WriteLine("Options: {0}", options);
             Console.ReadLine();
         }

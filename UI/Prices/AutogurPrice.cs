@@ -162,10 +162,10 @@ namespace ExcelParserForOpenCart.Prices
             }
             if (maxStr.Length - minStr.Length < 5) @case = 2;
             name = minStr;
+            var wordsMinStr = minStr.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
             if (@case == 1)
             {
                 options = string.Empty;
-                var words = minStr.Split(new[] { ' ', ',', ':', '?', '!', ')','('}, StringSplitOptions.RemoveEmptyEntries);
                 i = 0;
                 var isFirstItem = true;
                 foreach (var item in list)
@@ -180,9 +180,8 @@ namespace ExcelParserForOpenCart.Prices
                         }
                         continue;
                     }
-                    var tmpWords = item.Name.Split(new[] { ' ', ',', ':', '?', '!', ')', '(' },
-                        StringSplitOptions.RemoveEmptyEntries);
-                    var option = tmpWords.Except(words).Aggregate("", (current, w) => current + (w + " "));
+                    var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                    var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " "));
                     if (option.Length > 19)
                     {
                         @case = 2;
@@ -205,30 +204,33 @@ namespace ExcelParserForOpenCart.Prices
                 options = options.Trim();
             }
             if (@case != 2) return;
-            i = 0;
+            var diff1 = new List<string>();
             foreach (var item in list)
             {
-                var j = item.Name.LastIndexOf(',') + 1;
-                var option = "";
-                for (var k = j; k < item.Name.Length; k++)
-                {
-                    option += item.Name[k];
-                }
-                if (i == 0)
+                if (item.Name == minStr) continue;
+                var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                diff1 = wordsMinStr.Intersect(tmpWords).ToList();
+                break;
+            }
+            var isFirst = true;
+            foreach (var item in list)
+            {
+                var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                var option = tmpWords.Except(diff1).Aggregate("", (current, w) => current + (w + " "));
+                if (isFirst)
                 {
                     options = option.Trim();
                     cost = item.Cost;
                     diffCosts = "0";
-                    name = name.Replace(option, "").Replace(",", "").Trim();
+                    isFirst = false;
                 }
                 else
                 {
                     options += " ; " + option.Trim();
                     var diff = item.Cost - cost;
                     diffCosts += " ; " + diff.ToString(CultureInfo.CurrentCulture);
-                    name = name.Replace(option, "").Replace(",", "").Trim();
                 }
-                i++;
+                name = name.Replace(option, "").Replace(",", "");
             }
         }
     }
