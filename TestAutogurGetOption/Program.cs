@@ -8,7 +8,7 @@ namespace TestAutogurGetOption
     {
         private static void GetNameAndOption(IReadOnlyList<string> list, out string name, out string options)
         {
-            var i = 0;
+            var isFirst = true;
             var maxStr = "";
             var minStr = "";
             var @case = 1;
@@ -20,10 +20,10 @@ namespace TestAutogurGetOption
             }
             foreach (var s in list)
             {
-                if (i == 0)
+                if (isFirst)
                 {
                     minStr = s;
-                    i++;
+                    isFirst = false;
                     continue;
                 }
                 if (s.Length < minStr.Length)
@@ -35,22 +35,21 @@ namespace TestAutogurGetOption
             if (@case == 1)
             {
                 options = string.Empty;
-                i = 0;
                 foreach (var str in list)
                 {
                     if (str == minStr) continue;
                     var tmpWords = str.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
-                    var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " "));
+                    var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
                     if (option.Length > 19)
                     {
                         @case = 2;
                         break;
                     }
-                    if (i == 0)
+                    if (isFirst)
                         options = option;
                     else
                         options += " ; " + option;
-                    i++;
+                    isFirst = false;
                 }
                 options = options.Trim();
             }
@@ -63,7 +62,7 @@ namespace TestAutogurGetOption
                 diff = wordsMinStr.Intersect(tmpWords).ToList();
                 break;
             }
-            var isFirst = true;
+            isFirst = true;
             foreach (var str in list)
             {
                 var tmpWords = str.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);

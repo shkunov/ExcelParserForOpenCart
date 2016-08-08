@@ -137,7 +137,7 @@ namespace ExcelParserForOpenCart.Prices
         private static void GetNameAndOptionFromAutogur73(IReadOnlyList<PairProductAndCost> list,
             out string name, out string options, out string diffCosts)
         {
-            var i = 0;
+            var isFirst = true;
             var maxStr = "";
             var minStr = "";
             var @case = 1;
@@ -151,10 +151,10 @@ namespace ExcelParserForOpenCart.Prices
             }
             foreach (var s in list)
             {
-                if (i == 0)
+                if (isFirst)
                 {
                     minStr = s.Name;
-                    i++;
+                    isFirst = false;
                     continue;
                 }
                 if (s.Name.Length < minStr.Length)
@@ -166,32 +166,29 @@ namespace ExcelParserForOpenCart.Prices
             if (@case == 1)
             {
                 options = string.Empty;
-                i = 0;
-                var isFirstItem = true;
+                isFirst = true;
+                foreach (var item in list.Where(item => item.Name == minStr))
+                {
+                    cost = item.Cost;
+                    diffCosts = "0";
+                    break;
+                }
                 foreach (var item in list)
                 {
-                    if (item.Name == minStr)
-                    {
-                        if (isFirstItem)
-                        {
-                            isFirstItem = false;
-                            cost = item.Cost;
-                            diffCosts = "0";
-                        }
-                        continue;
-                    }
+                    if (item.Name == minStr) continue;
                     var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
-                    var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " "));
+                    var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
                     if (option.Length > 19)
                     {
                         @case = 2;
                         break;
                     }
-                    if (i == 0)
+                    if (isFirst)
                     {
                         options = option.Trim();
                         var diff = item.Cost - cost;
                         diffCosts = diff.ToString(CultureInfo.CurrentCulture);
+                        isFirst = false;
                     }
                     else
                     {
@@ -199,7 +196,6 @@ namespace ExcelParserForOpenCart.Prices
                         var diff = item.Cost - cost;
                         diffCosts += " ; " + diff.ToString(CultureInfo.CurrentCulture);
                     }
-                    i++;
                 }
                 options = options.Trim();
             }
@@ -212,11 +208,11 @@ namespace ExcelParserForOpenCart.Prices
                 diff1 = wordsMinStr.Intersect(tmpWords).ToList();
                 break;
             }
-            var isFirst = true;
+            isFirst = true;
             foreach (var item in list)
             {
                 var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
-                var option = tmpWords.Except(diff1).Aggregate("", (current, w) => current + (w + " "));
+                var option = tmpWords.Except(diff1).Aggregate("", (current, w) => current + (w + " ")).Trim();
                 if (isFirst)
                 {
                     options = option.Trim();
