@@ -74,7 +74,6 @@ namespace ExcelParserForOpenCart.Prices
                 var tempVendorCode = ConverterToString(range.Cells[i + 1, 2] as Range);
                 var tempName = ConverterToString(range.Cells[i, 3] as Range);
                 var tempName2 = ConverterToString(range.Cells[i + 1, 3] as Range);
-                //var cost = ConverterToString(range.Cells[i, 5] as Range);
                 var cost1 = ConverterToDecimal(range.Cells[i, 5] as Range);
                 var cost2 = ConverterToDecimal(range.Cells[i + 1, 5] as Range);
                 if (!pair)
@@ -120,7 +119,7 @@ namespace ExcelParserForOpenCart.Prices
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
-                    break; // выходить из цикла
+                    break; 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(line.Name))
                     continue; // игнорировать строки без кода и артикля
                 if (!string.IsNullOrEmpty(line.Name))
@@ -144,6 +143,7 @@ namespace ExcelParserForOpenCart.Prices
             decimal cost = 0;
             diffCosts = "";
             options = "";
+            var separator = new[] {' ', ',', ';', ':', '?', '!', ')', '('};
             foreach (var s in list)
             {
                 if (maxStr.Length < s.Name.Length)
@@ -162,7 +162,7 @@ namespace ExcelParserForOpenCart.Prices
             }
             if (maxStr.Length - minStr.Length < 5) @case = 2;
             name = minStr;
-            var wordsMinStr = minStr.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+            var wordsMinStr = minStr.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             if (@case == 1)
             {
                 options = string.Empty;
@@ -175,7 +175,7 @@ namespace ExcelParserForOpenCart.Prices
                 foreach (var item in list)
                 {
                     if (item.Name == minStr) continue;
-                    var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                    var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                     var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
                     if (option.Length > 19)
                     {
@@ -203,14 +203,14 @@ namespace ExcelParserForOpenCart.Prices
             foreach (var item in list)
             {
                 if (item.Name == minStr) continue;
-                var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                 totslStr = wordsMinStr.Intersect(tmpWords).ToList();
                 break;
             }
             isFirst = true;
             foreach (var item in list)
             {
-                var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
+                var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                 var option = tmpWords.Except(totslStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
                 if (isFirst)
                 {
