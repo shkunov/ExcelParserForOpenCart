@@ -170,7 +170,6 @@ namespace ExcelParserForOpenCart.Prices
                 foreach (var item in list.Where(item => item.Name == minStr))
                 {
                     cost = item.Cost;
-                    diffCosts = "0";
                     break;
                 }
                 foreach (var item in list)
@@ -200,19 +199,19 @@ namespace ExcelParserForOpenCart.Prices
                 options = options.Trim();
             }
             if (@case != 2) return;
-            var diff1 = new List<string>();
+            var totslStr = new List<string>();
             foreach (var item in list)
             {
                 if (item.Name == minStr) continue;
                 var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
-                diff1 = wordsMinStr.Intersect(tmpWords).ToList();
+                totslStr = wordsMinStr.Intersect(tmpWords).ToList();
                 break;
             }
             isFirst = true;
             foreach (var item in list)
             {
                 var tmpWords = item.Name.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
-                var option = tmpWords.Except(diff1).Aggregate("", (current, w) => current + (w + " ")).Trim();
+                var option = tmpWords.Except(totslStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
                 if (isFirst)
                 {
                     options = option.Trim();
