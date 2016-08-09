@@ -25,7 +25,44 @@
 Анализ прайса представляет собой обработку структуры прайса и приведение к списку, содержащему класс:
  `ExcelParserForOpenCart/UI/OutputPriceLine.cs`
 3. Для того, что бы добавить новый анализатор для обработки нового типа прайса необходимо создать новый класс в папке _Prices_ проекта  _ExcelParserForOpenCart_, для удобства был реализован класс с общими методами _GeneralMethods.cs_, для удобства его можно унаследовать.
-4. После этого можно использовать новый класс в _ExcelParser.cs_ в методе _DoWorkOpen_
+4. Название нового класса соответствует краткому названию анализируемого прайса.
+5. После этого можно использовать новый класс в _ExcelParser.cs_ в методе _DoWorkOpen_
+
+#### Рекомендуемый шаблон для анализатора
+
+```cs
+    using System.ComponentModel;
+    using Microsoft.Office.Interop.Excel;
+
+    public class НазваниеАнализатора : GeneralMethods
+    {
+        public НазваниеАнализатора(object sender, DoWorkEventArgs e)
+        {
+            Worker = sender as BackgroundWorker;
+            E = e;
+        }
+
+        public void Analyze(int row, Range range)
+        {
+            if (Worker.CancellationPending)
+            {
+                E.Cancel = true;
+                return;
+            }
+            // цикл для обработки прайс листа
+            for (var i = 7; i < row; i++)
+            {
+                if (Worker.CancellationPending)
+                {
+                    E.Cancel = true;
+                    ResultingPrice.Clear();
+                    break;
+                }
+                // выйти из цикла необходимо с помощью оператора break
+            }
+        }
+    }
+```
 
 ### Нюансы:
 

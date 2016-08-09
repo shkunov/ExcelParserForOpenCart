@@ -60,6 +60,5 @@ namespace ExcelParserForOpenCart.Prices
                     ResultingPrice.Add(line);
             }
         }
-
     }
 }
