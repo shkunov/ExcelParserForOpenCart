@@ -21,7 +21,7 @@ namespace ExcelParserForOpenCart.Prices
             }
             var startTable = false;
             var category1 = string.Empty;
-            var j = 1;
+            var j = 0;
             ResultingPrice.Clear();
             const string pattern = "[0-9]+";
             for (var i = 7; i < row; i++)
@@ -32,30 +32,32 @@ namespace ExcelParserForOpenCart.Prices
                     ResultingPrice.Clear();
                     break;
                 }
-                var line = new OutputPriceLine();
                 var str = ConverterToString(range.Cells[i, 1] as Range);
+                var name = ConverterToString(range.Cells[i, 2] as Range);
+                if (string.IsNullOrWhiteSpace(name)) break;
                 if (string.IsNullOrWhiteSpace(str.Trim()))
                 {
                     startTable = false;
-                    category1 = ConverterToString(range.Cells[i, 2] as Range);
+                    category1 = name.Replace(':', ' ').Trim();
+                    continue;
                 }
-                if (str.Contains("Наименование"))
+                if (str.Contains("№"))
                 {
                     startTable = true;
                     j++;
                     continue;
                 }
-                if (startTable)
+                if (!startTable) continue;
+                var postfix = Regex.Match(category1, pattern).Value;
+                var line = new OutputPriceLine
                 {
-                    var prefix = Regex.Match(category1, pattern).Value;
-                    line.VendorCode = string.Format("{0}-{1}-{2}", string.IsNullOrWhiteSpace(prefix) ? category1 : prefix, str, j);
-                    line.Name = ConverterToString(range.Cells[i, 2] as Range);
-                    line.Category1 = category1;
-                    line.Cost = ConverterToString(range.Cells[i, 4] as Range);
-                    if (!string.IsNullOrEmpty(line.Name))
-                        ResultingPrice.Add(line);
-                }
-                if (string.IsNullOrWhiteSpace(category1)) break;
+                    VendorCode = string.Format("A-{0}-{1}-{2}", j, str, string.IsNullOrWhiteSpace(postfix) ? category1 : postfix),
+                    Name = name.Trim(),
+                    Category1 = category1,
+                    Cost = ConverterToString(range.Cells[i, 4] as Range)
+                };
+                if (!string.IsNullOrEmpty(line.Name))
+                    ResultingPrice.Add(line);
             }
         }
 
