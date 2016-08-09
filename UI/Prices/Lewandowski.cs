@@ -21,6 +21,7 @@ namespace ExcelParserForOpenCart.Prices
             }
             var startTable = false;
             var category1 = string.Empty;
+            var j = 1;
             ResultingPrice.Clear();
             const string pattern = "[0-9]+";
             for (var i = 7; i < row; i++)
@@ -38,20 +39,16 @@ namespace ExcelParserForOpenCart.Prices
                     startTable = false;
                     category1 = ConverterToString(range.Cells[i, 2] as Range);
                 }
-                //todo: обработать ситуацию когда нет категории
                 if (str.Contains("Наименование"))
                 {
                     startTable = true;
+                    j++;
                     continue;
                 }
-                // todo: нужно вычислить артикуль и согласовать с заказчиком
                 if (startTable)
                 {
                     var prefix = Regex.Match(category1, pattern).Value;
-                    if (!string.IsNullOrWhiteSpace(prefix))
-                        line.VendorCode = prefix + "-" + str;
-                    else
-                        line.VendorCode = category1 + "-" + str;
+                    line.VendorCode = string.Format("{0}-{1}-{2}", string.IsNullOrWhiteSpace(prefix) ? category1 : prefix, str, j);
                     line.Name = ConverterToString(range.Cells[i, 2] as Range);
                     line.Category1 = category1;
                     line.Cost = ConverterToString(range.Cells[i, 4] as Range);
