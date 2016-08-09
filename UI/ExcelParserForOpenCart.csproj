@@ -110,6 +110,7 @@
     <Compile Include="Prices\GeneralMethods.cs" />
     <Compile Include="Prices\Lewandowski.cs" />
     <Compile Include="Prices\OjPrice.cs" />
+    <Compile Include="Prices\PTGrupp .cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
