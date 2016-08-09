@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.Office.Interop.Excel;
 
@@ -11,7 +12,11 @@ namespace ExcelParserForOpenCart.Prices
             Worker = sender as BackgroundWorker;
             E = e;
         }
-
+        /// <summary>
+        /// Композит ИП Левандовская И.Л.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
         public void Analyze(int row, Range range)
         {
             if (Worker.CancellationPending)
@@ -49,12 +54,25 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 if (!startTable) continue;
                 var postfix = Regex.Match(category1, pattern).Value;
+                var cost1 = ConverterToDecimal(range.Cells[i, "F"] as Range);
+                var cost2 = ConverterToDecimal(range.Cells[i, "I"] as Range);
+                var plus = "";
+                var option = "";
+                var cost = (cost1 == 0 ? cost2 : cost1).ToString(CultureInfo.CurrentCulture);                
+                if (cost1 > 0 && cost2 > 0)
+                {
+                    cost = cost2.ToString(CultureInfo.CurrentCulture);
+                    plus = (cost1 - cost2).ToString(CultureInfo.CurrentCulture);
+                    option = "стеклопл.";
+                }
                 var line = new OutputPriceLine
                 {
                     VendorCode = string.Format("A-{0}-{1}-{2}", j, str, string.IsNullOrWhiteSpace(postfix) ? category1 : postfix),
                     Name = name.Trim(),
                     Category1 = category1,
-                    Cost = ConverterToString(range.Cells[i, 4] as Range)
+                    Cost = cost,
+                    PlusThePrice = plus,
+                    Option = option
                 };
                 if (!string.IsNullOrEmpty(line.Name))
                     ResultingPrice.Add(line);
