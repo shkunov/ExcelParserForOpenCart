@@ -132,7 +132,6 @@ namespace ExcelParserForOpenCart
             var range = worksheet.UsedRange;
             var row = worksheet.Rows.Count;
             _workerOpen.ReportProgress(10);
-            // todo: метод для определения прайс листа должен вызываться здесь
             PriceType = DetermineTypeOfPriceList(range);
             switch (PriceType)
             {
