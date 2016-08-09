@@ -150,6 +150,9 @@ namespace ExcelParserForOpenCart
                     _resultingPrice = ojPrice.ResultingPrice;
                     break;
                 case EnumPrices.ПТГрупп:
+                    var PTGrupp = new PTGrupp(sender, e);
+                    PTGrupp.Analyze(row, range);
+                    _resultingPrice = PTGrupp.ResultingPrice;
                     break;
                 case EnumPrices.Autogur73:
                     var autogurPrice = new AutogurPrice(sender, e);
