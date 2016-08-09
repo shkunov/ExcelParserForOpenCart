@@ -58,12 +58,14 @@ namespace ExcelParserForOpenCart.Prices
                 var cost2 = ConverterToDecimal(range.Cells[i, "I"] as Range);
                 var plus = "";
                 var option = "";
-                var cost = (cost1 == 0 ? cost2 : cost1).ToString(CultureInfo.CurrentCulture);                
+                var cost = (cost1 == 0 ? cost2 : cost1).ToString(CultureInfo.CurrentCulture);
+                var desk = cost1 == 0 ? "АБС-пл." : "стеклопл.";
                 if (cost1 > 0 && cost2 > 0)
                 {
                     cost = cost2.ToString(CultureInfo.CurrentCulture);
                     plus = (cost1 - cost2).ToString(CultureInfo.CurrentCulture);
                     option = "стеклопл.";
+                    desk = "АБС-пл.";
                 }
                 var line = new OutputPriceLine
                 {
@@ -72,7 +74,8 @@ namespace ExcelParserForOpenCart.Prices
                     Category1 = category1,
                     Cost = cost,
                     PlusThePrice = plus,
-                    Option = option
+                    Option = option,
+                    ProductDescription = desk
                 };
                 if (!string.IsNullOrEmpty(line.Name))
                     ResultingPrice.Add(line);
