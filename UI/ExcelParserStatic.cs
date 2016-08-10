@@ -54,8 +54,9 @@ namespace ExcelParserForOpenCart
 
             str1 = ConverterToString(range.Cells[9, 3] as Range);
             str2 = ConverterToString(range.Cells[9, 7] as Range);
-            var Range = range.Cells[9, 7] as Range;
-            var color = Range.Interior.Color;
+            var range1 = range.Cells[9, 7] as Range;
+            if (range1 == null) return EnumPrices.Неизвестный;
+            var color = range1.Interior.Color;
             var sc = color.ToString();
 
             if (str1.Contains("Продукция") && str2.Contains("Безналичный расчет") && sc == "11842740")
