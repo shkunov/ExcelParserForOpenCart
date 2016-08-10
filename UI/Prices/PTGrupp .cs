@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.Office.Interop.Excel;
 
@@ -21,7 +20,6 @@ namespace ExcelParserForOpenCart.Prices
                 ResultingPrice.Clear();
                 return;
             }
-            
             var category1 = string.Empty;
             var category2 = string.Empty;
             ResultingPrice.Clear();
@@ -51,7 +49,6 @@ namespace ExcelParserForOpenCart.Prices
                         category2 = str;
                         continue;
                     }
-                    //if (sc == "12710911") continue; // пока предлагаю эту графу пропускать, это как бы 3 категория
                 }
                 var line = new OutputPriceLine
                 {
@@ -72,7 +69,6 @@ namespace ExcelParserForOpenCart.Prices
                     ResultingPrice.Add(line);
             }
         }
-
     }
 }
 
