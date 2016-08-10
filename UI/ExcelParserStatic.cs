@@ -62,6 +62,11 @@ namespace ExcelParserForOpenCart
             if (str1.Contains("Продукция") && str2.Contains("Безналичный расчет") && sc == "11842740")
                 return EnumPrices.ПТГрупп;
 
+            str1 = ConverterToString(range.Cells[3, 2] as Range);
+
+            if (str1.Contains("ВЕНТУРИ"))
+                return EnumPrices.Автовентури;
+
             return EnumPrices.Неизвестный;
         }
     }
