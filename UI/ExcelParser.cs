@@ -163,6 +163,11 @@ namespace ExcelParserForOpenCart
                     break;
                 case EnumPrices.Риваль:
                     break;
+                case EnumPrices.Автовентури:
+                    var Autoventuri = new Autoventuri(sender, e);
+                    Autoventuri.Analyze(row, range);
+                    _resultingPrice = Autoventuri.ResultingPrice;
+                    break;
                 case EnumPrices.Левандовская:
                     var lewandowski = new Lewandowski(sender, e);
                     lewandowski.Analyze(row, range);

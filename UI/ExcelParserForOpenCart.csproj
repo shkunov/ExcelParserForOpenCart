@@ -106,6 +106,7 @@
     <Compile Include="OutputPriceLine.cs" />
     <Compile Include="PairProductAndCost.cs" />
     <Compile Include="Prices\AutogurPrice.cs" />
+    <Compile Include="Prices\Autoventuri.cs" />
     <Compile Include="Prices\For2Union.cs" />
     <Compile Include="Prices\GeneralMethods.cs" />
     <Compile Include="Prices\Lewandowski.cs" />
