@@ -23,8 +23,7 @@ namespace ExcelParserForOpenCart.Prices
             var category1 = string.Empty;
             var category2 = string.Empty;
             ResultingPrice.Clear();
-            //const string pattern = "(\\d+\\.\\s?)";
-            // цикл для обработки прайс листа \\начинаем с 11-й строки
+            // цикл для обработки прайс листа
             for (var i = 11; i < row; i++)
             {
                 if (Worker.CancellationPending)
@@ -42,7 +41,7 @@ namespace ExcelParserForOpenCart.Prices
                     var sc = color.ToString();
                     if (sc == "11842740") // 1 категория
                     {
-                        category1 = str.TrimStart(new Char[] {' '});//Regex.Replace(str, pattern, string.Empty);
+                        category1 = str.TrimStart(new Char[] {' '});
                         category2 = string.Empty;
                         continue;
                     }
@@ -70,7 +69,7 @@ namespace ExcelParserForOpenCart.Prices
 
                 if (!string.IsNullOrEmpty(line.Name))
                     ResultingPrice.Add(line);
-                // выйти из цикла необходимо с помощью оператора break
+
             }
         }
     }
