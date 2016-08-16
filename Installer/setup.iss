@@ -15,6 +15,7 @@ AppVersion={#MyAppVersion}
 DefaultDirName={pf}\ExcelParserForOpenCart
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
+InfoBeforeFile=Readme.rtf
 OutputDir=..\Installer
 OutputBaseFilename=ExcelParserForOpenCart-{#MyAppVersion}
 SetupIconFile=program.ico
