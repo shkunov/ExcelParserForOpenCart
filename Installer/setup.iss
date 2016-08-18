@@ -15,7 +15,7 @@ AppVersion={#MyAppVersion}
 DefaultDirName={pf}\ExcelParserForOpenCart
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-InfoBeforeFile=Readme.rtf
+InfoBeforeFile=Readme.txt
 OutputDir=..\Installer
 OutputBaseFilename=ExcelParserForOpenCart-{#MyAppVersion}
 SetupIconFile=program.ico
@@ -23,7 +23,6 @@ SolidCompression=yes
 VersionInfoVersion={#MyAppVersion}
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Tasks]
