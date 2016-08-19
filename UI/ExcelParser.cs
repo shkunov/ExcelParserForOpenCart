@@ -156,7 +156,7 @@ namespace ExcelParserForOpenCart
                     break;
 
                 case EnumPrices.АвтоБРОНЯ:
-                    var AutoBRONYA = new AutoBRONYA(sender, e);
+                    var AutoBRONYA = new AutoBronya(sender, e);
                     AutoBRONYA.Analyze(row, range);
                     _resultingPrice = AutoBRONYA.ResultingPrice;
                     break;

@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
-using System.Text.RegularExpressions;
 using Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart.Prices
 {
+    // ReSharper disable once InconsistentNaming
     class PTGrupp : GeneralMethods
     {
         public PTGrupp(object sender, DoWorkEventArgs e)

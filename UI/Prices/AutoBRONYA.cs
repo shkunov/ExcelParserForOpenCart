@@ -1,22 +1,20 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Microsoft.Office.Interop.Excel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExcelParserForOpenCart.Prices
 {
-    public class AutoBRONYA : GeneralMethods
+    public class AutoBronya : GeneralMethods
     {
-        public AutoBRONYA(object sender, DoWorkEventArgs e)
+        public AutoBronya(object sender, DoWorkEventArgs e)
         {
             Worker = sender as BackgroundWorker;
             E = e;
         }
-
+        /// <summary>
+        /// Обработка ЕКБ_Прайс АвтоБРОНЯ_Игорь.xls
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
         public void Analyze(int row, Range range)
         {
             if (Worker.CancellationPending)

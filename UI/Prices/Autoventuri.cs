@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart.Prices
@@ -11,7 +10,11 @@ namespace ExcelParserForOpenCart.Prices
             Worker = sender as BackgroundWorker;
             E = e;
         }
-
+        /// <summary>
+        /// Обработка прайс-листа ВЕНТУРИ (ПРАЙС автовентури.xls)
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
         public void Analyze(int row, Range range)
         {
             if(Worker.CancellationPending)
@@ -41,13 +44,13 @@ namespace ExcelParserForOpenCart.Prices
                     var sc = color.ToString();
                     if (sc == "11842740") // 1 категория
                     {
-                        category1 = str.TrimStart(new Char[] {' '});
+                        category1 = str.TrimStart(' ');
                         category2 = string.Empty;
                         continue;
                     }
                     if (sc == "12829635") // 2 категория
                     {
-                        category2 = str.TrimStart(new Char[] { ' ' });
+                        category2 = str.TrimStart(' ');
                         continue;
                     }
                 }
@@ -58,7 +61,7 @@ namespace ExcelParserForOpenCart.Prices
                     Category2 = category2
                 };
                 var vendorCode = ConverterToString(range.Cells[i, 3] as Range);
-                line.Name = ConverterToString(range.Cells[i, 2] as Range).TrimStart(new Char[] { ' ' });//тримим пробелы вначале строки
+                line.Name = ConverterToString(range.Cells[i, 2] as Range).TrimStart(' ');//тримим пробелы вначале строки
                 if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
                     continue; // игнорировать строки без артикля
                 line.Cost = ConverterToString(range.Cells[i, 6] as Range);
