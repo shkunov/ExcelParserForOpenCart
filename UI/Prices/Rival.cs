@@ -120,42 +120,15 @@ namespace ExcelParserForOpenCart.Prices
                 if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
 
                 if (!string.IsNullOrEmpty(line.Name))
-                { //ResultingPrice.Add(line);;
+                {
                     tmpResultingPrice.Add(line); icount++;
                 }
 
             }
 
-
-            //здесь выполнить "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
-
-            var Result = new List<OutputPriceLine>();
-            Result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList(); //сортируем по Артикулу, и категории 2
+            
+            ResultingPrice.AddRange(Blaster(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //схлопываем и сортируем по категории 2
             tmpResultingPrice.Clear();
-            for (int i = 0; Result.Count >= i; i++)
-            {
-
-                if (i == 0) { tmpResultingPrice.Add(Result[i]); }
-                if (i > 0 && Result.Count != i)
-                {
-                    if (Result[i].VendorCode == Result[i - 1].VendorCode && Result[i].Category2 == Result[i - 1].Category2 && Result[i].Cost == Result[i - 1].Cost)
-                    {
-                        Result[i - 1].ProductDescription += Result[i].ProductDescription;
-                        Result.RemoveAt(i);
-                    }
-                    else
-                    {
-                        tmpResultingPrice.Add(Result[i]);
-                    }
-                }
-
-            }
-
-
-            ResultingPrice.AddRange(tmpResultingPrice.OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
-
-            tmpResultingPrice.Clear();
-            Result.Clear();
 
         }
 
@@ -262,44 +235,18 @@ namespace ExcelParserForOpenCart.Prices
                 if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
 
                 if (!string.IsNullOrEmpty(line.Name))
-                { //ResultingPrice.Add(line);;
+                {
                     tmpResultingPrice.Add(line); icount++;
                 }
 
             }
 
-
-            //здесь выполнить "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
-
-            var Result = new List<OutputPriceLine>();
-            Result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList(); //сортируем по Артикулу, и категории 2
+            ResultingPrice.AddRange(Blaster(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
             tmpResultingPrice.Clear();
-            for (int i = 0; Result.Count >= i; i++)
-            {
-
-                if (i == 0) { tmpResultingPrice.Add(Result[i]); }
-                if (i > 0 && Result.Count != i)
-                {
-                    if (Result[i].VendorCode == Result[i - 1].VendorCode && Result[i].Category2 == Result[i - 1].Category2 && Result[i].Cost == Result[i - 1].Cost)
-                    {
-                        Result[i - 1].ProductDescription += Result[i].ProductDescription;
-                        Result.RemoveAt(i);
-                    }
-                    else
-                    {
-                        tmpResultingPrice.Add(Result[i]);
-                    }
-                }
-
-            }
-
-
-            ResultingPrice.AddRange(tmpResultingPrice.OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
-
-            tmpResultingPrice.Clear();
-            Result.Clear();
 
         }
+
+
 
 
         public void AnalyzePodlokotniki(int row, Range range)
@@ -394,7 +341,7 @@ namespace ExcelParserForOpenCart.Prices
                 {
                     continue; // игнорировать строки без артикля
                 }
-                line.Cost = ConverterToString(range.Cells[i, 7] as Range);
+                line.Cost = ConverterToString(range.Cells[i, 9] as Range);
                 line.VendorCode = vendorCode;
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
@@ -403,15 +350,26 @@ namespace ExcelParserForOpenCart.Prices
                 if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
 
                 if (!string.IsNullOrEmpty(line.Name))
-                { //ResultingPrice.Add(line);;
+                { 
                     tmpResultingPrice.Add(line); icount++;
                 }
 
             }
 
 
-            //здесь выполнить "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
 
+
+            ResultingPrice.AddRange(Blaster(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
+
+            tmpResultingPrice.Clear();
+
+        }
+
+
+        //выполняется "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
+
+        private static List<OutputPriceLine> Blaster(List<OutputPriceLine> tmpResultingPrice)
+        {
             var Result = new List<OutputPriceLine>();
             Result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList(); //сортируем по Артикулу, и категории 2
             tmpResultingPrice.Clear();
@@ -433,13 +391,8 @@ namespace ExcelParserForOpenCart.Prices
                 }
 
             }
-
-
-            ResultingPrice.AddRange(tmpResultingPrice.OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
-
-            tmpResultingPrice.Clear();
             Result.Clear();
-
+            return tmpResultingPrice;
         }
     }
 }
