@@ -5,10 +5,10 @@ namespace ExcelParserForOpenCart.Prices
 {
     public class For2Union : GeneralMethods
     {
-        public For2Union(object sender, DoWorkEventArgs e)
+        public For2Union(object sender, DoWorkEventArgs e) 
+            : base(sender, e)
         {
-            Worker = sender as BackgroundWorker;
-            E = e;
+            
         }
         /// <summary>
         /// Обработка для прайса 2 союза

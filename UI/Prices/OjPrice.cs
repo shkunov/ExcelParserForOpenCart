@@ -9,9 +9,9 @@ namespace ExcelParserForOpenCart.Prices
         public event Action<string> OnMsg;
 
         public OjPrice(object sender, DoWorkEventArgs e)
+            : base(sender, e)
         {
-            Worker = sender as BackgroundWorker;
-            E = e;
+            
         }
         /// <summary>
         /// Обработка прайсов, таких как: Каталог OJ 2016_06_01 вер. 6

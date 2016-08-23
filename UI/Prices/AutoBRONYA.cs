@@ -6,9 +6,9 @@ namespace ExcelParserForOpenCart.Prices
     public class AutoBronya : GeneralMethods
     {
         public AutoBronya(object sender, DoWorkEventArgs e)
+            : base(sender, e)
         {
-            Worker = sender as BackgroundWorker;
-            E = e;
+            
         }
         /// <summary>
         /// Обработка ЕКБ_Прайс АвтоБРОНЯ_Игорь.xls
@@ -87,11 +87,11 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 else if (compareVendorCode == vendorCode)
                 {
-                    unionDescription += "<p>" + ConverterToString(range.Cells[i, 2] as Range) + "(" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";                    
-                    ResultingPrice[icount-1].ProductDescription = unionDescription; //модифицируем
+                    unionDescription += "<p>" + ConverterToString(range.Cells[i, 2] as Range) + "(" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";
+                    ResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
                     if (unionDescription == "<p>()</p><p>()</p><p>()</p><p>()</p>") { break; }// выйти из цикла, при пустых 4-х строк
-                    else 
-                    continue; // пропускаем строку
+                    else
+                        continue; // пропускаем строку
                 }
 
 
@@ -111,7 +111,7 @@ namespace ExcelParserForOpenCart.Prices
                 if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
 
                 if (!string.IsNullOrEmpty(line.Name))
-                { ResultingPrice.Add(line); icount++;}
+                { ResultingPrice.Add(line); icount++; }
 
             }
 

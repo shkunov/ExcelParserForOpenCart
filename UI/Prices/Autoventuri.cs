@@ -5,10 +5,10 @@ namespace ExcelParserForOpenCart.Prices
 {
     public class Autoventuri : GeneralMethods
     {
-        public Autoventuri(object sender, DoWorkEventArgs e)
+        public Autoventuri(object sender, DoWorkEventArgs e) 
+            : base(sender, e)
         {
-            Worker = sender as BackgroundWorker;
-            E = e;
+       
         }
         /// <summary>
         /// Обработка прайс-листа ВЕНТУРИ (ПРАЙС автовентури.xls)

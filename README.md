@@ -36,9 +36,8 @@
     public class НазваниеАнализатора : GeneralMethods
     {
         public НазваниеАнализатора(object sender, DoWorkEventArgs e)
+			: base(sender, e)
         {
-            Worker = sender as BackgroundWorker;
-            E = e;
         }
 
         public void Analyze(int row, Range range)
