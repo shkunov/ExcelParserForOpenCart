@@ -114,6 +114,8 @@ namespace ExcelParserForOpenCart.Prices
                 { ResultingPrice.Add(line); icount++;}
 
             }
+
+            //ResultingPrice.Sort();
             //здесь выполнить "схлопывание" записей по одинаковому артикулу, цене, объединить значения в ProductDescription
         }
     }
