@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using Microsoft.Office.Interop.Excel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ExcelParserForOpenCart.Prices
 {
@@ -8,8 +10,10 @@ namespace ExcelParserForOpenCart.Prices
         public AutoBronya(object sender, DoWorkEventArgs e)
             : base(sender, e)
         {
-            
+
         }
+
+
         /// <summary>
         /// Обработка ЕКБ_Прайс АвтоБРОНЯ_Игорь.xls
         /// </summary>
@@ -23,13 +27,15 @@ namespace ExcelParserForOpenCart.Prices
                 ResultingPrice.Clear();
                 return;
             }
+            
 
             var countEmptyRow = 0;
             var icount = 0;
             var compareCategory2 = string.Empty;
             var compareVendorCode = string.Empty;
             var unionDescription = string.Empty;
-            ResultingPrice.Clear();
+                ResultingPrice.Clear();
+            var tmpResultingPrice = new List<OutputPriceLine>();
 
             var category1 = ConverterToString(range.Cells[4, 1] as Range); //1 категория
             var category2 = string.Empty;
@@ -42,7 +48,7 @@ namespace ExcelParserForOpenCart.Prices
                     ResultingPrice.Clear();
                     break;
                 }
-
+                
                 var secRange = range.Cells[i, 1] as Range; //2 категория
 
 
@@ -88,7 +94,7 @@ namespace ExcelParserForOpenCart.Prices
                 else if (compareVendorCode == vendorCode)
                 {
                     unionDescription += "<p>" + ConverterToString(range.Cells[i, 2] as Range) + "(" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";
-                    ResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
+                    tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
                     if (unionDescription == "<p>()</p><p>()</p><p>()</p><p>()</p>") { break; }// выйти из цикла, при пустых 4-х строк
                     else
                         continue; // пропускаем строку
@@ -111,12 +117,43 @@ namespace ExcelParserForOpenCart.Prices
                 if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
 
                 if (!string.IsNullOrEmpty(line.Name))
-                { ResultingPrice.Add(line); icount++; }
+                { //ResultingPrice.Add(line);;
+                    tmpResultingPrice.Add(line); icount++;
+                }
 
             }
 
-            //ResultingPrice.Sort();
-            //здесь выполнить "схлопывание" записей по одинаковому артикулу, цене, объединить значения в ProductDescription
+
+            //здесь выполнить "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
+
+            var Result = new List<OutputPriceLine>();
+            Result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList(); //сортируем по Артикулу, и категории 2
+            tmpResultingPrice.Clear();
+            for (int i = 0; Result.Count >= i; i++)
+            {
+
+                if (i == 0) { tmpResultingPrice.Add(Result[i]); }
+                if (i > 0 && Result.Count != i)
+                {
+                    if (Result[i].VendorCode == Result[i - 1].VendorCode && Result[i].Category2 == Result[i - 1].Category2 && Result[i].Cost == Result[i - 1].Cost)
+                    {
+                        Result[i-1].ProductDescription += Result[i].ProductDescription;
+                        Result.RemoveAt(i);
+                    }
+                    else
+                    {
+                        tmpResultingPrice.Add(Result[i]);
+                    }
+                }
+
+            }
+                
+            
+            ResultingPrice.AddRange(tmpResultingPrice.OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
+
+            tmpResultingPrice.Clear();
+            Result.Clear();
+
         }
     }
 }
