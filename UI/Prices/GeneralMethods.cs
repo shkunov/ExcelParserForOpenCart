@@ -5,18 +5,23 @@ using Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart.Prices
 {
-    public class GeneralMethods
+    public abstract class GeneralMethods
     {
-        protected BackgroundWorker Worker;
-        protected DoWorkEventArgs E;
+        protected readonly BackgroundWorker Worker;
+        protected readonly DoWorkEventArgs E;
 
         public List<OutputPriceLine> ResultingPrice { get; private set; }
 
-        public GeneralMethods()
+        protected GeneralMethods(object sender, DoWorkEventArgs e)
         {
             ResultingPrice = new List<OutputPriceLine>();
+            Worker = sender as BackgroundWorker;
+            E = e;
         }
 
+        protected GeneralMethods()
+        {
+        }
 
         protected static string ConverterToString(dynamic obj)
         {

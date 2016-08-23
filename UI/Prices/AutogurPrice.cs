@@ -11,9 +11,9 @@ namespace ExcelParserForOpenCart.Prices
     public class AutogurPrice : GeneralMethods
     {
         public AutogurPrice(object sender, DoWorkEventArgs e)
+            : base(sender, e)
         {
-            Worker = sender as BackgroundWorker;
-            E = e;
+           
         }
 
         /// <summary>

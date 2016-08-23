@@ -8,9 +8,9 @@ namespace ExcelParserForOpenCart.Prices
     public class Lewandowski : GeneralMethods
     {
         public Lewandowski(object sender, DoWorkEventArgs e)
+            : base(sender, e)
         {
-            Worker = sender as BackgroundWorker;
-            E = e;
+            
         }
         /// <summary>
         /// Композит ИП Левандовская И.Л.
