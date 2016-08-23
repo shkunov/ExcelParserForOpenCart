@@ -35,7 +35,7 @@
 
     public class НазваниеАнализатора : GeneralMethods
     {
-        public НазваниеАнализатора(object sender, DoWorkEventArgs e
+        public НазваниеАнализатора(object sender, DoWorkEventArgs e)
 			: base(sender, e)
         {
         }
