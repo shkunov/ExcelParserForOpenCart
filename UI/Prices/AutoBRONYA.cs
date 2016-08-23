@@ -23,12 +23,16 @@ namespace ExcelParserForOpenCart.Prices
                 ResultingPrice.Clear();
                 return;
             }
-            var category1 = string.Empty;
-            var category2 = string.Empty;
-            var secMarket = string.Empty;
+
             var countEmptyRow = 0;
-            var compareCategory1 = string.Empty;
+            var icount = 0;
+            var compareCategory2 = string.Empty;
+            var compareVendorCode = string.Empty;
+            var unionDescription = string.Empty;
             ResultingPrice.Clear();
+
+            var category1 = ConverterToString(range.Cells[4, 1] as Range); //1 категория
+            var category2 = string.Empty;
             // цикл для обработки прайс листа
             for (var i = 6; i < row; i++)
             {
@@ -39,27 +43,23 @@ namespace ExcelParserForOpenCart.Prices
                     break;
                 }
 
-                var theRange = range.Cells[i, 1] as Range; //1 категория
-                var secRange = range.Cells[i, 4] as Range; //2 категория
-                
+                var secRange = range.Cells[i, 1] as Range; //2 категория
 
-                if (theRange != null)
+
+                if (secRange != null)
                 {
-                    string str = ConverterToString(theRange.Value2);
-                    var color = theRange.Interior.Color;
+                    string str = ConverterToString(secRange.Value2);
+                    var color = secRange.Interior.Color;
                     var sc = color.ToString();
 
-
-
-                    if (sc == "15986394") // 1 категория
+                    if (sc == "15986394") // 2 категория
                     {
-                        compareCategory1 = category1 = str;
-                        //category2 = string.Empty;
-                        secMarket = string.Empty;
+                        compareCategory2 = category2 = str;
+                        countEmptyRow = 0; //идет новая категория 2, зануляем счет на пустые строки
                         continue;
                     }
                     else
-                    { category1 = str; }                    
+                    { category2 = str; }
                 }
 
                 if (secRange != null)
@@ -67,7 +67,6 @@ namespace ExcelParserForOpenCart.Prices
                     string str = ConverterToString(secRange.Value2);
                     {
                         category2 = str;
-                        //continue;
                     }
                 }
 
@@ -77,20 +76,30 @@ namespace ExcelParserForOpenCart.Prices
                     Category2 = category2
                 };
 
+
                 var vendorCode = ConverterToString(range.Cells[i, 5] as Range);
 
-                line.Name = ConverterToString(range.Cells[i, 2] as Range);
-
-                if (line.Category1.Trim().ToUpper() != compareCategory1.Trim().ToUpper() && secMarket != "")
+                if (compareVendorCode != vendorCode)
                 {
-                    secMarket = string.Empty;
+                    compareVendorCode = vendorCode;
+                    unionDescription = "<p>" + ConverterToString(range.Cells[i, 2] as Range) + "(" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";
+                    line.ProductDescription = unionDescription;
+                }
+                else if (compareVendorCode == vendorCode)
+                {
+                    unionDescription += "<p>" + ConverterToString(range.Cells[i, 2] as Range) + "(" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";                    
+                    ResultingPrice[icount-1].ProductDescription = unionDescription; //модифицируем
+                    if (unionDescription == "<p>()</p><p>()</p><p>()</p><p>()</p>") { break; }// выйти из цикла, при пустых 4-х строк
+                    else 
+                    continue; // пропускаем строку
                 }
 
-                line.Name = line.Name + ((secMarket != "") ? " (" + secMarket + ")" : "");
+
+                line.Name = ConverterToString(range.Cells[i, 4] as Range);
+
 
                 if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
                 {
-                    if (line.Name != secMarket) { secMarket = line.Name; };
                     continue; // игнорировать строки без артикля
                 }
                 line.Cost = ConverterToString(range.Cells[i, 17] as Range);
@@ -99,12 +108,13 @@ namespace ExcelParserForOpenCart.Prices
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
                 { countEmptyRow++; }
 
-                if (countEmptyRow >= 2) { break; } // выходить из цикла, после 2-й пустой строки
-                
+                if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
+
                 if (!string.IsNullOrEmpty(line.Name))
-                    ResultingPrice.Add(line);
+                { ResultingPrice.Add(line); icount++;}
 
             }
+            //здесь выполнить "схлопывание" записей по одинаковому артикулу, цене, объединить значения в ProductDescription
         }
     }
 }
