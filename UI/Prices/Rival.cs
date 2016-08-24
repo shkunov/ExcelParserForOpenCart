@@ -12,8 +12,6 @@ namespace ExcelParserForOpenCart.Prices
         {
 
         }
-
-
         /// <summary>
         /// Обработка ЕКБ_Прайс АвтоБРОНЯ_Игорь.xls
         /// </summary>
@@ -21,256 +19,45 @@ namespace ExcelParserForOpenCart.Prices
         /// <param name="range"></param>
         public void AnalyzeBronya(int row, Range range)
         {
-            if (Worker.CancellationPending)
-            {
-                E.Cancel = true;
-                ResultingPrice.Clear();
-                return;
-            }
-
-
-            var countEmptyRow = 0;
-            var icount = 0;
-            var compareCategory2 = string.Empty;
-            var compareVendorCode = string.Empty;
-            var unionDescription = string.Empty;
-            ResultingPrice.Clear();
-            var tmpResultingPrice = new List<OutputPriceLine>();
-
-            var category1 = ConverterToString(range.Cells[4, 1] as Range); //1 категория
-            var category2 = string.Empty;
-            // цикл для обработки прайс листа
-            for (var i = 6; i < row; i++)
-            {
-                if (Worker.CancellationPending)
-                {
-                    E.Cancel = true;
-                    ResultingPrice.Clear();
-                    break;
-                }
-
-                var secRange = range.Cells[i, 1] as Range; //2 категория
-
-
-                if (secRange != null)
-                {
-                    string str = ConverterToString(secRange.Value2);
-                    var color = secRange.Interior.Color;
-                    var sc = color.ToString();
-
-                    if (sc == "15986394") // 2 категория
-                    {
-                        compareCategory2 = category2 = str;
-                        countEmptyRow = 0; //идет новая категория 2, зануляем счет на пустые строки
-                        continue;
-                    }
-                    else
-                    { category2 = str; }
-                }
-
-                if (secRange != null)
-                {
-                    string str = ConverterToString(secRange.Value2);
-                    {
-                        category2 = str;
-                    }
-                }
-
-                var line = new OutputPriceLine
-                {
-                    Category1 = category1,
-                    Category2 = category2
-                };
-
-
-                var vendorCode = ConverterToString(range.Cells[i, 5] as Range);
-
-                if (compareVendorCode != vendorCode)
-                {
-                    compareVendorCode = vendorCode;
-                    unionDescription = "<p>" + ConverterToString(range.Cells[i, 2] as Range).TrimEnd() + " (" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";
-                    line.ProductDescription = unionDescription;
-                }
-                else if (compareVendorCode == vendorCode)
-                {
-                    unionDescription += "<p>" + ConverterToString(range.Cells[i, 2] as Range).TrimEnd() + " (" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";
-                    if (vendorCode != "")
-                    {
-                        tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
-                    }
-                    if (unionDescription == "<p> ()</p><p> ()</p><p> ()</p><p> ()</p>") { break; }// выйти из цикла, при пустых 4-х строк
-                    else
-                        continue; // пропускаем строку
-                }
-
-
-                line.Name = ConverterToString(range.Cells[i, 4] as Range);
-
-
-                if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
-                {
-                    continue; // игнорировать строки без артикля
-                }
-                line.Cost = ConverterToString(range.Cells[i, 17] as Range);
-                line.VendorCode = vendorCode;
-
-                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
-                { countEmptyRow++; }
-
-                if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
-
-                if (!string.IsNullOrEmpty(line.Name))
-                {
-                    tmpResultingPrice.Add(line); icount++;
-                }
-
-            }
-
-            
-            ResultingPrice.AddRange(Blaster(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //схлопываем и сортируем по категории 2
-            tmpResultingPrice.Clear();
-
+            Analyze(6, "15986394", 17, row, range);
         }
-
 
 
         public void AnalyzePodkrilki(int row, Range range)
         {
-            if (Worker.CancellationPending)
-            {
-                E.Cancel = true;
-                ResultingPrice.Clear();
-                return;
-            }
-
-
-            var countEmptyRow = 0;
-            var icount = 0;
-            var compareCategory2 = string.Empty;
-            var compareVendorCode = string.Empty;
-            var unionDescription = string.Empty;
-            ResultingPrice.Clear();
-            var tmpResultingPrice = new List<OutputPriceLine>();
-
-            var category1 = ConverterToString(range.Cells[3, 1] as Range); //1 категория
-            var category2 = string.Empty;
-            // цикл для обработки прайс листа
-            for (var i = 4; i < row; i++)
-            {
-                if (Worker.CancellationPending)
-                {
-                    E.Cancel = true;
-                    ResultingPrice.Clear();
-                    break;
-                }
-
-                var secRange = range.Cells[i, 1] as Range; //2 категория
-
-
-                if (secRange != null)
-                {
-                    string str = ConverterToString(secRange.Value2);
-                    var color = secRange.Interior.Color;
-                    var sc = color.ToString();
-
-                    if (sc == "6697728") // 2 категория
-                    {
-                        compareCategory2 = category2 = str;
-                        countEmptyRow = 0; //идет новая категория 2, зануляем счет на пустые строки
-                        continue;
-                    }
-                    else
-                    { category2 = str; }
-                }
-
-                if (secRange != null)
-                {
-                    string str = ConverterToString(secRange.Value2);
-                    {
-                        category2 = str;
-                    }
-                }
-
-                var line = new OutputPriceLine
-                {
-                    Category1 = category1,
-                    Category2 = category2
-                };
-
-
-                var vendorCode = ConverterToString(range.Cells[i, 5] as Range);
-
-                if (compareVendorCode != vendorCode)
-                {
-                    compareVendorCode = vendorCode;
-                    unionDescription = "<p>" + ConverterToString(range.Cells[i, 2] as Range).TrimEnd() + " (" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";
-                    line.ProductDescription = unionDescription;
-                }
-                else if (compareVendorCode == vendorCode)
-                {
-                    unionDescription += "<p>" + ConverterToString(range.Cells[i, 2] as Range).TrimEnd() + " (" + ConverterToString(range.Cells[i, 3] as Range) + ")" + "</p>";
-                    if (vendorCode != "")
-                    { 
-                        tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
-                    }
-                    if (unionDescription == "<p> ()</p><p> ()</p><p> ()</p><p> ()</p>") { break; }// выйти из цикла, при пустых 4-х строк
-                    else
-                        continue; // пропускаем строку
-                }
-
-
-                line.Name = ConverterToString(range.Cells[i, 4] as Range);
-
-
-                if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
-                {
-                    continue; // игнорировать строки без артикля
-                }
-                line.Cost = ConverterToString(range.Cells[i, 6] as Range);
-                line.VendorCode = vendorCode;
-
-                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
-                { countEmptyRow++; }
-
-                if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
-
-                if (!string.IsNullOrEmpty(line.Name))
-                {
-                    tmpResultingPrice.Add(line); icount++;
-                }
-
-            }
-
-            ResultingPrice.AddRange(Blaster(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
-            tmpResultingPrice.Clear();
-
+            Analyze(4, "6697728", 6, row, range);
         }
-
-
-
 
         public void AnalyzePodlokotniki(int row, Range range)
         {
+            Analyze(4, "6697728", 9, row, range);
+        }
+        /// <summary>
+        /// Общий анализатор для всех прайсов Риваль
+        /// </summary>
+        /// <param name="startIndex"></param>
+        /// <param name="codeColor"></param>
+        /// <param name="columCost"></param>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
+        private void Analyze(int startIndex, string codeColor, int columCost, int row, Range range)
+        {
             if (Worker.CancellationPending)
             {
                 E.Cancel = true;
                 ResultingPrice.Clear();
                 return;
             }
-
-
             var countEmptyRow = 0;
             var icount = 0;
-            var compareCategory2 = string.Empty;
             var compareVendorCode = string.Empty;
             var unionDescription = string.Empty;
             ResultingPrice.Clear();
             var tmpResultingPrice = new List<OutputPriceLine>();
-
             var category1 = ConverterToString(range.Cells[3, 1] as Range); //1 категория
             var category2 = string.Empty;
             // цикл для обработки прайс листа
-            for (var i = 4; i < row; i++)
+            for (var i = startIndex; i < row; i++)
             {
                 if (Worker.CancellationPending)
                 {
@@ -278,26 +65,20 @@ namespace ExcelParserForOpenCart.Prices
                     ResultingPrice.Clear();
                     break;
                 }
-
                 var secRange = range.Cells[i, 1] as Range; //2 категория
-
-
                 if (secRange != null)
                 {
                     string str = ConverterToString(secRange.Value2);
                     var color = secRange.Interior.Color;
                     var sc = color.ToString();
 
-                    if (sc == "6697728") // 2 категория
+                    if (sc == codeColor) // 2 категория
                     {
-                        compareCategory2 = category2 = str;
                         countEmptyRow = 0; //идет новая категория 2, зануляем счет на пустые строки
                         continue;
                     }
-                    else
-                    { category2 = str; }
+                    category2 = str;
                 }
-
                 if (secRange != null)
                 {
                     string str = ConverterToString(secRange.Value2);
@@ -305,16 +86,12 @@ namespace ExcelParserForOpenCart.Prices
                         category2 = str;
                     }
                 }
-
                 var line = new OutputPriceLine
                 {
                     Category1 = category1,
                     Category2 = category2
                 };
-
-
                 var vendorCode = ConverterToString(range.Cells[i, 5] as Range);
-
                 if (compareVendorCode != vendorCode)
                 {
                     compareVendorCode = vendorCode;
@@ -329,19 +106,14 @@ namespace ExcelParserForOpenCart.Prices
                         tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
                     }
                     if (unionDescription == "<p> ()</p><p> ()</p><p> ()</p><p> ()</p>") { break; }// выйти из цикла, при пустых 4-х строк
-                    else
-                        continue; // пропускаем строку
+                    continue; // пропускаем строку
                 }
-
-
                 line.Name = ConverterToString(range.Cells[i, 4] as Range);
-
-
                 if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
                 {
                     continue; // игнорировать строки без артикля
                 }
-                line.Cost = ConverterToString(range.Cells[i, 9] as Range);
+                line.Cost = ConverterToString(range.Cells[i, columCost] as Range);
                 line.VendorCode = vendorCode;
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
@@ -350,48 +122,42 @@ namespace ExcelParserForOpenCart.Prices
                 if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
 
                 if (!string.IsNullOrEmpty(line.Name))
-                { 
+                {
                     tmpResultingPrice.Add(line); icount++;
                 }
-
             }
-
-
-
-
             ResultingPrice.AddRange(Blaster(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
-
             tmpResultingPrice.Clear();
-
         }
 
-
-        //выполняется "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
-
-        private static List<OutputPriceLine> Blaster(List<OutputPriceLine> tmpResultingPrice)
+        /// <summary>
+        /// Выполняется "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
+        /// </summary>
+        /// <param name="tmpResultingPrice"></param>
+        /// <returns></returns>
+        private static IEnumerable<OutputPriceLine> Blaster(ICollection<OutputPriceLine> tmpResultingPrice)
         {
-            var Result = new List<OutputPriceLine>();
-            Result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList(); //сортируем по Артикулу, и категории 2
+            var result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList();
             tmpResultingPrice.Clear();
-            for (int i = 0; Result.Count >= i; i++)
+            for (var i = 0; result.Count >= i; i++)
             {
 
-                if (i == 0) { tmpResultingPrice.Add(Result[i]); }
-                if (i > 0 && Result.Count != i)
+                if (i == 0) { tmpResultingPrice.Add(result[i]); }
+                if (i > 0 && result.Count != i)
                 {
-                    if (Result[i].VendorCode == Result[i - 1].VendorCode && Result[i].Category2 == Result[i - 1].Category2 && Result[i].Cost == Result[i - 1].Cost)
+                    if (result[i].VendorCode == result[i - 1].VendorCode &&
+                        result[i].Category2 == result[i - 1].Category2 && result[i].Cost == result[i - 1].Cost)
                     {
-                        Result[i - 1].ProductDescription += Result[i].ProductDescription;
-                        Result.RemoveAt(i);
+                        result[i - 1].ProductDescription += result[i].ProductDescription;
+                        result.RemoveAt(i);
                     }
                     else
                     {
-                        tmpResultingPrice.Add(Result[i]);
+                        tmpResultingPrice.Add(result[i]);
                     }
                 }
-
             }
-            Result.Clear();
+            result.Clear();
             return tmpResultingPrice;
         }
     }

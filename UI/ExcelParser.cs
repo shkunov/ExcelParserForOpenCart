@@ -150,30 +150,25 @@ namespace ExcelParserForOpenCart
                     _resultingPrice = ojPrice.ResultingPrice;
                     break;
                 case EnumPrices.ПТГрупп:
-                    var PTGrupp = new PTGrupp(sender, e);
-                    PTGrupp.Analyze(row, range);
-                    _resultingPrice = PTGrupp.ResultingPrice;
+                    var ptGrupp = new PTGrupp(sender, e);
+                    ptGrupp.Analyze(row, range);
+                    _resultingPrice = ptGrupp.ResultingPrice;
                     break;
-
-                case EnumPrices.РИВАЛЬ_АвтоБРОНЯ:
-                    var AutoBRONYA = new Rival(sender, e);
-                    AutoBRONYA.AnalyzeBronya(row, range);
-                    _resultingPrice = AutoBRONYA.ResultingPrice;
+                case EnumPrices.РивальАвтоБроня:
+                    var autoBronya = new Rival(sender, e);
+                    autoBronya.AnalyzeBronya(row, range);
+                    _resultingPrice = autoBronya.ResultingPrice;
                     break;
-
-                case EnumPrices.РИВАЛЬ_Подкрылки:
-                    var Podkrilki = new Rival(sender, e);
-                    Podkrilki.AnalyzePodkrilki(row, range);
-                    _resultingPrice = Podkrilki.ResultingPrice;
+                case EnumPrices.РивальПодкрылки:
+                    var podkrilki = new Rival(sender, e);
+                    podkrilki.AnalyzePodkrilki(row, range);
+                    _resultingPrice = podkrilki.ResultingPrice;
                     break;
-
-                case EnumPrices.РИВАЛЬ_Подлокотники:
-                    var Podlokotniki = new Rival(sender, e);
-                    Podlokotniki.AnalyzePodlokotniki(row, range);
-                    _resultingPrice = Podlokotniki.ResultingPrice;
+                case EnumPrices.РивальПодлокотники:
+                    var podlokotniki = new Rival(sender, e);
+                    podlokotniki.AnalyzePodlokotniki(row, range);
+                    _resultingPrice = podlokotniki.ResultingPrice;
                     break;
-
-
                 case EnumPrices.Autogur73:
                     var autogurPrice = new AutogurPrice(sender, e);
                     autogurPrice.Analyze(row, range);
@@ -184,9 +179,9 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.Риваль:
                     break;
                 case EnumPrices.Автовентури:
-                    var Autoventuri = new Autoventuri(sender, e);
-                    Autoventuri.Analyze(row, range);
-                    _resultingPrice = Autoventuri.ResultingPrice;
+                    var autoventuri = new Autoventuri(sender, e);
+                    autoventuri.Analyze(row, range);
+                    _resultingPrice = autoventuri.ResultingPrice;
                     break;
                 case EnumPrices.Левандовская:
                     var lewandowski = new Lewandowski(sender, e);

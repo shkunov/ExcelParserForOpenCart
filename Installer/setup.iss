@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Excel parser for OpenCart"
-#define MyAppVersion "1.11"
+#define MyAppVersion "1.12"
 #define MyAppExeName "ExcelParserForOpenCart.exe"
 
 [Setup]
@@ -16,6 +16,7 @@ DefaultDirName={pf}\ExcelParserForOpenCart
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 InfoBeforeFile=Readme.txt
+InfoAfterFile=History.txt
 OutputDir=..\Installer
 OutputBaseFilename=ExcelParserForOpenCart-{#MyAppVersion}
 SetupIconFile=program.ico
@@ -26,15 +27,20 @@ VersionInfoVersion={#MyAppVersion}
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; 
 
 [Files]
 Source: "..\Output\Release\ExcelParserForOpenCart.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Output\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "Readme.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "History.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\Readme.txt"; Filename: "{app}\Readme.txt"
+Name: "{group}\History.txt"; Filename: "{app}\History.txt"
+Name: "{group}\Uninstall"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
