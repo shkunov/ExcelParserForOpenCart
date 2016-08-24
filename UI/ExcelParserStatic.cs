@@ -28,7 +28,7 @@ namespace ExcelParserForOpenCart
         /// <summary>
         /// Определение типа прайс листа
         /// </summary>
-        /// <param name="range"></param>
+        /// <param name="range">ячейки Excel</param>
         /// <returns></returns>
         private static EnumPrices DetermineTypeOfPriceList(Range range)
         {
