@@ -155,19 +155,19 @@ namespace ExcelParserForOpenCart
                     _resultingPrice = PTGrupp.ResultingPrice;
                     break;
 
-                case EnumPrices.РИВАЛЬ_АвтоБРОНЯ:
+                case EnumPrices.РивальАвтоБроня:
                     var AutoBRONYA = new Rival(sender, e);
                     AutoBRONYA.AnalyzeBronya(row, range);
                     _resultingPrice = AutoBRONYA.ResultingPrice;
                     break;
 
-                case EnumPrices.РИВАЛЬ_Подкрылки:
+                case EnumPrices.РивальПодкрылки:
                     var Podkrilki = new Rival(sender, e);
                     Podkrilki.AnalyzePodkrilki(row, range);
                     _resultingPrice = Podkrilki.ResultingPrice;
                     break;
 
-                case EnumPrices.РИВАЛЬ_Подлокотники:
+                case EnumPrices.РивальПодлокотники:
                     var Podlokotniki = new Rival(sender, e);
                     Podlokotniki.AnalyzePodlokotniki(row, range);
                     _resultingPrice = Podlokotniki.ResultingPrice;
