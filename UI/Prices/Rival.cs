@@ -12,8 +12,6 @@ namespace ExcelParserForOpenCart.Prices
         {
 
         }
-
-
         /// <summary>
         /// Обработка ЕКБ_Прайс АвтоБРОНЯ_Игорь.xls
         /// </summary>
@@ -31,7 +29,6 @@ namespace ExcelParserForOpenCart.Prices
 
             var countEmptyRow = 0;
             var icount = 0;
-            var compareCategory2 = string.Empty;
             var compareVendorCode = string.Empty;
             var unionDescription = string.Empty;
             ResultingPrice.Clear();
@@ -60,12 +57,10 @@ namespace ExcelParserForOpenCart.Prices
 
                     if (sc == "15986394") // 2 категория
                     {
-                        compareCategory2 = category2 = str;
                         countEmptyRow = 0; //идет новая категория 2, зануляем счет на пустые строки
                         continue;
                     }
-                    else
-                    { category2 = str; }
+                    category2 = str;
                 }
 
                 if (secRange != null)
@@ -99,8 +94,7 @@ namespace ExcelParserForOpenCart.Prices
                         tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
                     }
                     if (unionDescription == "<p> ()</p><p> ()</p><p> ()</p><p> ()</p>") { break; }// выйти из цикла, при пустых 4-х строк
-                    else
-                        continue; // пропускаем строку
+                    continue; // пропускаем строку
                 }
 
 
@@ -133,7 +127,6 @@ namespace ExcelParserForOpenCart.Prices
         }
 
 
-
         public void AnalyzePodkrilki(int row, Range range)
         {
             if (Worker.CancellationPending)
@@ -146,7 +139,6 @@ namespace ExcelParserForOpenCart.Prices
 
             var countEmptyRow = 0;
             var icount = 0;
-            var compareCategory2 = string.Empty;
             var compareVendorCode = string.Empty;
             var unionDescription = string.Empty;
             ResultingPrice.Clear();
@@ -175,12 +167,10 @@ namespace ExcelParserForOpenCart.Prices
 
                     if (sc == "6697728") // 2 категория
                     {
-                        compareCategory2 = category2 = str;
                         countEmptyRow = 0; //идет новая категория 2, зануляем счет на пустые строки
                         continue;
                     }
-                    else
-                    { category2 = str; }
+                    category2 = str;
                 }
 
                 if (secRange != null)
@@ -214,8 +204,7 @@ namespace ExcelParserForOpenCart.Prices
                         tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
                     }
                     if (unionDescription == "<p> ()</p><p> ()</p><p> ()</p><p> ()</p>") { break; }// выйти из цикла, при пустых 4-х строк
-                    else
-                        continue; // пропускаем строку
+                    continue; // пропускаем строку
                 }
 
 
@@ -247,8 +236,6 @@ namespace ExcelParserForOpenCart.Prices
         }
 
 
-
-
         public void AnalyzePodlokotniki(int row, Range range)
         {
             if (Worker.CancellationPending)
@@ -261,7 +248,6 @@ namespace ExcelParserForOpenCart.Prices
 
             var countEmptyRow = 0;
             var icount = 0;
-            var compareCategory2 = string.Empty;
             var compareVendorCode = string.Empty;
             var unionDescription = string.Empty;
             ResultingPrice.Clear();
@@ -290,7 +276,7 @@ namespace ExcelParserForOpenCart.Prices
 
                     if (sc == "6697728") // 2 категория
                     {
-                        compareCategory2 = category2 = str;
+                        category2 = str;
                         countEmptyRow = 0; //идет новая категория 2, зануляем счет на пустые строки
                         continue;
                     }
@@ -329,8 +315,7 @@ namespace ExcelParserForOpenCart.Prices
                         tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
                     }
                     if (unionDescription == "<p> ()</p><p> ()</p><p> ()</p><p> ()</p>") { break; }// выйти из цикла, при пустых 4-х строк
-                    else
-                        continue; // пропускаем строку
+                    continue; // пропускаем строку
                 }
 
 
@@ -356,9 +341,6 @@ namespace ExcelParserForOpenCart.Prices
 
             }
 
-
-
-
             ResultingPrice.AddRange(Blaster(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
 
             tmpResultingPrice.Clear();
@@ -366,32 +348,34 @@ namespace ExcelParserForOpenCart.Prices
         }
 
 
-        //выполняется "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
-
-        private static List<OutputPriceLine> Blaster(List<OutputPriceLine> tmpResultingPrice)
+        /// <summary>
+        /// Выполняется "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
+        /// </summary>
+        /// <param name="tmpResultingPrice"></param>
+        /// <returns></returns>
+        private static IEnumerable<OutputPriceLine> Blaster(ICollection<OutputPriceLine> tmpResultingPrice)
         {
-            var Result = new List<OutputPriceLine>();
-            Result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList(); //сортируем по Артикулу, и категории 2
+            var result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList();
             tmpResultingPrice.Clear();
-            for (int i = 0; Result.Count >= i; i++)
+            for (var i = 0; result.Count >= i; i++)
             {
 
-                if (i == 0) { tmpResultingPrice.Add(Result[i]); }
-                if (i > 0 && Result.Count != i)
+                if (i == 0) { tmpResultingPrice.Add(result[i]); }
+                if (i > 0 && result.Count != i)
                 {
-                    if (Result[i].VendorCode == Result[i - 1].VendorCode && Result[i].Category2 == Result[i - 1].Category2 && Result[i].Cost == Result[i - 1].Cost)
+                    if (result[i].VendorCode == result[i - 1].VendorCode &&
+                        result[i].Category2 == result[i - 1].Category2 && result[i].Cost == result[i - 1].Cost)
                     {
-                        Result[i - 1].ProductDescription += Result[i].ProductDescription;
-                        Result.RemoveAt(i);
+                        result[i - 1].ProductDescription += result[i].ProductDescription;
+                        result.RemoveAt(i);
                     }
                     else
                     {
-                        tmpResultingPrice.Add(Result[i]);
+                        tmpResultingPrice.Add(result[i]);
                     }
                 }
-
             }
-            Result.Clear();
+            result.Clear();
             return tmpResultingPrice;
         }
     }

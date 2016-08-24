@@ -5,6 +5,11 @@ using Microsoft.Office.Interop.Excel;
 
 namespace ExcelParserForOpenCart.Prices
 {
+    /// <summary>
+    /// Общий абстрактный класс, который содержит:
+    /// 1. BackgroundWorker в котором происходит обработка прайса
+    /// 2. Методы для конвертации данных из ячеек
+    /// </summary>
     public abstract class GeneralMethods
     {
         protected readonly BackgroundWorker Worker;
