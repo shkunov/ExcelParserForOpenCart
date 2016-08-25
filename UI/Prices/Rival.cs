@@ -19,18 +19,26 @@ namespace ExcelParserForOpenCart.Prices
         /// <param name="range"></param>
         public void AnalyzeBronya(int row, Range range)
         {
-            Analyze(6, "15986394", 17, row, range);
+            Analyze(6, "15986394", 17, 4, row, range);
         }
 
-
+        /// <summary>
+        /// Обработка Подкрылки_Игорь.xls
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
         public void AnalyzePodkrilki(int row, Range range)
         {
-            Analyze(4, "6697728", 6, row, range);
+            Analyze(4, "6697728", 6, 3, row, range);
         }
-
+        /// <summary>
+        /// Обработка Подлокотники_Игорь.xls
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="range"></param>
         public void AnalyzePodlokotniki(int row, Range range)
         {
-            Analyze(4, "6697728", 9, row, range);
+            Analyze(4, "6697728", 9, 3, row, range);
         }
         /// <summary>
         /// Общий анализатор для всех прайсов Риваль
@@ -38,9 +46,10 @@ namespace ExcelParserForOpenCart.Prices
         /// <param name="startIndex"></param>
         /// <param name="codeColor"></param>
         /// <param name="columCost"></param>
+        /// <param name="cat1nrow"></param>
         /// <param name="row"></param>
         /// <param name="range"></param>
-        private void Analyze(int startIndex, string codeColor, int columCost, int row, Range range)
+        private void Analyze(int startIndex, string codeColor, int columCost, int cat1nrow, int row, Range range)
         {
             if (Worker.CancellationPending)
             {
@@ -52,9 +61,9 @@ namespace ExcelParserForOpenCart.Prices
             var icount = 0;
             var compareVendorCode = string.Empty;
             var unionDescription = string.Empty;
-            ResultingPrice.Clear();
+                ResultingPrice.Clear();
             var tmpResultingPrice = new List<OutputPriceLine>();
-            var category1 = ConverterToString(range.Cells[3, 1] as Range); //1 категория
+            var category1 = ConverterToString(range.Cells[cat1nrow, 1] as Range); //1 категория
             var category2 = string.Empty;
             // цикл для обработки прайс листа
             for (var i = startIndex; i < row; i++)
@@ -105,7 +114,8 @@ namespace ExcelParserForOpenCart.Prices
                     {
                         tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
                     }
-                    if (unionDescription == "<p> ()</p><p> ()</p><p> ()</p><p> ()</p>") { break; }// выйти из цикла, при пустых 4-х строк
+                    else if (string.IsNullOrEmpty(vendorCode)) { countEmptyRow++; }
+                    if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
                     continue; // пропускаем строку
                 }
                 line.Name = ConverterToString(range.Cells[i, 4] as Range);
@@ -115,12 +125,6 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 line.Cost = ConverterToString(range.Cells[i, columCost] as Range);
                 line.VendorCode = vendorCode;
-
-                if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
-                { countEmptyRow++; }
-
-                if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
-
                 if (!string.IsNullOrEmpty(line.Name))
                 {
                     tmpResultingPrice.Add(line); icount++;
@@ -131,7 +135,7 @@ namespace ExcelParserForOpenCart.Prices
         }
 
         /// <summary>
-        /// Выполняется "схлопывание" записей по одинаковому артикулу, категории2, цене, объедяются значения в ProductDescription
+        /// Выполняется "схлопывание" записей по одинаковому артикулу, категории2, цене, объединяются значения в ProductDescription
         /// </summary>
         /// <param name="tmpResultingPrice"></param>
         /// <returns></returns>
@@ -141,14 +145,13 @@ namespace ExcelParserForOpenCart.Prices
             tmpResultingPrice.Clear();
             for (var i = 0; result.Count >= i; i++)
             {
-
                 if (i == 0) { tmpResultingPrice.Add(result[i]); }
                 if (i > 0 && result.Count != i)
                 {
                     if (result[i].VendorCode == result[i - 1].VendorCode &&
                         result[i].Category2 == result[i - 1].Category2 && result[i].Cost == result[i - 1].Cost)
                     {
-                        result[i - 1].ProductDescription += result[i].ProductDescription;
+                        result[i - 1].ProductDescription += result[i].ProductDescription;//добавляем в предыдущую строку значение
                         result.RemoveAt(i);
                     }
                     else
