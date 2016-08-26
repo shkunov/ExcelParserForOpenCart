@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
@@ -13,28 +14,31 @@ namespace ExcelParserForOpenCart
     public partial class MainWindow
     {
         private readonly ExcelParser _excelParser;
+        private string _openFileName;
 
         public MainWindow()
         {
             InitializeComponent();
+            _openFileName = string.Empty;
             BtnCancel.IsEnabled = false;
             var strVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
             Title = string.Format("Конвертер прайслистов (версия: {0})", strVersion);
             _excelParser = new ExcelParser();
             _excelParser.OnParserAction += OnParserAction;
             _excelParser.OnProgressBarAction += OnProgressBarAction;
-            _excelParser.OnOpenDocument += OnOpenDocument;
-            _excelParser.OnSaveDocument += OnSaveDocument;
+            _excelParser.OnOpenedDocument += OnOpenedDocument;
+            _excelParser.OnSavedDocument += OnSavedDocument;
         }
 
-        private void OnSaveDocument(object sender, EventArgs eventArgs)
+        private void OnSavedDocument(object sender, EventArgs eventArgs)
         {
             BtnOpen.IsEnabled = true;
             BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = false;
+            _openFileName = string.Empty;
         }
 
-        private void OnOpenDocument(object sender, EventArgs e)
+        private void OnOpenedDocument(object sender, EventArgs e)
         {
             BtnOpen.IsEnabled = true;
             BtnSave.IsEnabled = true;
@@ -74,6 +78,7 @@ namespace ExcelParserForOpenCart
             BtnOpen.IsEnabled = false;
             BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = true;
+            _openFileName = filename;
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -83,6 +88,12 @@ namespace ExcelParserForOpenCart
             {
                 Filter = "Excel files|*.xls"
             };
+            if (!string.IsNullOrWhiteSpace(_openFileName))
+            {
+                var name = Path.GetFileNameWithoutExtension(_openFileName);
+                var ext = Path.GetExtension(_openFileName);
+                dlg.FileName = string.Format("{0}(обработанный){1}", name, ext);   
+            }
             dlg.FileOk += delegate
             {
                 filename = dlg.FileName;
@@ -114,6 +125,10 @@ namespace ExcelParserForOpenCart
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             _excelParser.CancelParsing();
+            BtnOpen.IsEnabled = true;
+            BtnSave.IsEnabled = false;
+            BtnCancel.IsEnabled = false;
+            _openFileName = string.Empty;
         }
     }
 }
