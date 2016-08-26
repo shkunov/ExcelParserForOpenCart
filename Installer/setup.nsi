@@ -1,11 +1,6 @@
-﻿;NSIS Modern User Interface
-;Basic Example Script
-;Written by Joost Verburg
+﻿;Include Modern UI
 
-;--------------------------------
-;Include Modern UI
-
-  !define MUI_VERSION "1.12"
+  !define MUI_VERSION "1.13"
   !define MUI_PRODUCT "ExcelParserForOpenCart"
   !define MUI_FILE "ExcelParserForOpenCart"
   !define MUI_ICON "program.ico"
