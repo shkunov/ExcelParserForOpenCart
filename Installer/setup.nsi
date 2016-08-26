@@ -10,7 +10,6 @@
   !define MUI_FILE "ExcelParserForOpenCart"
   !define MUI_ICON "program.ico"
   !define MUI_UNICON "program.ico"
-  CRCCheck On
   !include "MUI2.nsh"
 
 ;--------------------------------
