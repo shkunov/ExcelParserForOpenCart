@@ -91,8 +91,7 @@ namespace ExcelParserForOpenCart
             if (!string.IsNullOrWhiteSpace(_openFileName))
             {
                 var name = Path.GetFileNameWithoutExtension(_openFileName);
-                var ext = Path.GetExtension(_openFileName);
-                dlg.FileName = string.Format("{0}(обработанный){1}", name, ext);   
+                dlg.FileName = string.Format("{0}(обработанный).xls", name);   
             }
             dlg.FileOk += delegate
             {
