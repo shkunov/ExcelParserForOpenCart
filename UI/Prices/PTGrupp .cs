@@ -60,6 +60,7 @@ namespace ExcelParserForOpenCart.Prices
                     continue; // игнорировать строки без артикля
                 line.Cost = ConverterToString(range.Cells[i, 7] as Range);                               
                 line.VendorCode = vendorCode;
+                line.Qt = "1000";
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
                     break; // выходить из цикла

@@ -117,6 +117,7 @@ namespace ExcelParserForOpenCart.Prices
                 list.Clear();
                 pair = false;
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
+                line.Qt = "1000";
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
                     break; 

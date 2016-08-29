@@ -68,6 +68,7 @@ namespace ExcelParserForOpenCart.Prices
 
                 line.Cost = ConverterToString(range.Cells[i, 6] as Range);
                 line.VendorCode = vendorCode;
+                line.Qt = "1000";
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
                     break; // выходить из цикла
