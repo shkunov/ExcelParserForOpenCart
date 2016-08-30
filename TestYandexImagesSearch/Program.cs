@@ -51,6 +51,7 @@ namespace TestYandexImagesSearch
             var xmlReader = XmlReader.Create(input);
 
             var xmlResponse = XDocument.Load(xmlReader);
+            var s = xmlResponse.ToString();
         }
     }
 }

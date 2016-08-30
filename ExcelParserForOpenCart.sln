@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLewandowski", "TestLewa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestYandexImagesSearch", "TestYandexImagesSearch\TestYandexImagesSearch.csproj", "{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGoogleSearch", "TestGoogleSearch\TestGoogleSearch.csproj", "{CA7A427F-7817-41ED-AA35-4B08F3A92952}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA7A427F-7817-41ED-AA35-4B08F3A92952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA7A427F-7817-41ED-AA35-4B08F3A92952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA7A427F-7817-41ED-AA35-4B08F3A92952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA7A427F-7817-41ED-AA35-4B08F3A92952}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
