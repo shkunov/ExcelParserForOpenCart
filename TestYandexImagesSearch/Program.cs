@@ -19,12 +19,11 @@ namespace TestYandexImagesSearch
             const string command = @"<?xml version=""1.0"" encoding=""UTF-8""?>  
           <request>  
            <query>Багажник SUZUKI JIMNY (алюминиево магниевый сплав) JIMNY Багажник</query>
-           <groupings>
-             <groupby attr=""d""
-                    mode=""deep""
-                    groups-on-page=""10""
-                    docs-in-group=""1"" />  
-           </groupings>  
+           <page>0</page>
+            <maxpassages>0</maxpassages>
+            <groupings>
+		        <groupby mode=""flat""/>
+	        </groupings>
           </request>";
 
             var bytes = Encoding.UTF8.GetBytes(command);
