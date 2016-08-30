@@ -84,14 +84,15 @@ namespace ExcelParserForOpenCart
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             var filename = string.Empty;
+            const string ext = ".xls";
             var dlg = new SaveFileDialog
             {
-                Filter = "Excel files|*.xls"
+                Filter = "Excel files|*" + ext
             };
             if (!string.IsNullOrWhiteSpace(_openFileName))
             {
                 var name = Path.GetFileNameWithoutExtension(_openFileName);
-                dlg.FileName = string.Format("{0}(обработанный).xls", name);   
+                dlg.FileName = string.Format("{0}(обработанный){1}", name, ext);   
             }
             dlg.FileOk += delegate
             {
