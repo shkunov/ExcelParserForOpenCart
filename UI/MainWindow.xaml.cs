@@ -15,11 +15,13 @@ namespace ExcelParserForOpenCart
     {
         private readonly ExcelParser _excelParser;
         private string _openFileName;
+        private string _saveFileName;
 
         public MainWindow()
         {
             InitializeComponent();
             _openFileName = string.Empty;
+            _saveFileName = string.Empty;
             BtnCancel.IsEnabled = false;
             var strVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
             Title = string.Format("Конвертер прайслистов (версия: {0})", strVersion);
@@ -36,6 +38,11 @@ namespace ExcelParserForOpenCart
             BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = false;
             _openFileName = string.Empty;
+            var result = MessageBox.Show("Открыть сохраннённый файл?", "Вопрос", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+                return;
+            if (File.Exists(_saveFileName))
+                Process.Start(_saveFileName);
         }
 
         private void OnOpenedDocument(object sender, EventArgs e)
@@ -43,6 +50,7 @@ namespace ExcelParserForOpenCart
             BtnOpen.IsEnabled = true;
             BtnSave.IsEnabled = true;
             BtnCancel.IsEnabled = false;
+            _saveFileName = string.Empty;
         }
 
         private void OnProgressBarAction(int obj)
@@ -100,6 +108,7 @@ namespace ExcelParserForOpenCart
             };
             dlg.ShowDialog(this);
             if (string.IsNullOrEmpty(filename)) return;
+            _saveFileName = filename;
             BtnOpen.IsEnabled = false;
             BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = true;
