@@ -5,6 +5,14 @@ namespace ExcelParserForOpenCart
 {
     public static class Global
     {
+        /// <summary>
+        /// Путь к временной картинке если не найдена исходное изображение товара
+        /// </summary>
+        public const string ImgUrl = @"https://dl.dropboxusercontent.com/u/54495412/NotFoto.png";
+        /// <summary>
+        /// Получить путь к файлу шаблона Excel
+        /// </summary>
+        /// <returns>Путь к файлу</returns>
         public static string GetTemplate()
         {
             const string fileName = "template.xls";
@@ -14,6 +22,5 @@ namespace ExcelParserForOpenCart
             var template = Path.Combine(dir, fileName);
             return template;
         }
-
     }
 }
