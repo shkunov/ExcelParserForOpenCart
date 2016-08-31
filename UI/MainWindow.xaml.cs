@@ -100,7 +100,7 @@ namespace ExcelParserForOpenCart
             if (!string.IsNullOrWhiteSpace(_openFileName))
             {
                 var name = Path.GetFileNameWithoutExtension(_openFileName);
-                dlg.FileName = string.Format("{0}(обработанный){1}", name, ext);   
+                dlg.FileName = string.Format("{0}(обработанный){1}", name, ext);
             }
             dlg.FileOk += delegate
             {
@@ -138,6 +138,7 @@ namespace ExcelParserForOpenCart
             BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = false;
             _openFileName = string.Empty;
+            _saveFileName = string.Empty;
         }
     }
 }
