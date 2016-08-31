@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows;
 using Microsoft.Win32;
 
-namespace ExcelParserForOpenCart
+namespace ExcelParserForOpenCart.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -40,7 +40,7 @@ namespace ExcelParserForOpenCart
             _openFileName = string.Empty;
             if (string.IsNullOrWhiteSpace(_saveFileName))
               return;
-            var result = MessageBox.Show("Открыть сохраннённый файл?", "Вопрос", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show(this, "Открыть сохраннённый файл?", "Вопрос", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
                 return;
             if (File.Exists(_saveFileName))
@@ -123,7 +123,7 @@ namespace ExcelParserForOpenCart
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (!_excelParser.IsStart()) return;
-            var result = MessageBox.Show("Идёт работа. Вы увререны что хотите завершить работу?", "Вопрос?",
+            var result = MessageBox.Show(this, "Идёт работа. Вы увререны что хотите завершить работу?", "Вопрос?",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
                 e.Cancel = true;
