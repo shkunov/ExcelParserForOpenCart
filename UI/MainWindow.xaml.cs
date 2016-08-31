@@ -38,6 +38,8 @@ namespace ExcelParserForOpenCart
             BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = false;
             _openFileName = string.Empty;
+            if (string.IsNullOrWhiteSpace(_saveFileName))
+              return;
             var result = MessageBox.Show("Открыть сохраннённый файл?", "Вопрос", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
                 return;
@@ -87,6 +89,7 @@ namespace ExcelParserForOpenCart
             BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = true;
             _openFileName = filename;
+            _saveFileName = string.Empty;
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
