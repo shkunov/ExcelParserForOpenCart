@@ -5,6 +5,7 @@ namespace ExcelParserForOpenCart
 {
     public static class Global
     {
+        public static readonly string[] IgnorOptions = {"завод", "импорт"};
         /// <summary>
         /// Путь к временной картинке если не найдена исходное изображение товара
         /// </summary>

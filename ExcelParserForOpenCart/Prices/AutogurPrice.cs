@@ -143,6 +143,7 @@ namespace ExcelParserForOpenCart.Prices
             var minStr = "";
             var @case = 1;
             decimal cost = 0;
+            var countOpt = 0;
             diffCosts = "";
             options = "";
             var separator = new[] {' ', ',', ';', ':', '?', '!', ')', '('};
@@ -182,11 +183,13 @@ namespace ExcelParserForOpenCart.Prices
                         {
                             options = "Нет";
                             diffCosts = "0";
+                            countOpt++;
                         }
                         else
                         {
                             options += ";Нет";
                             diffCosts = ";0";
+                            countOpt++;
                         }
                         isFirst = false;
                         continue;
@@ -203,42 +206,53 @@ namespace ExcelParserForOpenCart.Prices
                         options = option.Trim();
                         diffCosts = GetDiffCost(item.Cost, cost);
                         isFirst = false;
+                        countOpt++;
+                    }
+                    else
+                    {
+                        options += ";" + option.Trim();
+                        diffCosts += ";" + GetDiffCost(item.Cost, cost);
+                        countOpt++;
+                    }
+                }
+                options = options.Trim();
+            }
+            if (@case == 2)
+            {
+                countOpt = 0;
+                var totslStr = new List<string>();
+                foreach (var item in list)
+                {
+                    if (item.Name == minStr) continue;
+                    var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                    totslStr = wordsMinStr.Intersect(tmpWords).ToList();
+                    break;
+                }
+                isFirst = true;
+                foreach (var item in list)
+                {
+                    var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                    var option = tmpWords.Except(totslStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
+                    if (isFirst)
+                    {
+                        options = option.Trim();
+                        cost = item.Cost;
+                        diffCosts = "0";
+                        isFirst = false;
                     }
                     else
                     {
                         options += ";" + option.Trim();
                         diffCosts += ";" + GetDiffCost(item.Cost, cost);
                     }
+                    countOpt++;
+                    if (!string.IsNullOrWhiteSpace(option)) name = name.Replace(option, "").Replace(",", "");
                 }
-                options = options.Trim();
             }
-            if (@case != 2) return;
-            var totslStr = new List<string>();
-            foreach (var item in list)
+            if (countOpt == 2 && Global.IgnorOptions.Any(options.Contains))
             {
-                if (item.Name == minStr) continue;
-                var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                totslStr = wordsMinStr.Intersect(tmpWords).ToList();
-                break;
-            }
-            isFirst = true;
-            foreach (var item in list)
-            {
-                var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                var option = tmpWords.Except(totslStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
-                if (isFirst)
-                {
-                    options = option.Trim();
-                    cost = item.Cost;
-                    diffCosts = "0";
-                    isFirst = false;
-                }
-                else
-                {
-                    options += ";" + option.Trim();
-                    diffCosts += ";" + GetDiffCost(item.Cost, cost);
-                }
-                if (!string.IsNullOrWhiteSpace(option)) name = name.Replace(option, "").Replace(",", "");
+                options = "";
+                diffCosts = "";
             }
         }
 
