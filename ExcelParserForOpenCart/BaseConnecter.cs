@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 
@@ -57,6 +58,32 @@ namespace ExcelParserForOpenCart
                 return source.Replace(old, @new);
             }
             return source;
+        }
+
+
+        /// <summary>
+        /// возвращает List c производителями
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<OutputProducersLine> GetProducers()
+        {
+            if (_isConnected == false) return null;
+            const string commandText = "SELECT id, name FROM producers";
+            List<OutputProducersLine> _producers = new List<OutputProducersLine>();
+            
+            var myCommand = _connection.CreateCommand();
+            myCommand.CommandText = commandText;
+            var dataReader = myCommand.ExecuteReader();
+            while (dataReader.Read())
+            {
+                var line = new OutputProducersLine { 
+                id = Convert.ToInt32(dataReader["id"].ToString()),
+                name = dataReader["name"].ToString()
+                };
+                _producers.Add(line); 
+            }
+            
+            return _producers;
         }
 
         public void Dispose()
