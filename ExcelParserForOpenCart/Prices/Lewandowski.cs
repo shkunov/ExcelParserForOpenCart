@@ -75,7 +75,8 @@ namespace ExcelParserForOpenCart.Prices
                     Cost = cost,
                     PlusThePrice = plus,
                     Option = option,
-                    ProductDescription = desk
+                    ProductDescription = desk,
+                    Qt = "1000"
                 };
                 if (!string.IsNullOrEmpty(line.Name))
                     ResultingPrice.Add(line);

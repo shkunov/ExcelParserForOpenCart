@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelParserForOpenCart", "UI\ExcelParserForOpenCart.csproj", "{C9572D28-3074-45AD-A79B-73FA2386677C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelParserForOpenCart", "ExcelParserForOpenCart\ExcelParserForOpenCart.csproj", "{C9572D28-3074-45AD-A79B-73FA2386677C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestParsingOptionOJ", "TestParsingOptionOJ\TestParsingOptionOJ.csproj", "{5F522354-E953-4DD2-B62A-5131AF29BB34}"
 EndProject
@@ -22,6 +22,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E82FFA
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLewandowski", "TestLewandowski\TestLewandowski.csproj", "{CDE3268E-ABE5-49A0-9BD2-01C9E16EC623}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestYandexImagesSearch", "TestYandexImagesSearch\TestYandexImagesSearch.csproj", "{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGoogleSearch", "TestGoogleSearch\TestGoogleSearch.csproj", "{CA7A427F-7817-41ED-AA35-4B08F3A92952}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{CDE3268E-ABE5-49A0-9BD2-01C9E16EC623}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDE3268E-ABE5-49A0-9BD2-01C9E16EC623}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDE3268E-ABE5-49A0-9BD2-01C9E16EC623}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A3B31EF-37DB-4CC7-8519-E5E79BB91BFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA7A427F-7817-41ED-AA35-4B08F3A92952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA7A427F-7817-41ED-AA35-4B08F3A92952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA7A427F-7817-41ED-AA35-4B08F3A92952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA7A427F-7817-41ED-AA35-4B08F3A92952}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

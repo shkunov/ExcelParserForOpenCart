@@ -34,7 +34,13 @@ namespace ExcelParserForOpenCart
             }
 
         }
-
+        /// <summary>
+        /// Метод перезаписывающий наименование категории записанную во множественном числе в единственное число
+        /// Например: Бамперы силовые -> Бампер силовой
+        /// Служит для формировании наименования продукции
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public string OJ_Composition(string source)
         {
             if (_isConnected == false) return source;

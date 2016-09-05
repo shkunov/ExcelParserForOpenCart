@@ -69,6 +69,7 @@ namespace ExcelParserForOpenCart.Prices
                 var newname = baseConnecter.OJ_Composition(category1);
                 line.Name = string.Format("{0} {1}", newname, line.VendorCode);
                 line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
+                line.Qt = "1000";
                 if (needOption)
                 {
                     var opc = ConverterToString(range.Cells[i, 7] as Range);

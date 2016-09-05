@@ -119,6 +119,7 @@ namespace ExcelParserForOpenCart.Prices
                     continue; // пропускаем строку
                 }
                 line.Name = ConverterToString(range.Cells[i, 4] as Range);
+                line.Qt = "1000";
                 if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
                 {
                     continue; // игнорировать строки без артикля

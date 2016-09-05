@@ -12,8 +12,14 @@ namespace ExcelParserForOpenCart
     {
         public event Action<string> OnParserAction;
         public event Action<int> OnProgressBarAction;
-        public event EventHandler OnOpenDocument;
-        public event EventHandler OnSaveDocument;
+        /// <summary>
+        /// Событие вызываемое после прочтения и анализа документв
+        /// </summary>
+        public event EventHandler OnOpenedDocument;
+        /// <summary>
+        /// Событие вызываемое после сохранения документа
+        /// </summary>
+        public event EventHandler OnSavedDocument;
 
         private readonly bool _isExcelInstal;
         private BackgroundWorker _workerSave;
@@ -107,7 +113,7 @@ namespace ExcelParserForOpenCart
             else
             {
                 SendMessage("Завершён анализ документа: " + _openFileName);
-                if (OnOpenDocument != null) OnOpenDocument(null, null);
+                if (OnOpenedDocument != null) OnOpenedDocument(null, null);
             }
         }
 
@@ -216,7 +222,7 @@ namespace ExcelParserForOpenCart
             else
             {
                 SendMessage("Прайс создан! Сохраняю как: " + _saveFileName);
-                if (OnSaveDocument != null) OnSaveDocument(null, null);   
+                if (OnSavedDocument != null) OnSavedDocument(null, null);   
             }
         }
 

@@ -117,6 +117,8 @@ namespace ExcelParserForOpenCart.Prices
                 list.Clear();
                 pair = false;
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
+                line.Qt = "1000";
+                line.Foto = Global.ImgUrl;
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
                     break; 
@@ -141,6 +143,7 @@ namespace ExcelParserForOpenCart.Prices
             var minStr = "";
             var @case = 1;
             decimal cost = 0;
+            var countOpt = 0;
             diffCosts = "";
             options = "";
             var separator = new[] {' ', ',', ';', ':', '?', '!', ')', '('};
@@ -174,7 +177,23 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 foreach (var item in list)
                 {
-                    if (item.Name == minStr) continue;
+                    if (item.Name == minStr)
+                    {
+                        if (isFirst)
+                        {
+                            options = "Нет";
+                            diffCosts = "0";
+                            countOpt++;
+                        }
+                        else
+                        {
+                            options += ";Нет";
+                            diffCosts = ";0";
+                            countOpt++;
+                        }
+                        isFirst = false;
+                        continue;
+                    }
                     var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                     var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
                     if (option.Length > 19)
@@ -185,48 +204,65 @@ namespace ExcelParserForOpenCart.Prices
                     if (isFirst)
                     {
                         options = option.Trim();
-                        var diff = item.Cost - cost;
-                        diffCosts = diff.ToString(CultureInfo.CurrentCulture);
+                        diffCosts = GetDiffCost(item.Cost, cost);
                         isFirst = false;
+                        countOpt++;
                     }
                     else
                     {
-                        options += " ; " + option.Trim();
-                        var diff = item.Cost - cost;
-                        diffCosts += "; " + diff.ToString(CultureInfo.CurrentCulture);
+                        options += ";" + option.Trim();
+                        diffCosts += ";" + GetDiffCost(item.Cost, cost);
+                        countOpt++;
                     }
                 }
                 options = options.Trim();
             }
-            if (@case != 2) return;
-            var totslStr = new List<string>();
-            foreach (var item in list)
+            if (@case == 2)
             {
-                if (item.Name == minStr) continue;
-                var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                totslStr = wordsMinStr.Intersect(tmpWords).ToList();
-                break;
+                countOpt = 0;
+                var totslStr = new List<string>();
+                foreach (var item in list)
+                {
+                    if (item.Name == minStr) continue;
+                    var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                    totslStr = wordsMinStr.Intersect(tmpWords).ToList();
+                    break;
+                }
+                isFirst = true;
+                foreach (var item in list)
+                {
+                    var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                    var option = tmpWords.Except(totslStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
+                    if (isFirst)
+                    {
+                        options = option.Trim();
+                        cost = item.Cost;
+                        diffCosts = "0";
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        options += ";" + option.Trim();
+                        diffCosts += ";" + GetDiffCost(item.Cost, cost);
+                    }
+                    countOpt++;
+                    if (!string.IsNullOrWhiteSpace(option)) name = name.Replace(option, "").Replace(",", "");
+                }
             }
-            isFirst = true;
-            foreach (var item in list)
+            if (countOpt == 2 && Global.IgnorOptions.Any(options.Contains))
             {
-                var tmpWords = item.Name.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                var option = tmpWords.Except(totslStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
-                if (isFirst)
-                {
-                    options = option.Trim();
-                    cost = item.Cost;
-                    diffCosts = "0";
-                    isFirst = false;
-                }
-                else
-                {
-                    options += "; " + option.Trim();
-                    var diff = item.Cost - cost;
-                    diffCosts += "; " + diff.ToString(CultureInfo.CurrentCulture);
-                }
-                if (!string.IsNullOrWhiteSpace(option)) name = name.Replace(option, "").Replace(",", "");
+                options = "";
+                diffCosts = "";
             }
+        }
+
+        private static string GetDiffCost(decimal itemCost, decimal cost)
+        {
+            var diff = itemCost - cost;
+            var postfix = diff > 0 ? "+" : "-";
+            if (diff == 0) postfix = "";
+            diff = Math.Abs(diff);
+            return diff.ToString(CultureInfo.CurrentCulture) + postfix;
         }
     }
 }

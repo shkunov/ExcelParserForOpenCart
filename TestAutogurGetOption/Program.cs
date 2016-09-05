@@ -35,9 +35,18 @@ namespace TestAutogurGetOption
             if (@case == 1)
             {
                 options = string.Empty;
+                isFirst = true;
                 foreach (var str in list)
                 {
-                    if (str == minStr) continue;
+                    if (str == minStr)
+                    {
+                        if (isFirst)
+                            options = "Нет";
+                        else
+                            options += ";Нет";
+                        isFirst = false;
+                        continue;
+                    }
                     var tmpWords = str.Split(new[] { ' ', ',', ';', ':', '?', '!', ')', '(' }, StringSplitOptions.RemoveEmptyEntries);
                     var option = tmpWords.Except(wordsMinStr).Aggregate("", (current, w) => current + (w + " ")).Trim();
                     if (option.Length > 19)
@@ -48,7 +57,7 @@ namespace TestAutogurGetOption
                     if (isFirst)
                         options = option;
                     else
-                        options += " ; " + option;
+                        options += ";" + option;
                     isFirst = false;
                 }
                 options = options.Trim();
@@ -74,7 +83,7 @@ namespace TestAutogurGetOption
                 }
                 else
                 {
-                    options += " ; " + option.Trim();
+                    options += ";" + option.Trim();
                 }
                 name = name.Replace(option, "").Replace(",", "");
             }
