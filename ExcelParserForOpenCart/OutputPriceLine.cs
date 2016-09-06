@@ -12,6 +12,10 @@
         public string Name { get; set; }
         public string Category1 { get; set; }
         public string Category2 { get; set; }
+        /// <summary>
+        /// Производитель
+        /// </summary>
+        public string Producer { get; set; }
         public string ProductDescription { get; set; }
         public string Cost { get; set; } // а не сделать ли числовые поля числовыми, int?
 
@@ -26,4 +30,11 @@
         /// </summary>
         public string PlusThePrice { get; set; }
     }
-}
+
+    public class OutputProducersLine
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+    }
+
+    }
