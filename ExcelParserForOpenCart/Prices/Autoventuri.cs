@@ -63,6 +63,16 @@ namespace ExcelParserForOpenCart.Prices
                 var vendorCode = ConverterToString(range.Cells[i, 3] as Range);
 
                 line.Name = ConverterToString(range.Cells[i, 2] as Range).TrimStart(' '); // тримим пробелы вначале строки
+                //ищем производителя по совпадению в тексте Наименования 
+                var tempName = line.Name.ToUpper();
+                foreach (var obj in Producers)
+                {
+                    if (tempName.Contains(obj.Name.ToUpper()))
+                    {
+                        line.Producer = obj.Name; break;
+                    }
+                    line.Producer = "";
+                }
                 if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
                     continue; // игнорировать строки без артикля
 

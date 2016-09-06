@@ -119,6 +119,16 @@ namespace ExcelParserForOpenCart.Prices
                     continue; // пропускаем строку
                 }
                 line.Name = ConverterToString(range.Cells[i, 4] as Range);
+                //ищем производителя по совпадению в тексте Категория 2
+                var tempName = line.Category2.ToUpper();
+                foreach (var obj in Producers)
+                {
+                    if (tempName.Contains(obj.Name.ToUpper()))
+                    {
+                        line.Producer = obj.Name; break;
+                    }
+                    line.Producer = "";
+                }
                 line.Qt = "1000";
                 if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
                 {

@@ -78,9 +78,22 @@ namespace ExcelParserForOpenCart.Prices
                     ProductDescription = desk,
                     Qt = "1000"
                 };
+
+                //ищем производителя по совпадению в тексте Наименования 
+                var tempName = line.Name.ToUpper();
+                foreach (var obj in Producers)
+                {
+                    if (tempName.Contains(obj.Name.ToUpper()))
+                    {
+                        line.Producer = obj.Name; break;
+                    }
+                    line.Producer = "";
+                }
+
                 if (!string.IsNullOrEmpty(line.Name))
                     ResultingPrice.Add(line);
             }
         }
+
     }
 }
