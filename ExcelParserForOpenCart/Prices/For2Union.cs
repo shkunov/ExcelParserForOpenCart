@@ -28,11 +28,11 @@ namespace ExcelParserForOpenCart.Prices
             }
             var category1 = string.Empty;
             var category2 = string.Empty;
-            var tempName = string.Empty;
-            var baseConnecter = new BaseConnecter(OnBaseMsgAction);
-            var _producers = new List<OutputProducersLine>();
-            _producers.AddRange(baseConnecter.GetProducers());
-            
+            var producers = new List<OutputProducersLine>();
+            using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
+            {
+                producers.AddRange(baseConnecter.GetProducers());                    
+            }          
             ResultingPrice.Clear();
             for (var i = 9; i < row; i++)
             {
@@ -43,8 +43,6 @@ namespace ExcelParserForOpenCart.Prices
                     break;
                 }
                 var line = new OutputPriceLine();
-                var producer = new OutputProducersLine();
-
                 var str = string.Empty;
                 var theRange = range.Cells[i, 1] as Range;
                 if (theRange != null)
@@ -67,12 +65,12 @@ namespace ExcelParserForOpenCart.Prices
                 line.Category1 = category1;
                 line.Category2 = category2;
 
-                for(int ii=0; ii<=_producers.Count-1;ii++)
+                for(int ii=0; ii<=producers.Count-1;ii++)
                 {
-                    tempName = ConverterToString(range.Cells[i, 4] as Range).ToUpper();
+                    var tempName = ConverterToString(range.Cells[i, 4] as Range).ToUpper();
 
-                    if (tempName.Contains(_producers[ii].name.ToUpper()))
-                    { line.Producer = _producers[ii].name;break; }
+                    if (tempName.Contains(producers[ii].Name.ToUpper()))
+                    { line.Producer = producers[ii].Name;break; }
                     else { line.Producer = ""; };
                 }
 

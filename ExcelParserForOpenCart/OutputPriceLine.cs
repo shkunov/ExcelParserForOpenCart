@@ -30,11 +30,4 @@
         /// </summary>
         public string PlusThePrice { get; set; }
     }
-
-    public class OutputProducersLine
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-    }
-
-    }
+}

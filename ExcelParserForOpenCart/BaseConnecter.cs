@@ -20,7 +20,7 @@ namespace ExcelParserForOpenCart
             if (!File.Exists(databaseName))
             {
                 _onMsgAction("Отсутствует файл базы данных");
-				_isConnected = false;
+                _isConnected = false;
                 return;
             }
             _connection = new SQLiteConnection(string.Format("Data Source={0};", databaseName));
@@ -45,7 +45,7 @@ namespace ExcelParserForOpenCart
         public string OJ_Composition(string source)
         {
             if (_isConnected == false) return source;
-            const string commandText = "SELECT old, new FROM oj_rowscomparsion";            
+            const string commandText = "SELECT old, new FROM oj_rowscomparsion";
             var myCommand = _connection.CreateCommand();
             myCommand.CommandText = commandText;
             var dataReader = myCommand.ExecuteReader();
@@ -69,21 +69,21 @@ namespace ExcelParserForOpenCart
         {
             if (_isConnected == false) return null;
             const string commandText = "SELECT id, name FROM producers";
-            List<OutputProducersLine> _producers = new List<OutputProducersLine>();
-            
+            var producers = new List<OutputProducersLine>();
+
             var myCommand = _connection.CreateCommand();
             myCommand.CommandText = commandText;
             var dataReader = myCommand.ExecuteReader();
             while (dataReader.Read())
             {
-                var line = new OutputProducersLine { 
-                id = Convert.ToInt32(dataReader["id"].ToString()),
-                name = dataReader["name"].ToString()
+                var line = new OutputProducersLine
+                {
+                    Id = Convert.ToInt32(dataReader["id"].ToString()),
+                    Name = dataReader["name"].ToString()
                 };
-                _producers.Add(line); 
+                producers.Add(line);
             }
-            
-            return _producers;
+            return producers;
         }
 
         public void Dispose()
