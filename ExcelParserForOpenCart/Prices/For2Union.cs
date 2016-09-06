@@ -9,10 +9,10 @@ namespace ExcelParserForOpenCart.Prices
     {
         public event Action<string> OnMsg;
 
-        public For2Union(object sender, DoWorkEventArgs e) 
+        public For2Union(object sender, DoWorkEventArgs e)
             : base(sender, e)
         {
-            
+
         }
         /// <summary>
         /// Обработка для прайса 2 союза
@@ -31,13 +31,13 @@ namespace ExcelParserForOpenCart.Prices
             var producers = new List<OutputProducersLine>();
             using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
             {
-                producers.AddRange(baseConnecter.GetProducers());                    
-            }          
+                producers.AddRange(baseConnecter.GetProducers());
+            }
             ResultingPrice.Clear();
             for (var i = 9; i < row; i++)
             {
                 if (Worker.CancellationPending)
-                {                
+                {
                     E.Cancel = true;
                     ResultingPrice.Clear();
                     break;
@@ -65,18 +65,21 @@ namespace ExcelParserForOpenCart.Prices
                 line.Category1 = category1;
                 line.Category2 = category2;
 
-                for(int ii=0; ii<=producers.Count-1;ii++)
+                for (var j = 0; j <= producers.Count - 1; j++)
                 {
                     var tempName = ConverterToString(range.Cells[i, 4] as Range).ToUpper();
 
-                    if (tempName.Contains(producers[ii].Name.ToUpper()))
-                    { line.Producer = producers[ii].Name;break; }
-                    else { line.Producer = ""; };
+                    if (tempName.Contains(producers[j].Name.ToUpper()))
+                    {
+                        line.Producer = producers[j].Name; 
+                        break;
+                    }
+                    line.Producer = "";
                 }
 
                 line.VendorCode = ConverterToString(range.Cells[i, 3] as Range);
                 line.Name = ConverterToString(range.Cells[i, 4] as Range);
-                
+
                 line.Qt = ConverterToString(range.Cells[i, 5] as Range);
                 // todo: цена в USD может стоит её как-то обработать?
                 line.Cost = ConverterToString(range.Cells[i, 6] as Range);
