@@ -23,14 +23,14 @@ namespace ExcelParserForOpenCart.Prices
 
         protected GeneralMethods(object sender, DoWorkEventArgs e)
         {
+            Worker = sender as BackgroundWorker;
+            E = e;
             ResultingPrice = new List<OutputPriceLine>();
             Producers = new List<Producers>();
             using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
             {
                 Producers.AddRange(baseConnecter.GetProducers());
-            }
-            Worker = sender as BackgroundWorker;
-            E = e;           
+            }           
         }
 
         protected GeneralMethods()
