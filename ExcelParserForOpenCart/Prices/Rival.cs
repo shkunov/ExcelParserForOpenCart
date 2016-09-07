@@ -127,12 +127,11 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 line.Cost = ConverterToString(range.Cells[i, columCost] as Range);
                 line.VendorCode = vendorCode;
-                if (!string.IsNullOrEmpty(line.Name))
-                {
-                    tmpResultingPrice.Add(line); icount++;
-                }
+                if (string.IsNullOrEmpty(line.Name)) continue;
+                tmpResultingPrice.Add(line); 
+                icount++;
             }
-            ResultingPrice.AddRange(Blaster(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
+            ResultingPrice.AddRange(Normalize(tmpResultingPrice).OrderBy(x => x.Category2).ToList()); //сортируем по категории 2
             tmpResultingPrice.Clear();
         }
 
@@ -141,7 +140,7 @@ namespace ExcelParserForOpenCart.Prices
         /// </summary>
         /// <param name="tmpResultingPrice"></param>
         /// <returns></returns>
-        private static IEnumerable<OutputPriceLine> Blaster(ICollection<OutputPriceLine> tmpResultingPrice)
+        private static IEnumerable<OutputPriceLine> Normalize(ICollection<OutputPriceLine> tmpResultingPrice)
         {
             var result = tmpResultingPrice.OrderBy(x => x.VendorCode).ThenBy(x => x.Category2).ToList();
             tmpResultingPrice.Clear();

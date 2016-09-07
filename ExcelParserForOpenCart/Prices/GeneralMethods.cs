@@ -15,11 +15,11 @@ namespace ExcelParserForOpenCart.Prices
     {
         protected readonly BackgroundWorker Worker;
         protected readonly DoWorkEventArgs E;
-        public List<Producers> Producers { get; private set; }
+        protected List<Producers> Producers { get; private set; }
 
         public List<OutputPriceLine> ResultingPrice { get; private set; }
 
-        public event Action<string> OnMsg;
+        protected event Action<string> OnMsg;
 
         protected GeneralMethods(object sender, DoWorkEventArgs e)
         {
@@ -35,21 +35,6 @@ namespace ExcelParserForOpenCart.Prices
 
         protected GeneralMethods()
         {
-        }
-        /// <summary>
-        /// Поиск производителя по совпадению в тексте Наименования 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        protected string GetProducer(string name)
-        {
-            var tempName = name.ToUpper();
-            foreach (var obj in Producers)
-            {
-                if (tempName.Contains(obj.Name.ToUpper()))
-                    return obj.Name; 
-            }
-            return string.Empty;
         }
 
         protected static string ConverterToString(dynamic obj)
@@ -102,6 +87,21 @@ namespace ExcelParserForOpenCart.Prices
                 s = string.Empty;
             }
             return s;
+        }
+        /// <summary>
+        /// Поиск производителя по совпадению в тексте Наименования 
+        /// </summary>
+        /// <param name="name">Наименование товара в прайс-листе</param>
+        /// <returns></returns>
+        protected string GetProducer(string name)
+        {
+            var tempName = name.ToUpper();
+            foreach (var obj in Producers)
+            {
+                if (tempName.Contains(obj.Name.ToUpper()))
+                    return obj.Name;
+            }
+            return string.Empty;
         }
 
         private void OnBaseMsgAction(string s)
