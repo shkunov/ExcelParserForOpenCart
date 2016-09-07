@@ -65,18 +65,18 @@ namespace ExcelParserForOpenCart
         /// возвращает List c производителями
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<OutputProducersLine> GetProducers()
+        public IEnumerable<Producers> GetProducers()
         {
             if (_isConnected == false) return null;
             const string commandText = "SELECT id, name FROM producers";
-            var producers = new List<OutputProducersLine>();
+            var producers = new List<Producers>();
 
             var myCommand = _connection.CreateCommand();
             myCommand.CommandText = commandText;
             var dataReader = myCommand.ExecuteReader();
             while (dataReader.Read())
             {
-                var line = new OutputProducersLine
+                var line = new Producers
                 {
                     Id = Convert.ToInt32(dataReader["id"].ToString()),
                     Name = dataReader["name"].ToString()
@@ -89,7 +89,7 @@ namespace ExcelParserForOpenCart
         public void Dispose()
         {
             if (_isConnected == false) return;
-            //_connection.Close();
+            _connection.Close();
             _connection.Dispose();
         }
     }

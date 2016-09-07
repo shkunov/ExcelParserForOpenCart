@@ -68,16 +68,7 @@ namespace ExcelParserForOpenCart.Prices
                 // todo: вот такое формирование наименование пока под вопросом, нужно выяснить точно как его формировать в автоматическом режиме
                 var newname = baseConnecter.OJ_Composition(category1);
                 line.Name = string.Format("{0} {1}", newname, line.VendorCode);
-                //ищем производителя по совпадению в тексте Наименования 
-                var tempName = line.Name.ToUpper();
-                foreach (var obj in Producers)
-                {
-                    if (tempName.Contains(obj.Name.ToUpper()))
-                    {
-                        line.Producer = obj.Name; break;
-                    }
-                    line.Producer = "";
-                }
+                line.Producer = GetProducer(line.Name);
                 line.ProductDescription = string.Format("<p>{0}</p><p>{1}</p>", описание, особенностиУстановки);
                 line.Qt = "1000";
                 if (needOption)

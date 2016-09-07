@@ -9,29 +9,28 @@ namespace ExcelParserForOpenCart.Prices
     /// Общий абстрактный класс, который содержит:
     /// 1. BackgroundWorker в котором происходит обработка прайса
     /// 2. Методы для конвертации данных из ячеек
+    /// 3. Поиск произвоителя товара
     /// </summary>
     public abstract class GeneralMethods
     {
         protected readonly BackgroundWorker Worker;
         protected readonly DoWorkEventArgs E;
-        public List<OutputProducersLine> Producers { get; private set; }
+        protected List<Producers> Producers { get; private set; }
 
         public List<OutputPriceLine> ResultingPrice { get; private set; }
 
-        public event Action<string> OnMsg;
+        protected event Action<string> OnMsg;
 
         protected GeneralMethods(object sender, DoWorkEventArgs e)
         {
+            Worker = sender as BackgroundWorker;
+            E = e;
             ResultingPrice = new List<OutputPriceLine>();
-            Producers = new List<OutputProducersLine>();
+            Producers = new List<Producers>();
             using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
             {
                 Producers.AddRange(baseConnecter.GetProducers());
-                baseConnecter.Dispose();
-            }
-            Worker = sender as BackgroundWorker;
-            E = e;
-            
+            }           
         }
 
         protected GeneralMethods()
@@ -88,6 +87,21 @@ namespace ExcelParserForOpenCart.Prices
                 s = string.Empty;
             }
             return s;
+        }
+        /// <summary>
+        /// Поиск производителя по совпадению в тексте Наименования 
+        /// </summary>
+        /// <param name="name">Наименование товара в прайс-листе</param>
+        /// <returns></returns>
+        protected string GetProducer(string name)
+        {
+            var tempName = name.ToUpper();
+            foreach (var obj in Producers)
+            {
+                if (tempName.Contains(obj.Name.ToUpper()))
+                    return obj.Name;
+            }
+            return string.Empty;
         }
 
         private void OnBaseMsgAction(string s)
