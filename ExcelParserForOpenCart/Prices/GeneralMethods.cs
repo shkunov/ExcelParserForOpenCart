@@ -14,7 +14,7 @@ namespace ExcelParserForOpenCart.Prices
     {
         protected readonly BackgroundWorker Worker;
         protected readonly DoWorkEventArgs E;
-        public List<OutputProducersLine> Producers { get; private set; }
+        public List<Producers> Producers { get; private set; }
 
         public List<OutputPriceLine> ResultingPrice { get; private set; }
 
@@ -23,15 +23,13 @@ namespace ExcelParserForOpenCart.Prices
         protected GeneralMethods(object sender, DoWorkEventArgs e)
         {
             ResultingPrice = new List<OutputPriceLine>();
-            Producers = new List<OutputProducersLine>();
+            Producers = new List<Producers>();
             using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
             {
                 Producers.AddRange(baseConnecter.GetProducers());
-                baseConnecter.Dispose();
             }
             Worker = sender as BackgroundWorker;
-            E = e;
-            
+            E = e;           
         }
 
         protected GeneralMethods()
