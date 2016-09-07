@@ -89,7 +89,7 @@ namespace ExcelParserForOpenCart
         public void Dispose()
         {
             if (_isConnected == false) return;
-            _connection.Close();
+            //_connection.Close();
             _connection.Dispose();
         }
     }

@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel;
 using Microsoft.Office.Interop.Excel;
-using System.Collections.Generic;
-using System;
 
 namespace ExcelParserForOpenCart.Prices
 {
     public class For2Union : GeneralMethods
     {
-        public event Action<string> OnMsg;
 
         public For2Union(object sender, DoWorkEventArgs e)
             : base(sender, e)
@@ -28,11 +25,7 @@ namespace ExcelParserForOpenCart.Prices
             }
             var category1 = string.Empty;
             var category2 = string.Empty;
-            var producers = new List<OutputProducersLine>();
-            using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
-            {
-                producers.AddRange(baseConnecter.GetProducers());
-            }
+
             ResultingPrice.Clear();
             for (var i = 9; i < row; i++)
             {
@@ -64,21 +57,18 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 line.Category1 = category1;
                 line.Category2 = category2;
-
-                for (var j = 0; j <= producers.Count - 1; j++)
+                line.VendorCode = ConverterToString(range.Cells[i, 3] as Range);
+                line.Name = ConverterToString(range.Cells[i, 4] as Range);
+                //ищем производителя по совпадению в тексте Наименования 
+                var tempName = line.Name.ToUpper();
+                foreach (var obj in Producers)
                 {
-                    var tempName = ConverterToString(range.Cells[i, 4] as Range).ToUpper();
-
-                    if (tempName.Contains(producers[j].Name.ToUpper()))
+                    if ( tempName.Contains(obj.Name.ToUpper()))
                     {
-                        line.Producer = producers[j].Name; 
-                        break;
+                        line.Producer = obj.Name; break;
                     }
                     line.Producer = "";
                 }
-
-                line.VendorCode = ConverterToString(range.Cells[i, 3] as Range);
-                line.Name = ConverterToString(range.Cells[i, 4] as Range);
 
                 line.Qt = ConverterToString(range.Cells[i, 5] as Range);
                 // todo: цена в USD может стоит её как-то обработать?
@@ -90,9 +80,6 @@ namespace ExcelParserForOpenCart.Prices
             }
         }
 
-        private void OnBaseMsgAction(string s)
-        {
-            if (OnMsg != null) OnMsg(s);
-        }
+
     }
 }

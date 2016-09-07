@@ -14,14 +14,24 @@ namespace ExcelParserForOpenCart.Prices
     {
         protected readonly BackgroundWorker Worker;
         protected readonly DoWorkEventArgs E;
+        public List<OutputProducersLine> Producers { get; private set; }
 
         public List<OutputPriceLine> ResultingPrice { get; private set; }
+
+        public event Action<string> OnMsg;
 
         protected GeneralMethods(object sender, DoWorkEventArgs e)
         {
             ResultingPrice = new List<OutputPriceLine>();
+            Producers = new List<OutputProducersLine>();
+            using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
+            {
+                Producers.AddRange(baseConnecter.GetProducers());
+                baseConnecter.Dispose();
+            }
             Worker = sender as BackgroundWorker;
             E = e;
+            
         }
 
         protected GeneralMethods()
@@ -78,6 +88,11 @@ namespace ExcelParserForOpenCart.Prices
                 s = string.Empty;
             }
             return s;
+        }
+
+        private void OnBaseMsgAction(string s)
+        {
+            if (OnMsg != null) OnMsg(s);
         }
     }
 }
