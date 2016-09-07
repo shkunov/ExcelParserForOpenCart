@@ -114,22 +114,12 @@ namespace ExcelParserForOpenCart.Prices
                     line.Name = tempName;
                     line.Cost = cost1.ToString(CultureInfo.CurrentCulture);
                 }
-                //ищем производителя по совпадению в тексте Наименования 
-                tempName = line.Name.ToUpper();
-                foreach (var obj in Producers)
-                {
-                    if (tempName.Contains(obj.Name.ToUpper()))
-                    {
-                        line.Producer = obj.Name; break;
-                    }
-                    line.Producer = "";
-                }
-
                 list.Clear();
                 pair = false;
                 line.VendorCode = string.IsNullOrEmpty(vendorCode) ? code : vendorCode;
                 line.Qt = "1000";
                 line.Foto = Global.ImgUrl;
+                line.Producer = GetProducer(line.Name);
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(code) && string.IsNullOrEmpty(line.Name))
                     break; 

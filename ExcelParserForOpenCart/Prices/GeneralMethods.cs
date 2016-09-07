@@ -9,6 +9,7 @@ namespace ExcelParserForOpenCart.Prices
     /// Общий абстрактный класс, который содержит:
     /// 1. BackgroundWorker в котором происходит обработка прайса
     /// 2. Методы для конвертации данных из ячеек
+    /// 3. Поиск произвоителя товара
     /// </summary>
     public abstract class GeneralMethods
     {
@@ -34,6 +35,21 @@ namespace ExcelParserForOpenCart.Prices
 
         protected GeneralMethods()
         {
+        }
+        /// <summary>
+        /// Поиск производителя по совпадению в тексте Наименования 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        protected string GetProducer(string name)
+        {
+            var tempName = name.ToUpper();
+            foreach (var obj in Producers)
+            {
+                if (tempName.Contains(obj.Name.ToUpper()))
+                    return obj.Name; 
+            }
+            return string.Empty;
         }
 
         protected static string ConverterToString(dynamic obj)

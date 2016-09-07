@@ -59,17 +59,7 @@ namespace ExcelParserForOpenCart.Prices
                 line.Category2 = category2;
                 line.VendorCode = ConverterToString(range.Cells[i, 3] as Range);
                 line.Name = ConverterToString(range.Cells[i, 4] as Range);
-                //ищем производителя по совпадению в тексте Наименования 
-                var tempName = line.Name.ToUpper();
-                foreach (var obj in Producers)
-                {
-                    if ( tempName.Contains(obj.Name.ToUpper()))
-                    {
-                        line.Producer = obj.Name; break;
-                    }
-                    line.Producer = "";
-                }
-
+                line.Producer = GetProducer(line.Name);
                 line.Qt = ConverterToString(range.Cells[i, 5] as Range);
                 // todo: цена в USD может стоит её как-то обработать?
                 line.Cost = ConverterToString(range.Cells[i, 6] as Range);
