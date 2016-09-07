@@ -119,7 +119,7 @@ namespace ExcelParserForOpenCart.Prices
                     continue; // пропускаем строку
                 }
                 line.Name = ConverterToString(range.Cells[i, 4] as Range);
-                line.Producer = GetProducer(line.Name);
+                line.Producer = GetProducer(line.Name).Equals("")? GetProducer(line.Category2) : GetProducer(line.Name);
                 line.Qt = "1000";
                 if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
                 {
