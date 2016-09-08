@@ -258,13 +258,14 @@ namespace ExcelParserForOpenCart
                 worksheet.Cells[i, 2] = obj.Name;
                 worksheet.Cells[i, 3] = obj.Category1;
                 worksheet.Cells[i, 4] = obj.Category2;
-                worksheet.Cells[i, 5] = obj.Producer;
-                worksheet.Cells[i, 6] = obj.ProductDescription;
-                worksheet.Cells[i, 7] = obj.Cost;
-                worksheet.Cells[i, 8] = obj.Foto;
-                worksheet.Cells[i, 9] = obj.Option;
-                worksheet.Cells[i, 10] = obj.Qt;
-                worksheet.Cells[i, 11] = obj.PlusThePrice;
+                worksheet.Cells[i, 5] = obj.ProductDescription;
+                worksheet.Cells[i, 6] = obj.Cost;
+                worksheet.Cells[i, 7] = obj.Foto;
+                worksheet.Cells[i, 8] = obj.Option;
+                worksheet.Cells[i, 9] = obj.Qt;
+                worksheet.Cells[i, 10] = obj.PlusThePrice;
+                worksheet.Cells[i, 11] = obj.Producer;
+
                 i++;
             }
             if (!_workerSave.CancellationPending) worksheet.SaveAs(_saveFileName);

@@ -98,13 +98,10 @@ namespace ExcelParserForOpenCart.Prices
             var tempName = name.ToUpper();
             foreach (var obj in Producers)
             {
-                if (tempName.Contains(obj.Name.ToUpper()))
+                if (!string.IsNullOrWhiteSpace(obj.Name) && tempName.Contains(obj.Name.ToUpper()))
                     return obj.Name;
-            }
-            //поищем по русским именам
-            foreach (var obj in Producers)
-            {
-                if (tempName.Contains(obj.Ru_name.ToUpper()) && !obj.Ru_name.Equals(""))
+                //поищем по русским именам
+                if (!string.IsNullOrWhiteSpace(obj.Ru_name) && tempName.Contains(obj.Ru_name.ToUpper()))
                     return obj.Name;
             }
             return string.Empty;

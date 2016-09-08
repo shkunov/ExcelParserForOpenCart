@@ -74,15 +74,17 @@ namespace ExcelParserForOpenCart
             var myCommand = _connection.CreateCommand();
             myCommand.CommandText = commandText;
             var dataReader = myCommand.ExecuteReader();
+            var i = 1;
             while (dataReader.Read())
             {
                 var line = new Producers
                 {
-                    Id = Convert.ToInt32(dataReader["id"].ToString()),
+                    Id = i,
                     Name = dataReader["name"].ToString(),
                     Ru_name = dataReader["ru_name"].ToString()
                 };
                 producers.Add(line);
+                i++;
             }
             return producers;
         }

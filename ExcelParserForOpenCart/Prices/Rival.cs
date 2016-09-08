@@ -114,12 +114,13 @@ namespace ExcelParserForOpenCart.Prices
                     {
                         tmpResultingPrice[icount - 1].ProductDescription = unionDescription; //модифицируем
                     }
-                    else if (string.IsNullOrEmpty(vendorCode)) { countEmptyRow++; }
-                    if (countEmptyRow >= 3) { break; } // выходить из цикла, после 3-й пустой строки
+                    else if (string.IsNullOrEmpty(vendorCode)) countEmptyRow++;
+                    if (countEmptyRow >= 3) break;  // выходить из цикла, после 3-й пустой строки
                     continue; // пропускаем строку
                 }
                 line.Name = ConverterToString(range.Cells[i, 4] as Range);
-                line.Producer = GetProducer(line.Name).Equals("")? GetProducer(line.Category2) : GetProducer(line.Name);
+                var producer = GetProducer(line.Name);
+                line.Producer = string.IsNullOrWhiteSpace(producer) ? GetProducer(line.Category2) : producer;
                 line.Qt = "1000";
                 if (string.IsNullOrEmpty(vendorCode) && !string.IsNullOrEmpty(line.Name))
                 {
