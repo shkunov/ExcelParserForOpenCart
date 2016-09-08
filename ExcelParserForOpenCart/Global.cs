@@ -7,10 +7,6 @@ namespace ExcelParserForOpenCart
     {
         public static readonly string[] IgnorOptions = {"завод", "импорт"};
         /// <summary>
-        /// Путь к временной картинке если не найдена исходное изображение товара
-        /// </summary>
-        public const string ImgUrl = @"https://dl.dropboxusercontent.com/u/54495412/NotFoto.png";
-        /// <summary>
         /// Получить путь к файлу шаблона Excel
         /// </summary>
         /// <returns>Путь к файлу</returns>
