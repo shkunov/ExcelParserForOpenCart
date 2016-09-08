@@ -68,7 +68,7 @@ namespace ExcelParserForOpenCart
         public IEnumerable<Producers> GetProducers()
         {
             if (_isConnected == false) return null;
-            const string commandText = "SELECT id, name FROM producers";
+            const string commandText = "SELECT id, name, ru_name FROM producers";
             var producers = new List<Producers>();
 
             var myCommand = _connection.CreateCommand();
@@ -79,7 +79,8 @@ namespace ExcelParserForOpenCart
                 var line = new Producers
                 {
                     Id = Convert.ToInt32(dataReader["id"].ToString()),
-                    Name = dataReader["name"].ToString()
+                    Name = dataReader["name"].ToString(),
+                    Ru_name = dataReader["ru_name"].ToString()
                 };
                 producers.Add(line);
             }
