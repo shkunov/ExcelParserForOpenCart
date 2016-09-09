@@ -62,10 +62,10 @@ namespace ExcelParserForOpenCart
 
 
         /// <summary>
-        /// возвращает List c производителями
+        /// Возвращает List c производителями
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Manufacturer> GetProducers()
+        public IEnumerable<Manufacturer> GetManufacturers()
         {
             if (_isConnected == false) return null;
             const string commandText = "SELECT id, name, ru_name FROM producers";

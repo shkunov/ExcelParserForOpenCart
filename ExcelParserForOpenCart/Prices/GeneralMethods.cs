@@ -29,7 +29,7 @@ namespace ExcelParserForOpenCart.Prices
             Manufacturers = new List<Manufacturer>();
             using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
             {
-                Manufacturers.AddRange(baseConnecter.GetProducers());
+                Manufacturers.AddRange(baseConnecter.GetManufacturers());
             }           
         }
 

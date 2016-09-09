@@ -113,6 +113,7 @@ namespace ExcelParserForOpenCart
             else
             {
                 SendMessage("Завершён анализ документа: " + _openFileName);
+                SendMessage(string.Format("Файл содержит товаров: {0} шт.", _resultingPrice.Count));
                 if (OnOpenedDocument != null) OnOpenedDocument(null, null);
             }
         }
