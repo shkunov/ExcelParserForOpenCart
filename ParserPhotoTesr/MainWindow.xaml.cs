@@ -1,6 +1,7 @@
 ﻿// Для написания кода использовалась статья:
 //https://almostcode.wordpress.com/2015/09/16/simple-parser/
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,16 +16,18 @@ namespace ParserPhotoTesr
     public partial class MainWindow
     {
         private int _count;
+        private readonly List<Product> _list; 
 
         public MainWindow()
         {
             InitializeComponent();
+            _list = new List<Product>();
         }
 
-        private static byte[] DownloadImage(string imageURL)
+        private static byte[] DownloadImage(string imageUrl)
         {
             var webClient = new WebClient();
-            return webClient.DownloadData(imageURL);
+            return webClient.DownloadData(imageUrl);
         }
 
         private void GetImage(string url)
@@ -53,7 +56,13 @@ namespace ParserPhotoTesr
                     MessagesBox.Items.Add(num);
                     MessagesBox.Items.Add(hostName + urlImg);
                     // картинка в максимальном расширении
-                    MessagesBox.Items.Add(string.Format("{0}/upload/iblock/{1}/{2}", hostName, s, filename));
+                    var imgUrl = string.Format("{0}/upload/iblock/{1}/{2}", hostName, s, filename);
+                    MessagesBox.Items.Add(imgUrl);
+                    _list.Add(new Product
+                    {
+                        Num = num,
+                        ImgUrl = imgUrl
+                    });
                     _count++;
                 }
                 i++;
@@ -73,6 +82,7 @@ namespace ParserPhotoTesr
         {
             if (string.IsNullOrEmpty(TextSearch.Text)) return;
             _count = 0;
+            _list.Clear();
             var hostName = TextSearch.Text;
             MessagesBox.Items.Clear();
             //получаем html страницу со всем барахлом включая результаты нашего поиска
