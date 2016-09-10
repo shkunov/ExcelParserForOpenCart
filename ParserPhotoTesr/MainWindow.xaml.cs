@@ -1,5 +1,5 @@
-﻿//https://almostcode.wordpress.com/2015/09/16/simple-parser/
-
+﻿// Для написания кода использовалась статья:
+//https://almostcode.wordpress.com/2015/09/16/simple-parser/
 using System;
 using System.Net;
 using System.Windows;
@@ -14,6 +14,8 @@ namespace ParserPhotoTesr
     /// </summary>
     public partial class MainWindow
     {
+        private int _count;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -25,41 +27,34 @@ namespace ParserPhotoTesr
             return webClient.DownloadData(imageURL);
         }
 
-        private void BtnParse_Click(object sender, RoutedEventArgs e)
+        private void GetImage(string url)
         {
-            if (string.IsNullOrEmpty(TextSearch.Text)) return;
-
-            var myuri = new Uri(TextSearch.Text);
+            var myuri = new Uri(url);
             var pathQuery = myuri.PathAndQuery;
             var hostName = myuri.ToString().Replace(pathQuery, "");
 
-            MessagesBox.Items.Clear();
-            //получаем html страницу со всем барахлом включая результаты нашего поиска
-            var doc = new HtmlWeb().Load(TextSearch.Text.Trim());
+            var doc = new HtmlWeb().Load(url.Trim());
             //получаем список всех постов по нашему поиску, все остальное барахло мимо
             var posters =
                 doc.DocumentNode.SelectNodes("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/*");
             //получаемссылку на первый пост из нашего списка постов
             var i = 1;
             foreach (var poster in posters)
-
             {
-                //*[@id="wrap"]/div/section/div[2]/div[6]/div[1]/div/div[1]
-                //*[@id="wrap"]/div/section/div[2]/div[6]/div[2]/div/div[1]
                 var num =
                     poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[1]").InnerText;
-                var url = poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[3]/a/img")
+                var urlImg = poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[3]/a/img")
                     .GetAttributeValue("src", string.Empty);
-                //MessagesBox.Items.Add(string.Format("{0} - {1}", num, hostName + url));
-                var filename = System.IO.Path.GetFileName(url);
-                //http://www.autoventuri.ru/upload/iblock/9de/9de154c2a03c8f9438ffb286070b5fcf.jpeg
+                num = num.Replace("Арт.", "").Trim();
+                var filename = System.IO.Path.GetFileName(urlImg);
                 if (filename != null)
                 {
-                    var s = filename[0].ToString() + filename[1] + filename[2]; 
+                    var s = filename[0].ToString() + filename[1] + filename[2];
                     MessagesBox.Items.Add(num);
-                    MessagesBox.Items.Add(hostName + url);
+                    MessagesBox.Items.Add(hostName + urlImg);
                     // картинка в максимальном расширении
                     MessagesBox.Items.Add(string.Format("{0}/upload/iblock/{1}/{2}", hostName, s, filename));
+                    _count++;
                 }
                 i++;
             }
@@ -72,6 +67,23 @@ namespace ParserPhotoTesr
             //    ////конвертируем стрим в имейдж 
             //    //pictureBox1.Image = Image.FromStream(memoryStream);
             //}
+        }
+
+        private void BtnParse_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(TextSearch.Text)) return;
+            _count = 0;
+            var hostName = TextSearch.Text;
+            MessagesBox.Items.Clear();
+            //получаем html страницу со всем барахлом включая результаты нашего поиска
+            var doc = new HtmlWeb().Load(hostName.Trim());
+            var catalogs = doc.DocumentNode.SelectNodes("//*[@id=\"market\"]/div/div[2]/div[1]/div/div[2]/div/*/ul/*/a");
+            foreach (var catalog in catalogs)
+            {
+                var uri = catalog.GetAttributeValue("href", "");
+                GetImage(hostName + uri);
+            }
+            MessagesBox.Items.Add(string.Format("Всего картинок: {0}", _count));
         }
 
         private void CtrlCCopyCmdExecuted(object sender, ExecutedRoutedEventArgs e)
