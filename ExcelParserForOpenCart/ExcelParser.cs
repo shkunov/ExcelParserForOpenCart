@@ -187,6 +187,8 @@ namespace ExcelParserForOpenCart
                     break;
                 case EnumPrices.Автовентури:
                     var autoventuri = new Autoventuri(sender, e);
+                    //Запускаем парсинг картинок с сайта
+                    autoventuri.ParseImg();
                     autoventuri.Analyze(row, range);
                     _resultingPrice = autoventuri.ResultingPrice;
                     break;
