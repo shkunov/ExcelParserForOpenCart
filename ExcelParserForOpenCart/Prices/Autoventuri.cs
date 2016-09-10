@@ -10,11 +10,13 @@ namespace ExcelParserForOpenCart.Prices
     public class Autoventuri : GeneralMethods
     {
         private readonly List<Product> _list;
+        public int CountOfLink;
 
         public Autoventuri(object sender, DoWorkEventArgs e) 
             : base(sender, e)
         {
             _list = new List<Product>();
+            CountOfLink = 0;
         }
 
         public void ParseImg()
@@ -91,7 +93,12 @@ namespace ExcelParserForOpenCart.Prices
                 line.Cost = ConverterToString(range.Cells[i, 6] as Range);
                 line.VendorCode = vendorCode;
                 line.Qt = "1000";
-                line.Foto = _list.Where(x => x.Num == vendorCode).Select(x => x.ImgUrl).FirstOrDefault();
+                var foto = _list.Where(x => x.Num == vendorCode).Select(x => x.ImgUrl).FirstOrDefault();
+                if (foto != null)
+                {
+                    line.Foto = foto;
+                    CountOfLink++;
+                }
 
                 if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(line.Name))
                     break; // выходить из цикла
