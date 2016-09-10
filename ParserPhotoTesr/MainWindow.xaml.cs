@@ -1,10 +1,10 @@
 ﻿//https://almostcode.wordpress.com/2015/09/16/simple-parser/
+
 using System;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using HtmlAgilityPack;
 
 namespace ParserPhotoTesr
@@ -28,6 +28,11 @@ namespace ParserPhotoTesr
         private void BtnParse_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(TextSearch.Text)) return;
+
+            var myuri = new Uri(TextSearch.Text);
+            var pathQuery = myuri.PathAndQuery;
+            var hostName = myuri.ToString().Replace(pathQuery, "");
+
             MessagesBox.Items.Clear();
             //получаем html страницу со всем барахлом включая результаты нашего поиска
             var doc = new HtmlWeb().Load(TextSearch.Text.Trim());
@@ -44,8 +49,10 @@ namespace ParserPhotoTesr
                 var num =
                     poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[1]").InnerText;
                 var url = poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[3]/a/img")
-                    .GetAttributeValue("src", string.Empty);             
-                MessagesBox.Items.Add(string.Format("{0} - {1}", num,  url));
+                    .GetAttributeValue("src", string.Empty);
+                //MessagesBox.Items.Add(string.Format("{0} - {1}", num, hostName + url));
+                MessagesBox.Items.Add(num);
+                MessagesBox.Items.Add(hostName + url);
                 i++;
             }
             //if (!string.IsNullOrEmpty(imgUrl))
@@ -57,6 +64,32 @@ namespace ParserPhotoTesr
             //    ////конвертируем стрим в имейдж 
             //    //pictureBox1.Image = Image.FromStream(memoryStream);
             //}
+        }
+
+        private void CtrlCCopyCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            var lb = sender as ListBox;
+            if (lb == null) return;
+            var selected = lb.SelectedItem;
+            if (selected != null) Clipboard.SetText(selected.ToString());
+        }
+
+        private void CtrlCCopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void RightClickCopyCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            if (mi == null) return;
+            var selected = mi.DataContext;
+            if (selected != null) Clipboard.SetText(selected.ToString());
+        }
+
+        private void RightClickCopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
         }
     }
 }
