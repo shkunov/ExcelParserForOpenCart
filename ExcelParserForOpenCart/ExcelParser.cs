@@ -29,6 +29,8 @@ namespace ExcelParserForOpenCart
         private string _openFileName;
         private string _saveFileName;
 
+        private int _countOfLink;
+
         public EnumPrices PriceType { get; set; }
 
         public ExcelParser()
@@ -114,6 +116,7 @@ namespace ExcelParserForOpenCart
             {
                 SendMessage("Завершён анализ документа: " + _openFileName);
                 SendMessage(string.Format("Файл содержит товаров: {0} шт.", _resultingPrice.Count));
+                SendMessage(string.Format("Колличество найденных фото: {0} шт.", _countOfLink));
                 if (OnOpenedDocument != null) OnOpenedDocument(null, null);
             }
         }
@@ -190,6 +193,7 @@ namespace ExcelParserForOpenCart
                     //Запускаем парсинг картинок с сайта
                     autoventuri.ParseImg();
                     autoventuri.Analyze(row, range);
+                    _countOfLink = autoventuri.CountOfLink;
                     _resultingPrice = autoventuri.ResultingPrice;
                     break;
                 case EnumPrices.Левандовская:
