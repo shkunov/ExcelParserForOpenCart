@@ -7,30 +7,30 @@
         <Button x:Name="BtnSave" Content="Сохранить" Margin="0,10,10,0" VerticalAlignment="Top" Click="BtnSave_Click" IsEnabled="False" HorizontalAlignment="Right" Width="75"/>
         <ProgressBar x:Name="ProgressBar" Height="9" Margin="10,37,10,0" VerticalAlignment="Top"/>
         <ListBox x:Name="MessageList" Margin="10,51,10,31">
-        <ListBox.CommandBindings>
-            <CommandBinding Command="ApplicationCommands.Copy"
+            <ListBox.CommandBindings>
+                <CommandBinding Command="ApplicationCommands.Copy"
                 CanExecute="CtrlCCopyCmdCanExecute" Executed="CtrlCCopyCmdExecuted" />
-        </ListBox.CommandBindings>
-        <ListBox.ItemTemplate>
-            <DataTemplate>
-                <TextBlock Text="{Binding Path=.}">
-                    <TextBlock.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Command="Copy">
-                                <MenuItem.CommandBindings>
-                                    <CommandBinding Command="ApplicationCommands.Copy" 
+            </ListBox.CommandBindings>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=.}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="Copy">
+                                    <MenuItem.CommandBindings>
+                                        <CommandBinding Command="ApplicationCommands.Copy" 
                                                 CanExecute="RightClickCopyCmdCanExecute"
                                                 Executed="RightClickCopyCmdExecuted" />
-                                </MenuItem.CommandBindings>
-                            </MenuItem>
-                        </ContextMenu>
-                    </TextBlock.ContextMenu>
-                </TextBlock>
-            </DataTemplate>
-        </ListBox.ItemTemplate>
+                                    </MenuItem.CommandBindings>
+                                </MenuItem>
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         <Button x:Name="BtnCancel" Content="Остановить" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="75" Click="BtnCancel_Click"/>
-        <CheckBox x:Name="CbSearchFoto" Content="Поиск фото в интернет" HorizontalAlignment="Left" Margin="10,192,0,0" VerticalAlignment="Top" Width="151" Checked="CbSearchFoto_Checked" Unchecked="CbSearchFoto_Unchecked"/>
-        <CheckBox x:Name="CbSaveOnlyWithFoto" Content="Сохранять только с фото" HorizontalAlignment="Left" Margin="185,192,0,0" VerticalAlignment="Top" Checked="CbSaveOnlyWithFoto_Checked" Unchecked="CbSaveOnlyWithFoto_Unchecked" />
+        <CheckBox x:Name="CbSearchFoto" Content="Поиск фото в интернет" HorizontalAlignment="Left" Margin="10,0,0,10" Width="151" Checked="CbSearchFoto_Checked" Unchecked="CbSearchFoto_Unchecked" Height="16" VerticalAlignment="Bottom"/>
+        <CheckBox x:Name="CbSaveOnlyWithFoto" Content="Сохранять только с фото" HorizontalAlignment="Left" Margin="185,0,0,10" Checked="CbSaveOnlyWithFoto_Checked" Unchecked="CbSaveOnlyWithFoto_Unchecked" Height="16" VerticalAlignment="Bottom" />
     </Grid>
 </Window>
