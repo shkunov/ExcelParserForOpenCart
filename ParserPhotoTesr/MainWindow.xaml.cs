@@ -51,8 +51,16 @@ namespace ParserPhotoTesr
                 var url = poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[3]/a/img")
                     .GetAttributeValue("src", string.Empty);
                 //MessagesBox.Items.Add(string.Format("{0} - {1}", num, hostName + url));
-                MessagesBox.Items.Add(num);
-                MessagesBox.Items.Add(hostName + url);
+                var filename = System.IO.Path.GetFileName(url);
+                //http://www.autoventuri.ru/upload/iblock/9de/9de154c2a03c8f9438ffb286070b5fcf.jpeg
+                if (filename != null)
+                {
+                    var s = filename[0].ToString() + filename[1] + filename[2]; 
+                    MessagesBox.Items.Add(num);
+                    MessagesBox.Items.Add(hostName + url);
+                    // картинка в максимальном расширении
+                    MessagesBox.Items.Add(string.Format("{0}/upload/iblock/{1}/{2}", hostName, s, filename));
+                }
                 i++;
             }
             //if (!string.IsNullOrEmpty(imgUrl))
