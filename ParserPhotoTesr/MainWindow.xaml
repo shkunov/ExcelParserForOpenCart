@@ -1,0 +1,9 @@
+﻿<Window x:Class="ParserPhotoTesr.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <TextBox x:Name="TextSearch" Height="23" Margin="10,9,90,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Button x:Name="BtnParse" Content="Parse" Margin="432,10,10,0" VerticalAlignment="Top" Click="BtnParse_Click"/>
+    </Grid>
+</Window>
