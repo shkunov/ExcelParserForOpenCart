@@ -5,6 +5,8 @@ namespace ExcelParserForOpenCart
 {
     public static class Global
     {
+        public static bool SearchFoto;
+        public static bool SaveOnlyWithFoto;
         public static readonly string[] IgnorOptions = {"завод", "импорт"};
         /// <summary>
         /// Получить путь к файлу шаблона Excel

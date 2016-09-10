@@ -4,6 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.Win32;
 
 namespace ExcelParserForOpenCart.UI
@@ -23,6 +25,8 @@ namespace ExcelParserForOpenCart.UI
             _openFileName = string.Empty;
             _saveFileName = string.Empty;
             BtnCancel.IsEnabled = false;
+            if (CbSearchFoto.IsChecked != null) Global.SearchFoto = CbSearchFoto.IsChecked.Value;
+            if (CbSaveOnlyWithFoto.IsChecked != null) Global.SaveOnlyWithFoto = CbSaveOnlyWithFoto.IsChecked.Value;
             var strVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
             Title = string.Format("Конвертер прайслистов (версия: {0})", strVersion);
             _excelParser = new ExcelParser();
@@ -143,5 +147,52 @@ namespace ExcelParserForOpenCart.UI
             _openFileName = string.Empty;
             _saveFileName = string.Empty;
         }
+
+        private void CtrlCCopyCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            var lb = sender as ListBox;
+            if (lb == null) return;
+            var selected = lb.SelectedItem;
+            if (selected != null) Clipboard.SetText(selected.ToString());
+        }
+
+        private void CtrlCCopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void RightClickCopyCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            if (mi == null) return;
+            var selected = mi.DataContext;
+            if (selected != null) Clipboard.SetText(selected.ToString());
+        }
+
+        private void RightClickCopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CbSearchFoto_Checked(object sender, RoutedEventArgs e)
+        {
+            Global.SearchFoto = true;
+        }
+
+        private void CbSearchFoto_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Global.SearchFoto = false;
+        }
+
+        private void CbSaveOnlyWithFoto_Checked(object sender, RoutedEventArgs e)
+        {
+            Global.SaveOnlyWithFoto = true;
+        }
+
+        private void CbSaveOnlyWithFoto_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Global.SaveOnlyWithFoto = false;
+        }
+
     }
 }

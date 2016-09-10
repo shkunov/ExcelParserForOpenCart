@@ -27,6 +27,6 @@
                     </TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            </ListBox>
+        </ListBox>
     </Grid>
 </Window>

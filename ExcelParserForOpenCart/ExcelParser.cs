@@ -191,7 +191,7 @@ namespace ExcelParserForOpenCart
                 case EnumPrices.Автовентури:
                     var autoventuri = new Autoventuri(sender, e);
                     //Запускаем парсинг картинок с сайта
-                    autoventuri.ParseImg();
+                    if (Global.SearchFoto) autoventuri.ParseImg();
                     autoventuri.Analyze(row, range);
                     _countOfLink = autoventuri.CountOfLink;
                     _resultingPrice = autoventuri.ResultingPrice;
@@ -261,6 +261,7 @@ namespace ExcelParserForOpenCart
                     break;
                 }
                 // заносить полученную линию в шаблон
+                if (Global.SaveOnlyWithFoto && string.IsNullOrWhiteSpace(obj.Foto)) continue;
                 worksheet.Cells[i, 1] = obj.VendorCode;
                 worksheet.Cells[i, 2] = obj.Name;
                 worksheet.Cells[i, 3] = obj.Category1;
@@ -272,7 +273,6 @@ namespace ExcelParserForOpenCart
                 worksheet.Cells[i, 9] = obj.Qt;
                 worksheet.Cells[i, 10] = obj.PlusThePrice;
                 worksheet.Cells[i, 11] = obj.Producer;
-
                 i++;
             }
             if (!_workerSave.CancellationPending) worksheet.SaveAs(_saveFileName);
