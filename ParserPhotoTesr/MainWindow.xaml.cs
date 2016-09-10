@@ -28,26 +28,26 @@ namespace ParserPhotoTesr
         private void BtnParse_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(TextSearch.Text)) return;
-
+            MessagesBox.Items.Clear();
             //получаем html страницу со всем барахлом включая результаты нашего поиска
-            var doc = new HtmlWeb().Load("http://www.autoventuri.ru/catalog-akkumulyatory/");
+            var doc = new HtmlWeb().Load(TextSearch.Text.Trim());
             //получаем список всех постов по нашему поиску, все остальное барахло мимо
             var posters =
-                doc.DocumentNode.SelectNodes("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[1]/div/div[3]/a/img");
+                doc.DocumentNode.SelectNodes("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/*");
             //получаемссылку на первый пост из нашего списка постов
-            var htmlNode = posters.FirstOrDefault();
-            if (htmlNode == null) return;
-             var iUrl = htmlNode.GetAttributeValue("src", string.Empty);
+            var i = 1;
+            foreach (var poster in posters)
 
-            //var gagUrl = htmlNode.GetAttributeValue("data-entry-url", string.Empty);
-            ////загружаем страницу с нашим постом со всем барахлом
-            //doc = new HtmlWeb().Load(string.Format("{0}{1}", "http://9gag.com", gagUrl));
-            ////из всей страницы выделяем конкретно тот html элемент который содержит рисунок поста
-            //var poster = doc.DocumentNode.SelectNodes("//*[contains(@class, 'badge-item-img')]").FirstOrDefault();
-            ////получаем из аттрибута html тега img ссылку, т.е. значение аттрибута src
-            //if (poster == null) return;
-            //var imgUrl = poster.GetAttributeValue("src", string.Empty);
-            ////если ссылка не нул и не пустая качаем этот рисунок по ссылке
+            {
+                //*[@id="wrap"]/div/section/div[2]/div[6]/div[1]/div/div[1]
+                //*[@id="wrap"]/div/section/div[2]/div[6]/div[2]/div/div[1]
+                var num =
+                    poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[1]").InnerText;
+                var url = poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[3]/a/img")
+                    .GetAttributeValue("src", string.Empty);             
+                MessagesBox.Items.Add(string.Format("{0} - {1}", num,  url));
+                i++;
+            }
             //if (!string.IsNullOrEmpty(imgUrl))
             //{
             //    //создаем поток для byte[] скачанного рисунка
