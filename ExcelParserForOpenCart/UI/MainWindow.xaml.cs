@@ -39,7 +39,7 @@ namespace ExcelParserForOpenCart.UI
         private void OnSavedDocument(object sender, EventArgs eventArgs)
         {
             BtnOpen.IsEnabled = true;
-            BtnSave.IsEnabled = false;
+            BtnSave.IsEnabled = true;
             BtnCancel.IsEnabled = false;
             _openFileName = string.Empty;
             if (string.IsNullOrWhiteSpace(_saveFileName))
@@ -119,6 +119,7 @@ namespace ExcelParserForOpenCart.UI
             if (string.IsNullOrEmpty(filename)) return;
             _saveFileName = filename;
             BtnOpen.IsEnabled = false;
+            BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = true;
             MessageList.Items.Add("Идёт сохранение документа.");
             _excelParser.SaveResult(filename);
