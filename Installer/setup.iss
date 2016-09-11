@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Excel parser for OpenCart"
-#define MyAppVersion "2.2"
+#define MyAppVersion "2.3"
 #define MyAppExeName "ExcelParserForOpenCart.exe"
 
 [Setup]
