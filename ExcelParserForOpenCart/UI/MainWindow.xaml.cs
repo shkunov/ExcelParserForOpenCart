@@ -107,7 +107,9 @@ namespace ExcelParserForOpenCart.UI
             if (!string.IsNullOrWhiteSpace(_openFileName))
             {
                 var name = Path.GetFileNameWithoutExtension(_openFileName);
-                dlg.FileName = string.Format("{0}(обработанный){1}", name, ext);
+                var f = "";
+                if (Global.SaveOnlyWithFoto) f = "-только-с-фото";
+                dlg.FileName = string.Format("{0}(обработанный{1}){2}", name, f, ext);
             }
             dlg.FileOk += delegate
             {
@@ -117,7 +119,6 @@ namespace ExcelParserForOpenCart.UI
             if (string.IsNullOrEmpty(filename)) return;
             _saveFileName = filename;
             BtnOpen.IsEnabled = false;
-            BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = true;
             MessageList.Items.Add("Идёт сохранение документа.");
             _excelParser.SaveResult(filename);
