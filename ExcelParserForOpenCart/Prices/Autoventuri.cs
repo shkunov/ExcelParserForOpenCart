@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
 using Microsoft.Office.Interop.Excel;
@@ -29,7 +30,7 @@ namespace ExcelParserForOpenCart.Prices
             foreach (var catalog in catalogs)
             {
                 var uri = catalog.GetAttributeValue("href", "");
-                GetImage(urlHost + uri);
+                GetListProducts(urlHost + uri);
             }
         }
         /// <summary>
@@ -109,13 +110,8 @@ namespace ExcelParserForOpenCart.Prices
             }
         }
 
-        private void GetImage(string url)
+        private void GetImages(HtmlDocument doc, string hostName)
         {
-            var myuri = new Uri(url);
-            var pathQuery = myuri.PathAndQuery;
-            var hostName = myuri.ToString().Replace(pathQuery, "");
-
-            var doc = new HtmlWeb().Load(url.Trim());
             //получаем список всех постов по нашему поиску, все остальное барахло мимо
             var posters =
                 doc.DocumentNode.SelectNodes("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/*");
@@ -128,7 +124,7 @@ namespace ExcelParserForOpenCart.Prices
                 var urlImg = poster.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[6]/div[" + i + "]/div/div[3]/a/img")
                     .GetAttributeValue("src", string.Empty);
                 num = num.Replace("Арт.", "").Trim();
-                var filename = System.IO.Path.GetFileName(urlImg);
+                var filename = Path.GetFileName(urlImg);
                 if (filename != null)
                 {
                     var s = filename[0].ToString() + filename[1] + filename[2];
@@ -142,6 +138,28 @@ namespace ExcelParserForOpenCart.Prices
                 }
                 i++;
             }
+        }
+
+        private void GetListProducts(string url)
+        {
+            var myuri = new Uri(url);
+            var pathQuery = myuri.PathAndQuery;
+            var hostName = myuri.ToString().Replace(pathQuery, "");
+
+            var doc = new HtmlWeb().Load(url.Trim());
+            //проверять многостраничность
+            var showall = doc.DocumentNode.SelectSingleNode("//*[@id=\"wrap\"]/div/section/div[2]/div[7]/noindex/a");
+            if (showall != null)
+            {
+                var urlall = showall.GetAttributeValue("href", "");
+                var addres = hostName + urlall;
+                addres = addres.Replace("&amp;", "&");
+                // HtmlAgilityPack не может с парамметрами
+                var doc2 = new HtmlWeb().Load(addres, "GET");
+                GetImages(doc2, hostName);
+                return;
+            }
+            GetImages(doc, hostName);
         }
     }
 }
