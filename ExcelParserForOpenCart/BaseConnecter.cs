@@ -62,27 +62,29 @@ namespace ExcelParserForOpenCart
 
 
         /// <summary>
-        /// возвращает List c производителями
+        /// Возвращает List c производителями
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Producers> GetProducers()
+        public IEnumerable<Manufacturer> GetManufacturers()
         {
             if (_isConnected == false) return null;
             const string commandText = "SELECT id, name, ru_name FROM producers";
-            var producers = new List<Producers>();
+            var producers = new List<Manufacturer>();
 
             var myCommand = _connection.CreateCommand();
             myCommand.CommandText = commandText;
             var dataReader = myCommand.ExecuteReader();
+            var i = 1;
             while (dataReader.Read())
             {
-                var line = new Producers
+                var line = new Manufacturer
                 {
-                    Id = Convert.ToInt32(dataReader["id"].ToString()),
+                    Id = i,
                     Name = dataReader["name"].ToString(),
-                    Ru_name = dataReader["ru_name"].ToString()
+                    RuName = dataReader["ru_name"].ToString()
                 };
                 producers.Add(line);
+                i++;
             }
             return producers;
         }

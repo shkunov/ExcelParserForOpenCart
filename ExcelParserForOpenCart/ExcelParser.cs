@@ -29,6 +29,8 @@ namespace ExcelParserForOpenCart
         private string _openFileName;
         private string _saveFileName;
 
+        private int _countOfLink;
+
         public EnumPrices PriceType { get; set; }
 
         public ExcelParser()
@@ -113,6 +115,8 @@ namespace ExcelParserForOpenCart
             else
             {
                 SendMessage("Завершён анализ документа: " + _openFileName);
+                SendMessage(string.Format("Файл содержит товаров: {0} шт.", _resultingPrice.Count));
+                SendMessage(string.Format("Колличество найденных фото: {0} шт.", _countOfLink));
                 if (OnOpenedDocument != null) OnOpenedDocument(null, null);
             }
         }
@@ -186,7 +190,10 @@ namespace ExcelParserForOpenCart
                     break;
                 case EnumPrices.Автовентури:
                     var autoventuri = new Autoventuri(sender, e);
+                    //Запускаем парсинг картинок с сайта
+                    if (Global.SearchFoto) autoventuri.ParseImg();
                     autoventuri.Analyze(row, range);
+                    _countOfLink = autoventuri.CountOfLink;
                     _resultingPrice = autoventuri.ResultingPrice;
                     break;
                 case EnumPrices.Левандовская:
@@ -254,17 +261,18 @@ namespace ExcelParserForOpenCart
                     break;
                 }
                 // заносить полученную линию в шаблон
+                if (Global.SaveOnlyWithFoto && string.IsNullOrWhiteSpace(obj.Foto)) continue;
                 worksheet.Cells[i, 1] = obj.VendorCode;
                 worksheet.Cells[i, 2] = obj.Name;
                 worksheet.Cells[i, 3] = obj.Category1;
                 worksheet.Cells[i, 4] = obj.Category2;
-                worksheet.Cells[i, 5] = obj.Producer;
-                worksheet.Cells[i, 6] = obj.ProductDescription;
-                worksheet.Cells[i, 7] = obj.Cost;
-                worksheet.Cells[i, 8] = obj.Foto;
-                worksheet.Cells[i, 9] = obj.Option;
-                worksheet.Cells[i, 10] = obj.Qt;
-                worksheet.Cells[i, 11] = obj.PlusThePrice;
+                worksheet.Cells[i, 5] = obj.ProductDescription;
+                worksheet.Cells[i, 6] = obj.Cost;
+                worksheet.Cells[i, 7] = obj.Foto;
+                worksheet.Cells[i, 8] = obj.Option;
+                worksheet.Cells[i, 9] = obj.Qt;
+                worksheet.Cells[i, 10] = obj.PlusThePrice;
+                worksheet.Cells[i, 11] = obj.Producer;
                 i++;
             }
             if (!_workerSave.CancellationPending) worksheet.SaveAs(_saveFileName);

@@ -15,7 +15,7 @@ namespace ExcelParserForOpenCart.Prices
     {
         protected readonly BackgroundWorker Worker;
         protected readonly DoWorkEventArgs E;
-        protected List<Producers> Producers { get; private set; }
+        protected List<Manufacturer> Manufacturers { get; private set; }
 
         public List<OutputPriceLine> ResultingPrice { get; private set; }
 
@@ -26,10 +26,10 @@ namespace ExcelParserForOpenCart.Prices
             Worker = sender as BackgroundWorker;
             E = e;
             ResultingPrice = new List<OutputPriceLine>();
-            Producers = new List<Producers>();
+            Manufacturers = new List<Manufacturer>();
             using (var baseConnecter = new BaseConnecter(OnBaseMsgAction))
             {
-                Producers.AddRange(baseConnecter.GetProducers());
+                Manufacturers.AddRange(baseConnecter.GetManufacturers());
             }           
         }
 
@@ -96,16 +96,13 @@ namespace ExcelParserForOpenCart.Prices
         protected string GetProducer(string name)
         {
             var tempName = name.ToUpper();
-            foreach (var obj in Producers)
+            foreach (var manufacturer in Manufacturers)
             {
-                if (tempName.Contains(obj.Name.ToUpper()))
-                    return obj.Name;
-            }
-            //поищем по русским именам
-            foreach (var obj in Producers)
-            {
-                if (tempName.Contains(obj.Ru_name.ToUpper()) && !obj.Ru_name.Equals(""))
-                    return obj.Name;
+                if (!string.IsNullOrWhiteSpace(manufacturer.Name) && tempName.Contains(manufacturer.Name.ToUpper()))
+                    return manufacturer.Name;
+                //поищем по русским именам
+                if (!string.IsNullOrWhiteSpace(manufacturer.RuName) && tempName.Contains(manufacturer.RuName.ToUpper()))
+                    return manufacturer.Name;
             }
             return string.Empty;
         }
