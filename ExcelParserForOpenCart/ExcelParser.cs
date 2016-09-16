@@ -124,14 +124,12 @@ namespace ExcelParserForOpenCart
                 {                   
                     var vendorCode = ConverterToString(range.Cells[i, 1] as Range); // артикуль
                     var urlPhoto = ConverterToString(range.Cells[i, 2] as Range); // фото
-
                     foreach (var item in _resultingPrice.Where(item => item.VendorCode == vendorCode))
                     {
                         item.Foto = urlPhoto;
                         _countOfLink++;
                         break;
                     }
-
                     if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(urlPhoto)) break;
                 }
             };
@@ -141,6 +139,7 @@ namespace ExcelParserForOpenCart
             };
             _workerAddFoto.RunWorkerAsync();
         }
+
         private void ProgressChangedWorkerOpen(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null && !string.IsNullOrEmpty(e.UserState.ToString()))
