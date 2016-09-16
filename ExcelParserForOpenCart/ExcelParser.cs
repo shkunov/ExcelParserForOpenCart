@@ -25,7 +25,6 @@ namespace ExcelParserForOpenCart
         private readonly bool _isExcelInstal;
         private BackgroundWorker _workerSave;
         private BackgroundWorker _workerOpen;
-        private BackgroundWorker _workerAddFoto;
         private List<OutputPriceLine> _resultingPrice;
         private string _template;
         private string _openFileName;
@@ -110,9 +109,10 @@ namespace ExcelParserForOpenCart
                 SendMessage("Ошибка! Файл c фото отсутствует!");
                 return;
             }
-            _workerAddFoto = new BackgroundWorker();
-            _workerAddFoto.DoWork += (sender, args) =>
+            var workerAddFoto = new BackgroundWorker();
+            workerAddFoto.DoWork += (sender, args) =>
             {
+                
                 var application = new Application();
                 var workbook = application.Workbooks.Open(fileName);
                 var worksheet = workbook.Worksheets[1] as Worksheet;
@@ -125,7 +125,7 @@ namespace ExcelParserForOpenCart
                 {                   
                     var vendorCode = ConverterToString(range.Cells[i, 1] as Range); // артикуль
                     var urlPhoto = ConverterToString(range.Cells[i, 2] as Range); // фото
-                    if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(urlPhoto))
+                    if (string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(urlPhoto))
                     {
                         j++;
                         if (j > 5) break;
@@ -144,11 +144,11 @@ namespace ExcelParserForOpenCart
                 ReleaseObject(workbook);
                 ReleaseObject(application);
             };
-            _workerAddFoto.RunWorkerCompleted += (sender, args) =>
+            workerAddFoto.RunWorkerCompleted += (sender, args) =>
             {
                 SendMessage(string.Format("Найдено фото: {0} шт.", _countOfLink));
             };
-            _workerAddFoto.RunWorkerAsync();
+            workerAddFoto.RunWorkerAsync();
         }
 
         private void ProgressChangedWorkerOpen(object sender, ProgressChangedEventArgs e)
