@@ -120,18 +120,29 @@ namespace ExcelParserForOpenCart
                 var range = worksheet.UsedRange;
                 var row = worksheet.Rows.Count;
                 _countOfLink = 0;
+                var j = 0;
                 for (var i = 2; i < row; i++)
                 {                   
                     var vendorCode = ConverterToString(range.Cells[i, 1] as Range); // артикуль
                     var urlPhoto = ConverterToString(range.Cells[i, 2] as Range); // фото
+                    if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(urlPhoto))
+                    {
+                        j++;
+                        if (j > 5) break;
+                        continue;
+                    }
+                    j = 0;
                     foreach (var item in _resultingPrice.Where(item => item.VendorCode == vendorCode))
                     {
                         item.Foto = urlPhoto;
                         _countOfLink++;
                         break;
                     }
-                    if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(urlPhoto)) break;
                 }
+                application.Quit();
+                ReleaseObject(worksheet);
+                ReleaseObject(workbook);
+                ReleaseObject(application);
             };
             _workerAddFoto.RunWorkerCompleted += (sender, args) =>
             {
