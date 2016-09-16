@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using Microsoft.Office.Interop.Excel;
 using ExcelParserForOpenCart.Prices;
 
@@ -24,6 +25,7 @@ namespace ExcelParserForOpenCart
         private readonly bool _isExcelInstal;
         private BackgroundWorker _workerSave;
         private BackgroundWorker _workerOpen;
+        private BackgroundWorker _workerAddFoto;
         private List<OutputPriceLine> _resultingPrice;
         private string _template;
         private string _openFileName;
@@ -99,6 +101,46 @@ namespace ExcelParserForOpenCart
             _workerSave.RunWorkerAsync();
         }
 
+        public void AddFotofromFile(string fileName)
+        {
+            if (_isExcelInstal == false)
+                return;
+            if (!File.Exists(fileName))
+            {
+                SendMessage("Ошибка! Файл c фото отсутствует!");
+                return;
+            }
+            _workerAddFoto = new BackgroundWorker();
+            _workerAddFoto.DoWork += (sender, args) =>
+            {
+                var application = new Application();
+                var workbook = application.Workbooks.Open(fileName);
+                var worksheet = workbook.Worksheets[1] as Worksheet;
+                if (worksheet == null) return;
+                var range = worksheet.UsedRange;
+                var row = worksheet.Rows.Count;
+                _countOfLink = 0;
+                for (var i = 2; i < row; i++)
+                {                   
+                    var vendorCode = ConverterToString(range.Cells[i, 1] as Range); // артикуль
+                    var urlPhoto = ConverterToString(range.Cells[i, 2] as Range); // фото
+
+                    foreach (var item in _resultingPrice.Where(item => item.VendorCode == vendorCode))
+                    {
+                        item.Foto = urlPhoto;
+                        _countOfLink++;
+                        break;
+                    }
+
+                    if (string.IsNullOrEmpty(vendorCode) && string.IsNullOrEmpty(urlPhoto)) break;
+                }
+            };
+            _workerAddFoto.RunWorkerCompleted += (sender, args) =>
+            {
+                SendMessage(string.Format("Найдено фото: {0} шт.", _countOfLink));
+            };
+            _workerAddFoto.RunWorkerAsync();
+        }
         private void ProgressChangedWorkerOpen(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null && !string.IsNullOrEmpty(e.UserState.ToString()))
