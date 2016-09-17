@@ -146,7 +146,7 @@ namespace ExcelParserForOpenCart
             };
             workerAddFoto.RunWorkerCompleted += (sender, args) =>
             {
-                SendMessage(string.Format("Найдено фото: {0} шт.", _countOfLink));
+                SendMessage(string.Format("Добавленно фото: {0} шт.", _countOfLink));
             };
             workerAddFoto.RunWorkerAsync();
         }
