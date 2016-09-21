@@ -33,7 +33,6 @@ namespace ExcelParserForOpenCart
                 _isConnected = false;
                 _onMsgAction("Ошибка подключения к базе данных");
             }
-
         }
         /// <summary>
         /// Метод перезаписывающий наименование категории записанную во множественном числе в единственное число
@@ -91,7 +90,6 @@ namespace ExcelParserForOpenCart
 
         public void Dispose()
         {
-            if (_isConnected == false) return;
             _connection.Close();
             _connection.Dispose();
         }

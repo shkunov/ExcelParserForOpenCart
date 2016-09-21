@@ -25,6 +25,7 @@ namespace ExcelParserForOpenCart.UI
             _openFileName = string.Empty;
             _saveFileName = string.Empty;
             BtnCancel.IsEnabled = false;
+            BtnAddFoto.IsEnabled = false;
             if (CbSearchFoto.IsChecked != null) Global.SearchFoto = CbSearchFoto.IsChecked.Value;
             if (CbSaveOnlyWithFoto.IsChecked != null) Global.SaveOnlyWithFoto = CbSaveOnlyWithFoto.IsChecked.Value;
             var strVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
@@ -55,6 +56,7 @@ namespace ExcelParserForOpenCart.UI
         {
             BtnOpen.IsEnabled = true;
             BtnSave.IsEnabled = true;
+            BtnAddFoto.IsEnabled = true;
             BtnCancel.IsEnabled = false;
             _saveFileName = string.Empty;
         }
@@ -126,6 +128,13 @@ namespace ExcelParserForOpenCart.UI
             MessageList.Items.Add("Пожалуйста, подождите...");
         }
 
+        private void BtnAddFoto_Click(object sender, RoutedEventArgs e)
+        {
+            var filename = CreateOpenFileDialog();
+            if (string.IsNullOrEmpty(filename)) return;
+            _excelParser.AddFotofromFile(filename);
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (!_excelParser.IsStart()) return;
@@ -146,6 +155,7 @@ namespace ExcelParserForOpenCart.UI
             BtnOpen.IsEnabled = true;
             BtnSave.IsEnabled = false;
             BtnCancel.IsEnabled = false;
+            BtnAddFoto.IsEnabled = false;
             _openFileName = string.Empty;
             _saveFileName = string.Empty;
         }
@@ -195,6 +205,5 @@ namespace ExcelParserForOpenCart.UI
         {
             Global.SaveOnlyWithFoto = false;
         }
-
     }
 }

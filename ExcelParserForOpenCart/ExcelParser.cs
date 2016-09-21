@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using Microsoft.Office.Interop.Excel;
 using ExcelParserForOpenCart.Prices;
 
@@ -97,6 +98,57 @@ namespace ExcelParserForOpenCart
             _workerSave.RunWorkerCompleted += RunWorkerCompletedWorkerSave;
             _workerSave.ProgressChanged += ProgressChangedWorkerSave;
             _workerSave.RunWorkerAsync();
+        }
+
+        public void AddFotofromFile(string fileName)
+        {
+            if (_isExcelInstal == false)
+                return;
+            if (!File.Exists(fileName))
+            {
+                SendMessage("Ошибка! Файл c фото отсутствует!");
+                return;
+            }
+            var workerAddFoto = new BackgroundWorker();
+            workerAddFoto.DoWork += (sender, args) =>
+            {
+                
+                var application = new Application();
+                var workbook = application.Workbooks.Open(fileName);
+                var worksheet = workbook.Worksheets[1] as Worksheet;
+                if (worksheet == null) return;
+                var range = worksheet.UsedRange;
+                var row = worksheet.Rows.Count;
+                _countOfLink = 0;
+                var j = 0;
+                for (var i = 2; i < row; i++)
+                {                   
+                    var vendorCode = ConverterToString(range.Cells[i, 1] as Range); // артикуль
+                    var urlPhoto = ConverterToString(range.Cells[i, 2] as Range); // фото
+                    if (string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(urlPhoto))
+                    {
+                        j++;
+                        if (j > 5) break;
+                        continue;
+                    }
+                    j = 0;
+                    foreach (var item in _resultingPrice.Where(item => item.VendorCode == vendorCode))
+                    {
+                        item.Foto = urlPhoto;
+                        _countOfLink++;
+                        break;
+                    }
+                }
+                application.Quit();
+                ReleaseObject(worksheet);
+                ReleaseObject(workbook);
+                ReleaseObject(application);
+            };
+            workerAddFoto.RunWorkerCompleted += (sender, args) =>
+            {
+                SendMessage(string.Format("Добавленно фото: {0} шт.", _countOfLink));
+            };
+            workerAddFoto.RunWorkerAsync();
         }
 
         private void ProgressChangedWorkerOpen(object sender, ProgressChangedEventArgs e)
